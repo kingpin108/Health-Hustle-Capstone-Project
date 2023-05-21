@@ -19,6 +19,6 @@ Health Hustle is a React Native app dedicated to helping users achieve their des
 - Users can set workout goals and check how they have done on a weekly summary
 - Users get daily health tip notifications.
 - Provide users with a diet plan based on their body goals.
-- Create gamification in the app by granting points for completing certain tasks and redeeming those points for coupons.
+- Users can provide feedback about any issues they come across while using the application.
 - Users can share their achievements on social media platforms.
 - Users can update app preferences like disable reminders and change theme mode.
