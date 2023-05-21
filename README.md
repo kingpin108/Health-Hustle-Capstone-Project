@@ -8,16 +8,15 @@ Health Hustle is a React Native app dedicated to helping users achieve their des
 - Ruhi Dosani
 - Arshdeep Kaur
 
-
 ## Features
 
 - Users can register a profile with their body type and preferred exercises.
 - Users can generate a weekly workout scheduled based on their preferences.
 - Users get a daily step count update.
 - Notify users about the hydration check.
-- Users get workout analytics based on their daily workouts.
-- Fitness trainers can be contacted online for guidance.
-- Weekly fitness challenges are available for users to participate in.
+- Users will be provided audio/video tutorials as a part of their daily workout routine.
+- Users can read blogs on health and wellbeing to learn more.
+- Users can set workout goals and check how they have done on a weekly summary
 - Users get daily health tip notifications.
 - Provide users with a diet plan based on their body goals.
 - Create gamification in the app by granting points for completing certain tasks and redeeming those points for coupons.
