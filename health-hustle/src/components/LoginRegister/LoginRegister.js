@@ -1,21 +1,65 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { View, TextInput, TouchableOpacity, Image, Text } from 'react-native';
 import styles from './styles';
+import { auth } from '../../database/config';
+import { useNavigation } from '@react-navigation/native';
+import   Demo  from '../Demo/Demo';
+// import * as database from '../../database';
+
 
 const LoginRegister = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
 
-    const handleLogin = () => {
-        // Handle login logic here
-        console.log('Login', email, password);
-    };
+    const navigation = useNavigation()
+  
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        setIsRegistering(true);
+        navigation.navigate("Demo");
+        console.log('User Status:' ,isRegistering);
+        console.log('Loggedin Login Subscribe:' ,isRegistering);
+      } else {
+        console.log('Testing');
+
+        // setLoggedIn(false);
+      }
+    })
+    return unsubscribe
+  }, [])
 
     const handleRegister = () => {
-        // Handle registration logic here
-        console.log('Register', email, password);
-    };
+        auth.createUserWithEmailAndPassword(email,password)
+        .then(userCredentials => {
+          const user = userCredentials.user;
+          console.log('Registered with: ', user.email);
+          navigation.navigate("Demo")
+
+          setIsRegistering(true);
+          setEmail('');
+          setPassword('');
+          console.log('Loggedin SignUp:' ,isRegistering);
+        //   database.saveUser(userCredentials.user.uid)
+        })
+        .catch(error => alert(error.message))
+      }
+    
+      const handleLogin = () =>{
+        auth.signInWithEmailAndPassword(email,password)
+        .then(userCredentials => {
+          const user = userCredentials.user;
+          setIsRegistering(false);
+          console.log('Logged in with: ', user.email);
+          setEmail('');
+          setPassword('');
+        navigation.navigate("Demo");
+
+          console.log('Loggedin Login:' ,isRegistering);
+        })
+        .catch(error => alert(error.message))
+      }
 
     return (
         <View style={styles.container}>
