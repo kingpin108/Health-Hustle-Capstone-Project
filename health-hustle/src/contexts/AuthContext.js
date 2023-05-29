@@ -43,11 +43,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Wait for authentication to load before rendering the children
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
   return (
     <AuthContext.Provider value={{ user, login, signup, logout }}>
       {children}
