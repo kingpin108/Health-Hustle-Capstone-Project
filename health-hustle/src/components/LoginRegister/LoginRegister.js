@@ -45,7 +45,7 @@ const LoginRegister = () => {
     const handleLogin = async () => {
         try {
             await login(email, password);
-            navigation.navigate('Demo');
+            // navigation.navigate('Demo');
             setIsRegistering(false);
             setEmail('');
             setPassword('');
