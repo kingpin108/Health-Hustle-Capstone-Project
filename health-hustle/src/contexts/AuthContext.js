@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { auth, } from '../database/config';
+import { auth } from '../database/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext();
 
@@ -8,10 +9,39 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
+    const checkUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log('Error retrieving user from storage:', error);
+        setLoading(false);
+      }
+    };
+
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser);
+        try {
+          AsyncStorage.setItem('user', JSON.stringify(authUser));
+        } catch (error) {
+          console.log('Error storing user in storage:', error);
+        }
+      } else {
+        setUser(null);
+        try {
+          AsyncStorage.removeItem('user');
+        } catch (error) {
+          console.log('Error removing user from storage:', error);
+        }
+      }
       setLoading(false);
     });
+
+    checkUser();
 
     return unsubscribe;
   }, []);

@@ -18,7 +18,7 @@ const LoginRegister = () => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
                 setIsRegistering(true);
-                navigation.navigate("Demo");
+                // navigation.navigate("Demo");
                 console.log('User Status:', isRegistering);
                 console.log('Loggedin Login Subscribe:', isRegistering);
             } else {
@@ -33,7 +33,7 @@ const LoginRegister = () => {
     const handleRegister = async () => {
         try {
             await signup(email, password);
-            navigation.navigate('Demo');
+            // navigation.navigate('Demo');
             setIsRegistering(true);
             setEmail('');
             setPassword('');
