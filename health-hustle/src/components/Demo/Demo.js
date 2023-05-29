@@ -5,9 +5,8 @@ import styles from './styles';
 export default function App() {
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
+      <StatusBar style="auto" hidden />
       <Text>Demo Page</Text>
-
     </View>
   );
 }
