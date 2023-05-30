@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, TextInput, TouchableOpacity, Image, Text } from 'react-native';
+import { View, TouchableOpacity, Image, StatusBar} from 'react-native';
 import styles from './styles';
 import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
 import { useNavigation } from '@react-navigation/native';
+import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
 // import * as database from '../../database';
 
 
@@ -13,18 +14,21 @@ const LoginRegister = () => {
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
     const navigation = useNavigation()
+    const theme = {
+        colors: {
+            primary: '#0B022C', 
+            background: '#EE7CDC',
+        },
+    };
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
                 setIsRegistering(true);
-                // navigation.navigate("Demo");
                 console.log('User Status:', isRegistering);
                 console.log('Loggedin Login Subscribe:', isRegistering);
             } else {
                 console.log('Testing');
-
-                // setLoggedIn(false);
             }
         })
         return unsubscribe
@@ -33,7 +37,6 @@ const LoginRegister = () => {
     const handleRegister = async () => {
         try {
             await signup(email, password);
-            // navigation.navigate('Demo');
             setIsRegistering(true);
             setEmail('');
             setPassword('');
@@ -45,7 +48,6 @@ const LoginRegister = () => {
     const handleLogin = async () => {
         try {
             await login(email, password);
-            // navigation.navigate('Demo');
             setIsRegistering(false);
             setEmail('');
             setPassword('');
@@ -56,42 +58,45 @@ const LoginRegister = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Image
-                style={styles.logo}
-                source={require('../../../assets/HHLogo.png')}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                onChangeText={(text) => setEmail(text)}
-                value={email}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry
-                onChangeText={(text) => setPassword(text)}
-                value={password}
-            />
+        <PaperProvider theme={theme}>
+            <View style={styles.container}>
+                <StatusBar barStyle="light-content" />
+                <Image
+                    style={styles.logo}
+                    source={require('../../../assets/HHLogo.png')}
+                />
+                <TextInput
+                    style={styles.input}
+                    onChangeText={(text) => setEmail(text)}
+                    value={email}
+                    placeholder='Email'
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    secureTextEntry
+                    onChangeText={(text) => setPassword(text)}
+                    value={password}
+                />
 
-            <TouchableOpacity
-                style={styles.button}
-                onPress={isRegistering ? handleRegister : handleLogin}
-            >
-                <Text style={styles.buttonText}>
-                    {isRegistering ? 'Register' : 'Login'}
-                </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={isRegistering ? handleRegister : handleLogin}
+                >
+                    <Text style={styles.buttonText}>
+                        {isRegistering ? 'Register' : 'Login'}
+                    </Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity
-                onPress={() => setIsRegistering(!isRegistering)}
-            >
-                <Text style={styles.buttonText2}>
-                    {isRegistering ? 'Switch to Login' : 'Switch to Register'}
-                </Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                    onPress={() => setIsRegistering(!isRegistering)}
+                >
+                    <Text style={styles.buttonText2}>
+                        {isRegistering ? 'Switch to Login' : 'Switch to Register'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        </PaperProvider>
     );
 };
 
