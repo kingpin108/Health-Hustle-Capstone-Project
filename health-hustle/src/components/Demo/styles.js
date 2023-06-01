@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white'
+    },
+    progressBar:{
+        marginTop: Platform.OS === 'ios' ? 0 : 20,
     },
     questionText: {
         marginTop: 20,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Image, TouchableOpacity, SafeAreaView} from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox } from 'react-native-paper';
 import styles from './styles';
 
@@ -240,7 +240,7 @@ const Demo = () => {
         <SafeAreaView style={{ flex: 1 }}>
             <PaperProvider theme={theme}>
                 <View style={{ flex: 1, padding: 16, backgroundColor: 'white' }}>
-                    <ProgressBar progress={step / 8} color="#FF6F00" />
+                    <ProgressBar progress={step / 8} color="#FF6F00" style={styles.progressBar} />
 
                     <View style={styles.container}>
                         {renderStepContent()}
