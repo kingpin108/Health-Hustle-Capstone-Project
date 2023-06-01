@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
-import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text } from 'react-native-paper';
+import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox } from 'react-native-paper';
 import styles from './styles';
 
 const steps = [
@@ -20,7 +20,7 @@ const Demo = () => {
     const [step, setStep] = useState(1);
     const [gender, setGender] = useState('');
     const [bodyGoals, setBodyGoals] = useState('weightLoss');
-    const [bodyType, setBodyType] = useState('');
+    const [bodyType, setBodyType] = useState('A');
     const [desiredBodyType, setDesiredBodyType] = useState('');
     const [focusArea, setFocusArea] = useState('');
     const [weight, setWeight] = useState('');
@@ -37,63 +37,195 @@ const Demo = () => {
         setStep((prevStep) => prevStep - 1);
     };
 
+    const [checkedItems, setCheckedItems] = useState({
+        weightLoss: true,
+        postureCorrection: false,
+        muscleGain: false,
+        agility: false,
+    });
+    const handleCheckboxChange = (option) => {
+        setCheckedItems((prevState) => ({
+            ...prevState,
+            [option]: !prevState[option],
+        }));
+    };
+
+    const handleGenderChange = (selectedGender) => {
+        if (gender !== selectedGender) {
+            setGender(selectedGender);
+            setStep((prevStep) => prevStep + 1);;
+        }
+    }
+
     const renderStepContent = () => {
         switch (step) {
             case 1:
                 return (
                     <View style={styles.container}>
                         <Text style={styles.questionText}>Select your gender:</Text>
-                        <View style={styles.imageContainer}>
-                            <TouchableOpacity onPress={() => setGender('male')}>
+                        <Text>{'\n'}</Text>
+                        <TouchableOpacity onPress={() => handleGenderChange('male')}>
                                 <Image
                                     source={require('../../../assets/male.png')}
                                     style={styles.genderImage}
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setGender('female')}>
+                            <TouchableOpacity onPress={() => handleGenderChange('female')}>
                                 <Image
                                     source={require('../../../assets/female.png')}
                                     style={styles.genderImage}
                                 />
                             </TouchableOpacity>
-                        </View>
                     </View>
                 );
             case 2:
                 return (
                     <View style={styles.container}>
                         <Text style={styles.questionText}>Select your body goals:</Text>
-                        <RadioButton.Group
-                            onValueChange={(value) => setBodyGoals(value)}
-                            value={bodyGoals}
-                        >
-                            <RadioButton.Item
+                        <View>
+                            <Checkbox.Item
                                 label="Weight Loss"
-                                value="weightLoss"
-                                style={styles.radioButton}
+                                value='weightLoss'
+                                status={checkedItems.weightLoss ? 'checked' : 'unchecked'}
+                                onPress={() => handleCheckboxChange('weightLoss')}
+                                style={styles.checkBox}
                             />
-                            <RadioButton.Item
+                            <Checkbox.Item
                                 label="Posture Correction"
                                 value="postureCorrection"
-                                style={styles.radioButton}
+                                status={checkedItems.postureCorrection ? 'checked' : 'unchecked'}
+                                onPress={() => handleCheckboxChange('postureCorrection')}
+                                style={styles.checkBox}
                             />
-                            <RadioButton.Item
+                            <Checkbox.Item
                                 label="Muscle Gain"
                                 value="muscleGain"
-                                style={styles.radioButton}
+                                status={checkedItems.muscleGain ? 'checked' : 'unchecked'}
+                                onPress={() => handleCheckboxChange('muscleGain')}
+                                style={styles.checkBox}
                             />
-                            <RadioButton.Item
+                            <Checkbox.Item
                                 label="Agility"
                                 value="agility"
-                                style={styles.radioButton}
+                                status={checkedItems.agility ? 'checked' : 'unchecked'}
+                                onPress={() => handleCheckboxChange('agility')}
+                                style={styles.checkBox}
+
                             />
-                        </RadioButton.Group>
+                        </View>
                     </View>
                 );
             case 3:
                 return (
                     <View style={styles.container}>
-                        <Text style={styles.questionText}>Major fat accumulation:</Text>
+                        <Text style={styles.questionText}>Select body type:</Text>
+                        <Text>{'\n'}</Text>
+
+                        {gender === 'male' && (
+                            <>
+                                <View style={styles.typeRow}>
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('A')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/m_btype1.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('B')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/m_btype2.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.typeRow}>
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('C')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/m_btype3.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('D')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/m_btype4.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
+
+                        {gender === 'female' && (
+                            <>
+                                <View style={styles.typeRow}>
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('E')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/g_btype1.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('F')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/g_btype2.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <TouchableOpacity
+                                    style={styles.typeImageContainer2}
+                                    onPress={() => setBodyType('G')}
+                                >
+                                    <Image
+                                        source={require('../../../assets/g_btype5.png')}
+                                        style={styles.typeImage2}
+                                    />
+                                </TouchableOpacity>
+
+                                <View style={styles.typeRow}>
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('H')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/g_btype3.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.typeImageContainer}
+                                        onPress={() => setBodyType('I')}
+                                    >
+                                        <Image
+                                            source={require('../../../assets/g_btype4.png')}
+                                            style={styles.typeImage}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
 
                     </View>
                 );
@@ -121,7 +253,7 @@ const Demo = () => {
                             </Button>
                         )}
 
-                        {step < 8 && (
+                        {step < 8 && step > 1 && (
                             <Button mode="contained" onPress={handleNext} style={styles.button}>
                                 Next
                             </Button>

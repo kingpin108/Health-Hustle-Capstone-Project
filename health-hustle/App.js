@@ -27,7 +27,7 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      {user ? (
+      {!user ? (
         // <Tab.Navigator
         //   screenOptions={{
         //     activeTintColor: 'blue',
