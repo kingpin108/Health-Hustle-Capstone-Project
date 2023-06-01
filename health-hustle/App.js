@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginRegister from './src/components/LoginRegister/LoginRegister';
 import { AuthContext, AuthProvider } from './src/contexts/AuthContext';
-import Screen1 from './src/components/Screen1/Screen1';
+import Workout from './src/components/Workout/Workout';
 import Screen2 from './src/components/Screen2/Screen2';
 import Screen3 from './src/components/Screen3/Screen3';
 import Screen4 from './src/components/Screen4/Screen4';
@@ -42,10 +42,13 @@ const AppNavigator = () => {
         // </Tab.Navigator>
         <Stack.Navigator>
           <Stack.Screen name="Demo" component={Demo} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="Screen2" component={Screen2} options={{ headerShown: false }} /> */}
+
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
           <Stack.Screen name="Login" component={LoginRegister} options={{ headerShown: false }} />
+
         </Stack.Navigator>
       )}
     </NavigationContainer>

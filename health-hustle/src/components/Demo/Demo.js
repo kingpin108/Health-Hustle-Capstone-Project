@@ -19,7 +19,7 @@ const Demo = () => {
 
     const [step, setStep] = useState(1);
     const [gender, setGender] = useState('');
-    const [bodyGoals, setBodyGoals] = useState('');
+    const [bodyGoals, setBodyGoals] = useState('weightLoss');
     const [bodyType, setBodyType] = useState('');
     const [desiredBodyType, setDesiredBodyType] = useState('');
     const [focusArea, setFocusArea] = useState('');
@@ -93,8 +93,8 @@ const Demo = () => {
             case 3:
                 return (
                     <View style={styles.container}>
-                        <Text style={styles.questionText}>Select your body type:</Text>
-                        {/* Add your body type selection component */}
+                        <Text style={styles.questionText}>Major fat accumulation:</Text>
+
                     </View>
                 );
             // Continue adding cases for the remaining steps
@@ -107,7 +107,7 @@ const Demo = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <PaperProvider theme={theme}>
-                <View style={{ flex: 1, padding: 16, backgroundColor:'white' }}>
+                <View style={{ flex: 1, padding: 16, backgroundColor: 'white' }}>
                     <ProgressBar progress={step / 8} color="#FF6F00" />
 
                     <View style={styles.container}>

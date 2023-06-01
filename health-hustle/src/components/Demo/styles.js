@@ -24,7 +24,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-    }
+    },
+    radioButton: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        marginBottom: 10,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 2,
+      },
+      button:{
+        marginBottom: 10,
+      }
 });
 
 export default styles;
