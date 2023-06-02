@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
@@ -8,17 +8,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  appHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    elevation: 4, 
+    shadowOpacity: 0.3, 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowRadius: 2,
+  },
+  appHeaderTitle: {
+    marginLeft: Platform.OS === 'ios' ? -32 : 10,
+    alignSelf: 'flex-start',
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 16,
-    marginLeft: 16,
-    paddingBottom: 10
   },
   imageContainer: {
     marginHorizontal: 16,
     borderRadius: 10,
     overflow: 'hidden',
+    marginTop: 15
   },
   backgroundImage: {
     height: windowWidth * 0.5,
@@ -53,7 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 4,
   },
-  dailyHeader: {
+  header: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 16,
