@@ -66,14 +66,7 @@ const Workout = () => {
                     </View>
                 </View>
             </ScrollView>
-<<<<<<< Updated upstream
             </>      
-=======
-            </>
-
-
-          
->>>>>>> Stashed changes
     );
 };
 
