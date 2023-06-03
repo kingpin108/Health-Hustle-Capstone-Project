@@ -4,11 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginRegister from './src/components/LoginRegister/LoginRegister';
 import { AuthContext, AuthProvider } from './src/contexts/AuthContext';
-import Workout from './src/components/Workout/Workout';
 import Home from './src/components/Home/Home';
-import WorkoutList from './src/components/WorkoutList/WorkoutList';
-import Screen4 from './src/components/Screen4/Screen4';
 import RegistrationForm from './src/components/RegistrationForm/RegistrationForm';
+import Workout from './src/components/Workout/Workout';
+import WorkoutList from './src/components/WorkoutList/WorkoutList';
+import WorkoutCalendar from './src/components/WorkoutCalendar/WorkoutCalendar'; 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,6 +31,9 @@ const AppNavigator = () => {
         <Stack.Navigator>
           <Stack.Screen name="RegistrationForm" component={RegistrationForm} options={{ headerShown: false }} />
           <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+          <Stack.Screen name="Workout" component={Workout} options={{ headerShown: false }} />
+          <Stack.Screen name="WorkoutCalendar" component={WorkoutCalendar} options={{ headerShown: false }} />
+          <Stack.Screen name="WorkoutList" component={WorkoutList} options={{ headerShown: false }} />
         </Stack.Navigator>
         
       ) : (

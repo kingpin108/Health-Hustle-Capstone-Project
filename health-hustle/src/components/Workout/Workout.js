@@ -4,8 +4,6 @@ import { Button, Text, IconButton, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
-import { Calendar } from 'react-native-calendars';
-
 
 const Workout = () => {
     const navigation = useNavigation();
