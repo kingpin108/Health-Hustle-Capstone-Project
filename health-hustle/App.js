@@ -29,6 +29,7 @@ const AppNavigator = () => {
     <NavigationContainer>
       {!user ? (
         <Stack.Navigator>
+<<<<<<< Updated upstream
           <Stack.Screen name="RegistrationForm" component={RegistrationForm} options={{ headerShown: false }} />
           <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
 =======
