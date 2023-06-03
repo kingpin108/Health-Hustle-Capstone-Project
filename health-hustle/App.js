@@ -6,7 +6,7 @@ import LoginRegister from './src/components/LoginRegister/LoginRegister';
 import { AuthContext, AuthProvider } from './src/contexts/AuthContext';
 import Workout from './src/components/Workout/Workout';
 import Home from './src/components/Home/Home';
-import Screen3 from './src/components/Screen3/Screen3';
+import WorkoutList from './src/components/WorkoutList/WorkoutList';
 import Screen4 from './src/components/Screen4/Screen4';
 import RegistrationForm from './src/components/RegistrationForm/RegistrationForm';
 

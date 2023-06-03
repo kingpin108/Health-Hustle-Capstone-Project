@@ -3,12 +3,9 @@ import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, Scr
 import { Button, Text, IconButton, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
-
 import styles from './styles';
 
-// import styles from '../Demo/styles';
-
-const Screen3 = () => {
+const WorkoutList = () => {
     const navigation = useNavigation();
 
     const handleBack = () => {
@@ -92,7 +89,6 @@ const Screen3 = () => {
                 <TouchableOpacity style={styles.playButton}>
                 <AntDesign name="checkcircle" size={24} color="#EE7CDC" />
             </TouchableOpacity>
-
             </View>
         </TouchableOpacity>
     );
@@ -122,7 +118,6 @@ const Screen3 = () => {
                             </Text>
                             <Text style={styles.textInstruction} variant="titleSmall">
                                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-
                             </Text>
                             <Text style={styles.titleInstruction} variant="headlineSmall">
                                 Exercises
@@ -131,7 +126,6 @@ const Screen3 = () => {
                     }
                     renderItem={ListItem}
                     showsVerticalScrollIndicator={false}
-
                 />
             </SafeAreaView>
         </>
@@ -139,4 +133,4 @@ const Screen3 = () => {
     );
 };
 
-export default Screen3;
+export default WorkoutList;

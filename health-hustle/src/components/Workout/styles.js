@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   },
   buttonLabel: {
     fontSize: 16,
-    marginLeft: 4,
   },
   header: {
     fontSize: 20,

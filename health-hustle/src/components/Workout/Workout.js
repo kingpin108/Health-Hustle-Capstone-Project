@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView } from 'react-native';
 import { Button, Text, IconButton, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
+import { Calendar } from 'react-native-calendars';
+
 
 const Workout = () => {
     const navigation = useNavigation();
 
     const handleButtonPress = () => {
-        navigation.navigate('Screen3');
+        navigation.navigate('WorkoutList');
     };
+    const [calendarVisible, setCalendarVisible] = useState(false);
 
+    const handleOpenCalendar = () => {
+        navigation.navigate('WorkoutCalendar');
+    };
+    
     return (
         <>
-            <StatusBar bar-style='dark-content'/>
+            <StatusBar bar-style='dark-content' />
             <Appbar.Header style={styles.appHeaderContainer}>
                 <Appbar.Content
                     title="Workout"
@@ -24,7 +31,6 @@ const Workout = () => {
             <></>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
-                    {/* <Text style={styles.header}>Workout</Text> */}
                     <View style={styles.imageContainer}>
                         <ImageBackground
                             source={require('../../../assets/workout.png')}
@@ -36,16 +42,16 @@ const Workout = () => {
                                     mode="contained"
                                     style={styles.button}
                                     labelStyle={styles.buttonLabel}
-                                    icon={({ size, color }) => (
-                                        <IconButton
-                                            icon="play"
-                                            color={color}
-                                            size={28}
-                                        />
-                                    )}
-                                    onPress={handleButtonPress}
+                                    // icon={({ size, color }) => (
+                                    //     <IconButton
+                                    //         icon="play"
+                                    //         color={color}
+                                    //         size={28}
+                                    //     />
+                                    // )}
+                                    onPress={handleOpenCalendar}
                                 >
-                                    Day 1
+                                    View
                                 </Button>
                             </View>
                         </ImageBackground>
@@ -66,7 +72,7 @@ const Workout = () => {
                     </View>
                 </View>
             </ScrollView>
-            </>      
+        </>
     );
 };
 
