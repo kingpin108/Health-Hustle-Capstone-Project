@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { auth } from '../database/config';
+import { auth, database } from '../database/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext();
@@ -57,9 +57,20 @@ const AuthProvider = ({ children }) => {
 
   const signup = async (email, password) => {
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
+      if (!email) {
+        throw new Error('Email is required');
+      }
+
+      const { user } = await auth.createUserWithEmailAndPassword(email, password);
+      const { uid } = user;
+
+      const usersRef = database.ref('users');
+
+      usersRef.child(uid).set({ email });
+
+      console.log('User registered successfully');
     } catch (error) {
-      console.log('Signup error:', error);
+      console.log('Signup error:', error.message);
       throw error;
     }
   };
