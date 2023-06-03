@@ -3,7 +3,6 @@ import { View, TouchableOpacity, Image, StatusBar} from 'react-native';
 import styles from './styles';
 import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
-import { useNavigation } from '@react-navigation/native';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
 // import * as database from '../../database';
 
@@ -13,7 +12,6 @@ const LoginRegister = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
-    const navigation = useNavigation()
     const theme = {
         colors: {
             primary: '#0B022C', 

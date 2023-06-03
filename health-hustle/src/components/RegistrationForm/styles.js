@@ -41,6 +41,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
     },
+    formImage: {
+        resizeMode: 'contain',
+        width: 300,
+        height: 250,
+        marginVertical: 10
+    },
     typeImageContainer: {
         flex: 1,
         aspectRatio: 1,
@@ -49,6 +55,13 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 10,
         overflow: 'hidden',
+    },
+    focusAreaImage: {
+        resizeMode: 'contain',
+        width: 100,
+        height: 200,
+        marginVertical: 10,
+        alignSelf: 'center'
     },
     typeImage: {
         flex: 1,
@@ -71,6 +84,9 @@ const styles = StyleSheet.create({
         width: 160,
         height: 160
     },
+    sectionBottomMargin: {
+        marginBottom: 20
+    }
 });
 
 export default styles;
