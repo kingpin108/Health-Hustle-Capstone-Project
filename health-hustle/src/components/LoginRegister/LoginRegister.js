@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, TouchableOpacity, Image, StatusBar} from 'react-native';
+import { View, TouchableOpacity, Image, StatusBar, Alert } from 'react-native';
 import styles from './styles';
 import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
-// import * as database from '../../database';
 
 
 const LoginRegister = () => {
@@ -12,9 +11,11 @@ const LoginRegister = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     const theme = {
         colors: {
-            primary: '#0B022C', 
+            primary: '#0B022C',
             background: '#EE7CDC',
         },
     };
@@ -33,26 +34,59 @@ const LoginRegister = () => {
     }, [])
 
     const handleRegister = async () => {
+        if (!validateForm()) return;
+
         try {
+            // Check if the email is already registered
+            const signInMethods = await auth.fetchSignInMethodsForEmail(email);
+
+            if (signInMethods && signInMethods.length > 0) {
+                Alert.alert('Error', 'Email is already registered');
+                return;
+            }
+
+            // If the email is not registered, proceed with registration
             await signup(email, password);
             setIsRegistering(true);
-            setEmail('');
-            setPassword('');
+            clearForm();
         } catch (error) {
             console.log('Signup error:', error);
+            Alert.alert('Error', 'Failed to register');
         }
     };
 
     const handleLogin = async () => {
+        if (!validateForm()) return;
+
         try {
             await login(email, password);
             setIsRegistering(false);
-            setEmail('');
-            setPassword('');
+            clearForm();
         } catch (error) {
             console.log('Login error:', error);
-            // Handle login error
+            Alert.alert('Error', 'Invalid email or password');
         }
+    };
+
+    const validateForm = () => {
+        const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if (!email || !password) {
+            Alert.alert('Error', 'Please enter both email and password');
+            return false;
+        }
+
+        if (!emailPattern.test(email)) {
+            Alert.alert('Error', 'Please enter a valid email');
+            return false;
+        }
+
+        return true;
+    };
+
+    const clearForm = () => {
+        setEmail('');
+        setPassword('');
     };
 
     return (

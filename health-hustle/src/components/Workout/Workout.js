@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView } from 'react-native';
+import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
 import { Button, Text, IconButton, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Workout = () => {
     const navigation = useNavigation();
 
-    const handleButtonPress = () => {
+    const handleOpenWorkoutList = () => {
         navigation.navigate('WorkoutList');
     };
     const [calendarVisible, setCalendarVisible] = useState(false);
@@ -16,7 +17,27 @@ const Workout = () => {
     const handleOpenCalendar = () => {
         navigation.navigate('WorkoutCalendar');
     };
-    
+
+    const DailyCardView = ({ imageSource, onPress }) => {
+        return (
+            <View>
+                <TouchableOpacity onPress={onPress}>
+                    <Image source={imageSource} style={styles.image} />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    const BodyFocusCardView = ({ imageSource, onPress }) => {
+        return (
+            <View>
+                <TouchableOpacity onPress={onPress}>
+                    <Image source={imageSource} style={styles.imgBodyFocus} />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
     return (
         <>
             <StatusBar bar-style='dark-content' />
@@ -35,7 +56,7 @@ const Workout = () => {
                             style={styles.backgroundImage}
                         >
                             <View style={styles.content}>
-                                <Text style={styles.text}>Monthly Workout Plan</Text>
+                                <Text style={styles.text}>Weekly Workout Plan</Text>
                                 <Button
                                     mode="contained"
                                     style={styles.button}
@@ -47,26 +68,44 @@ const Workout = () => {
                                     //         size={28}
                                     //     />
                                     // )}
-                                    onPress={handleOpenCalendar}
+                                    onPress={handleOpenWorkoutList}
                                 >
-                                    View
+                                    Day 1
                                 </Button>
                             </View>
                         </ImageBackground>
                     </View>
                     <Text style={styles.header}>Daily</Text>
                     <View style={styles.imageRow}>
-                        <Image source={require('../../../assets/workout.png')} style={styles.image} />
-                        <Image source={require('../../../assets/workout.png')} style={styles.image} />
+                        <DailyCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={() => navigation.navigate('CardDemo')}
+                        />
+                        <DailyCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={() => navigation.navigate('CardDemo')}
+                        />
                     </View>
                     <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>
-                        <Image source={require('../../../assets/workout.png')} style={styles.imgBodyFocus} />
-                        <Image source={require('../../../assets/workout.png')} style={styles.imgBodyFocus} />
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={() => navigation.navigate('CardDemo')}
+                        />
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={() => navigation.navigate('CardDemo')}
+                        />
                     </View>
                     <View style={styles.imageRow}>
-                        <Image source={require('../../../assets/workout.png')} style={styles.imgBodyFocus} />
-                        <Image source={require('../../../assets/workout.png')} style={styles.imgBodyFocus} />
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={() => navigation.navigate('CardDemo')}
+                        />
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={() => navigation.navigate('CardDemo')}
+                        />
                     </View>
                 </View>
             </ScrollView>

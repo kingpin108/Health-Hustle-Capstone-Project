@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import { Button, Text, IconButton, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +11,8 @@ const WorkoutList = () => {
     const handleBack = () => {
         navigation.goBack();
     };
+    const [isWorkoutDone, setIsWorkoutDone] = useState(false);
+
 
     const data = [
         {
@@ -78,7 +80,7 @@ const WorkoutList = () => {
     const ListItem = ({ item }) => (
         <TouchableOpacity
             style={styles.listItem}
-            onPress={() => navigation.navigate('Screen2')}
+            onPress={() => navigation.navigate('Home')}
         >
             <View style={styles.listItem}>
                 <Image source={item.image} style={styles.image} />
@@ -87,8 +89,12 @@ const WorkoutList = () => {
                     <Text style={styles.duration}>{item.duration}</Text>
                 </View>
                 <TouchableOpacity style={styles.playButton}>
-                <AntDesign name="checkcircle" size={24} color="#EE7CDC" />
-            </TouchableOpacity>
+                    {isWorkoutDone ? (
+                        <AntDesign name="checkcircle" size={24} color="#EE7CDC" />
+                    ) : (
+                        <AntDesign name="checkcircleo" size={24} color="#ABB2B9" />
+                    )}
+                </TouchableOpacity>
             </View>
         </TouchableOpacity>
     );
