@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView  } from 'react-native';
+import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
@@ -195,7 +195,7 @@ const RegistrationForm = () => {
                             ))}
                         </View>
                     </View>
-                );               
+                );
 
             case 3:
                 return (
@@ -211,14 +211,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('A');
                                             setSelectedType('A');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype1.png')}
                                             style={[
                                                 styles.typeImage,
                                                 bodyType === 'A' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
 
@@ -227,15 +227,15 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('B');
                                             setSelectedType('B');
-                                          }}
-                                        
+                                        }}
+
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype2.png')}
                                             style={[
                                                 styles.typeImage,
                                                 bodyType === 'B' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -246,14 +246,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('C');
                                             setSelectedType('C');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype3.png')}
                                             style={[
                                                 styles.typeImage,
                                                 bodyType === 'C' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
 
@@ -262,14 +262,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('D');
                                             setSelectedType('D');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype4.png')}
                                             style={[
                                                 styles.typeImage,
                                                 bodyType === 'D' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -284,14 +284,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('E');
                                             setSelectedType('E');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/g_btype1.png')}
                                             style={[
                                                 styles.typeImage,
                                                 bodyType === 'E' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
 
@@ -300,14 +300,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('F');
                                             setSelectedType('F');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/g_btype2.png')}
                                             style={[
                                                 styles.typeImage,
                                                 bodyType === 'F' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -317,12 +317,14 @@ const RegistrationForm = () => {
                                     onPress={() => {
                                         setBodyType('G');
                                         setSelectedType('G');
-                                      }}
+                                    }}
                                 >
                                     <Image
-                                        source={require('../../../assets/g_btype5.png')}
-                                        style={styles.typeImage2}
-                                    />
+                                        source={require('../../../assets/g_btype3.png')}
+                                        style={[
+                                            styles.typeImage2,
+                                            bodyType === 'G' && styles.selectedType,
+                                        ]} />
                                 </TouchableOpacity>
 
                                 <View style={styles.typeRow}>
@@ -331,14 +333,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('H');
                                             setSelectedType('H');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/g_btype4.png')}
                                             style={[
-                                                styles.typeImage2,
+                                                styles.typeImage,
                                                 bodyType === 'H' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
 
@@ -347,14 +349,14 @@ const RegistrationForm = () => {
                                         onPress={() => {
                                             setBodyType('I');
                                             setSelectedType('I');
-                                          }}
+                                        }}
                                     >
                                         <Image
                                             source={require('../../../assets/g_btype5.png')}
                                             style={[
-                                                styles.typeImage2,
+                                                styles.typeImage,
                                                 bodyType === 'I' && styles.selectedType,
-                                              ]}
+                                            ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -362,7 +364,7 @@ const RegistrationForm = () => {
                         )}
                     </View>
                 );
- 
+
             case 4:
                 return (
                     <View style={styles.container}>

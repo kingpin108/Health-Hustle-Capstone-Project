@@ -4,6 +4,7 @@ import styles from './styles';
 import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
+import { useNavigation } from '@s-navigation/native';
 
 const LoginRegister = () => {
     const { login, signup } = useContext(AuthContext);
@@ -11,6 +12,7 @@ const LoginRegister = () => {
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const navigation = useNavigation();
 
     const theme = {
         colors: {
@@ -60,6 +62,7 @@ const LoginRegister = () => {
         try {
             await login(email, password);
             setIsRegistering(false);
+            navigation.navigate('Home');
             clearForm();
         } catch (error) {
             console.log('Login error:', error);
