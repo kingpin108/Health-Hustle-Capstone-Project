@@ -8,6 +8,7 @@ import RegistrationForm from './src/components/RegistrationForm/RegistrationForm
 import Workout from './src/components/Workout/Workout';
 import WorkoutList from './src/components/WorkoutList/WorkoutList';
 import WorkoutCalendar from './src/components/WorkoutCalendar/WorkoutCalendar';
+import Workout_details from './src/components/Workout_details/Workout_details';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ const AppNavigator = () => {
             <Stack.Screen name="WorkoutCalendar" component={WorkoutCalendar} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="WorkoutList" component={WorkoutList} options={{ headerShown: false }} />
+            <Stack.Screen name="Workout_details" component={Workout_details} options={{ headerShown: false }} />
           </>
         ) : (
           <>

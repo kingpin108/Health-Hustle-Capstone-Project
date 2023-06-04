@@ -4,7 +4,7 @@ import styles from './styles';
 import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
-import { useNavigation } from '@s-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginRegister = () => {
     const { login, signup } = useContext(AuthContext);
