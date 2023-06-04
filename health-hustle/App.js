@@ -10,6 +10,7 @@ import Workout from './src/components/Workout/Workout';
 import WorkoutList from './src/components/WorkoutList/WorkoutList';
 import WorkoutCalendar from './src/components/WorkoutCalendar/WorkoutCalendar';
 import CardDemo from './src/components/CardDemo/CardDemo'
+import Demo from './src/components/Demo/Demo';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView} from 'react-native';
+import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +23,8 @@ const RegistrationForm = () => {
         { label: 'Agility', checked: false },
     ]);
     const [bodyType, setBodyType] = useState('A');
+    const [selectedType, setSelectedType] = useState('A');
+
     const [focusArea, setFocusArea] = useState([
         { label: 'Upper Body', checked: true },
         { label: 'Lower Body', checked: false },
@@ -35,6 +37,7 @@ const RegistrationForm = () => {
     const [height, setHeight] = useState('');
     const [age, setAge] = useState('');
     const [equipment, setEquipment] = useState('true');
+
 
     const handleNext = () => {
         setStep((prevStep) => prevStep + 1);
@@ -108,7 +111,7 @@ const RegistrationForm = () => {
         console.log(formData);
 
         setConfettiActive(true);
-        setShowPopover(true);        
+        setShowPopover(true);
 
         setTimeout(() => {
             setShowPopover(false);
@@ -118,6 +121,21 @@ const RegistrationForm = () => {
         }, 3000);
     };
 
+    const CustomBodyTypeContainer = ({ imageSource, onPress, containerStyle }) => {
+        return (
+            <TouchableOpacity style={[styles.typeImageContainer, containerStyle]} onPress={onPress}>
+                <Image source={imageSource} style={styles.typeImage} />
+            </TouchableOpacity>
+        );
+    };
+
+    const CustomBodyTypeContainer2 = ({ imageSource, onPress, containerStyle }) => {
+        return (
+            <TouchableOpacity style={[styles.typeImageContainer2, containerStyle]} onPress={onPress}>
+                <Image source={imageSource} style={styles.typeImage2} />
+            </TouchableOpacity>
+        );
+    };
 
     const renderStepContent = () => {
         switch (step) {
@@ -160,7 +178,8 @@ const RegistrationForm = () => {
                             ))}
                         </View>
                     </View>
-                );
+                );               
+
             case 3:
                 return (
                     <View style={styles.container}>
@@ -172,21 +191,34 @@ const RegistrationForm = () => {
                                 <View style={styles.typeRow}>
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('A')}
+                                        onPress={() => {
+                                            setBodyType('A');
+                                            setSelectedType('A');
+                                          }}
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype1.png')}
-                                            style={styles.typeImage}
+                                            style={[
+                                                styles.typeImage,
+                                                bodyType === 'A' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('B')}
+                                        onPress={() => {
+                                            setBodyType('B');
+                                            setSelectedType('B');
+                                          }}
+                                        
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype2.png')}
-                                            style={styles.typeImage}
+                                            style={[
+                                                styles.typeImage,
+                                                bodyType === 'B' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -194,21 +226,33 @@ const RegistrationForm = () => {
                                 <View style={styles.typeRow}>
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('C')}
+                                        onPress={() => {
+                                            setBodyType('C');
+                                            setSelectedType('C');
+                                          }}
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype3.png')}
-                                            style={styles.typeImage}
+                                            style={[
+                                                styles.typeImage,
+                                                bodyType === 'C' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('D')}
+                                        onPress={() => {
+                                            setBodyType('D');
+                                            setSelectedType('D');
+                                          }}
                                     >
                                         <Image
                                             source={require('../../../assets/m_btype4.png')}
-                                            style={styles.typeImage}
+                                            style={[
+                                                styles.typeImage,
+                                                bodyType === 'D' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -220,62 +264,91 @@ const RegistrationForm = () => {
                                 <View style={styles.typeRow}>
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('E')}
+                                        onPress={() => {
+                                            setBodyType('E');
+                                            setSelectedType('E');
+                                          }}
                                     >
                                         <Image
                                             source={require('../../../assets/g_btype1.png')}
-                                            style={styles.typeImage}
+                                            style={[
+                                                styles.typeImage,
+                                                bodyType === 'E' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('F')}
+                                        onPress={() => {
+                                            setBodyType('F');
+                                            setSelectedType('F');
+                                          }}
                                     >
                                         <Image
                                             source={require('../../../assets/g_btype2.png')}
-                                            style={styles.typeImage}
+                                            style={[
+                                                styles.typeImage,
+                                                bodyType === 'F' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
 
                                 <TouchableOpacity
                                     style={styles.typeImageContainer2}
-                                    onPress={() => setBodyType('G')}
+                                    onPress={() => {
+                                        setBodyType('G');
+                                        setSelectedType('G');
+                                      }}
                                 >
                                     <Image
-                                        source={require('../../../assets/g_btype5.png')}
-                                        style={styles.typeImage2}
+                                        source={require('../../../assets/g_btype3.png')}
+                                        style={[
+                                            styles.typeImage2,
+                                            bodyType === 'G' && styles.selectedType,
+                                          ]}
                                     />
                                 </TouchableOpacity>
 
                                 <View style={styles.typeRow}>
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('H')}
+                                        onPress={() => {
+                                            setBodyType('H');
+                                            setSelectedType('H');
+                                          }}
                                     >
                                         <Image
-                                            source={require('../../../assets/g_btype3.png')}
-                                            style={styles.typeImage}
+                                            source={require('../../../assets/g_btype4.png')}
+                                            style={[
+                                                styles.typeImage2,
+                                                bodyType === 'H' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
                                         style={styles.typeImageContainer}
-                                        onPress={() => setBodyType('I')}
+                                        onPress={() => {
+                                            setBodyType('I');
+                                            setSelectedType('I');
+                                          }}
                                     >
                                         <Image
-                                            source={require('../../../assets/g_btype4.png')}
-                                            style={styles.typeImage}
+                                            source={require('../../../assets/g_btype5.png')}
+                                            style={[
+                                                styles.typeImage2,
+                                                bodyType === 'I' && styles.selectedType,
+                                              ]}
                                         />
                                     </TouchableOpacity>
                                 </View>
                             </>
                         )}
-
                     </View>
                 );
-
+ 
             case 4:
                 return (
                     <View style={styles.container}>
@@ -426,7 +499,7 @@ const RegistrationForm = () => {
                         <Text>Signing up...</Text>
                     </Popover>
                 )}
-                
+
                 {confettiActive && (
                     <ConfettiCannon
                         count={200}

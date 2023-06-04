@@ -5,7 +5,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
 
-
 const LoginRegister = () => {
     const { login, signup } = useContext(AuthContext);
     const [email, setEmail] = useState('');
@@ -75,12 +74,14 @@ const LoginRegister = () => {
             Alert.alert('Error', 'Please enter both email and password');
             return false;
         }
-
+        if(password.length !=6 ){
+            Alert.alert('Error', 'Password should be at least 6 characters');
+            return false;
+        }
         if (!emailPattern.test(email)) {
             Alert.alert('Error', 'Please enter a valid email');
             return false;
         }
-
         return true;
     };
 
@@ -102,6 +103,7 @@ const LoginRegister = () => {
                     onChangeText={(text) => setEmail(text)}
                     value={email}
                     placeholder='Email'
+                    autoCapitalize="none"
                 />
                 <TextInput
                     style={styles.input}

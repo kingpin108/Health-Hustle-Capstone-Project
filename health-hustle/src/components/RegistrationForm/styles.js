@@ -56,6 +56,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden',
     },
+    selectedType:{
+        flex: 1,
+        aspectRatio: 1,
+        margin: 10,
+        borderWidth: 2,
+        borderColor: '#EE7CDC',
+        borderRadius: 10,
+        overflow: 'hidden',
+
+    },
     focusAreaImage: {
         resizeMode: 'contain',
         width: 100,
