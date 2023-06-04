@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Popover from 'react-native-popover-view';
+import { AuthContext } from '../../contexts/AuthContext';
+import { database } from '../../database/config';
 
 const RegistrationForm = () => {
     const theme = {
@@ -35,6 +37,8 @@ const RegistrationForm = () => {
     const [height, setHeight] = useState('');
     const [age, setAge] = useState('');
     const [equipment, setEquipment] = useState('true');
+    const { user } = useContext(AuthContext);
+    const { uid } = user;
 
     const handleNext = () => {
         setStep((prevStep) => prevStep + 1);
@@ -85,6 +89,18 @@ const RegistrationForm = () => {
         }
     };
 
+    const saveFormData = (formData, uid) => {
+        try {
+            const usersRef = database.ref('users');
+            const formDataRef = usersRef.child(uid).child('formData');
+            formDataRef.set({ ...formData });
+            console.log('Form data saved successfully');
+        } catch (error) {
+            console.log('Error saving form data:', error);
+            throw error;
+        }
+    };
+
     const [showPopover, setShowPopover] = useState(false);
     const [confettiActive, setConfettiActive] = useState(false);
 
@@ -106,9 +122,10 @@ const RegistrationForm = () => {
         };
 
         console.log(formData);
+        saveFormData(formData, uid);
 
         setConfettiActive(true);
-        setShowPopover(true);        
+        setShowPopover(true);
 
         setTimeout(() => {
             setShowPopover(false);
@@ -244,7 +261,7 @@ const RegistrationForm = () => {
                                     onPress={() => setBodyType('G')}
                                 >
                                     <Image
-                                        source={require('../../../assets/g_btype5.png')}
+                                        source={require('../../../assets/g_btype3.png')}
                                         style={styles.typeImage2}
                                     />
                                 </TouchableOpacity>
@@ -255,7 +272,7 @@ const RegistrationForm = () => {
                                         onPress={() => setBodyType('H')}
                                     >
                                         <Image
-                                            source={require('../../../assets/g_btype3.png')}
+                                            source={require('../../../assets/g_btype4.png')}
                                             style={styles.typeImage}
                                         />
                                     </TouchableOpacity>
@@ -265,7 +282,7 @@ const RegistrationForm = () => {
                                         onPress={() => setBodyType('I')}
                                     >
                                         <Image
-                                            source={require('../../../assets/g_btype4.png')}
+                                            source={require('../../../assets/g_btype5.png')}
                                             style={styles.typeImage}
                                         />
                                     </TouchableOpacity>
@@ -426,7 +443,7 @@ const RegistrationForm = () => {
                         <Text>Signing up...</Text>
                     </Popover>
                 )}
-                
+
                 {confettiActive && (
                     <ConfettiCannon
                         count={200}
