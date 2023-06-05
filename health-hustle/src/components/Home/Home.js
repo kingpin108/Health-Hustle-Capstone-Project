@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import { Surface, Text } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 
 const Home = () => {
-    const handleTilePress = (tileName) => {
-        // Handle the press event based on the tile name
+    const navigation = useNavigation();
+
+    const handleTilePress = (screenName) => {
+        navigation.navigate(screenName);
     };
 
     return (
@@ -17,7 +20,7 @@ const Home = () => {
                         source={require('../../../assets/HHLogoLight.jpg')}
                     />
                     <View style={styles.row}>
-                        <TouchableOpacity onPress={() => handleTilePress('Workouts')}>
+                        <TouchableOpacity onPress={() => handleTilePress('Workout')}>
                             <Surface style={styles.tile}>
                                 <Image
                                     style={styles.tileImage}

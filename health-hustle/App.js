@@ -26,7 +26,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {!user ? (
+        {user ? (
           <>
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="RegistrationForm" component={RegistrationForm} options={{ headerShown: false }} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
-import { Button, Text, IconButton, Appbar } from 'react-native-paper';
+import { Button, Text, IconButton, Appbar, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Workout = () => {
     const navigation = useNavigation();
+    const theme = useTheme();
 
     const handleOpenWorkoutList = () => {
         navigation.navigate('WorkoutList');
@@ -16,6 +17,10 @@ const Workout = () => {
 
     const handleOpenCalendar = () => {
         navigation.navigate('WorkoutCalendar');
+    };
+
+    const handleHomePress = () => {
+        navigation.navigate('Home');
     };
 
     const DailyCardView = ({ imageSource, onPress }) => {
@@ -46,6 +51,8 @@ const Workout = () => {
                     title="Workout"
                     titleStyle={styles.appHeaderTitle}
                 />
+                <Appbar.Action icon="home" onPress={handleHomePress} />
+                <Appbar.Action icon="theme-light-dark" onPress={() => {}} />
             </Appbar.Header>
             <></>
             <ScrollView showsVerticalScrollIndicator={false}>
