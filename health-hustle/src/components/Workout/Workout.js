@@ -6,6 +6,8 @@ import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
+
 const Workout = () => {
     const navigation = useNavigation();
     const theme = useTheme();
@@ -86,32 +88,32 @@ const Workout = () => {
                     <View style={styles.imageRow}>
                         <DailyCardView
                             imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('CardDemo')}
+                            onPress={() => navigation.navigate('WorkoutList')}
                         />
                         <DailyCardView
                             imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('CardDemo')}
+                            onPress={() => navigation.navigate('WorkoutList')}
                         />
                     </View>
                     <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>
                         <BodyFocusCardView
                             imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('CardDemo')}
+                            onPress={() => navigation.navigate('WorkoutList')}
                         />
                         <BodyFocusCardView
                             imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('CardDemo')}
+                            onPress={() => navigation.navigate('WorkoutList')}
                         />
                     </View>
                     <View style={styles.imageRow}>
                         <BodyFocusCardView
                             imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('CardDemo')}
+                            onPress={() => navigation.navigate('WorkoutList')}
                         />
                         <BodyFocusCardView
                             imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('CardDemo')}
+                            onPress={() => navigation.navigate('WorkoutList')}
                         />
                     </View>
                 </View>

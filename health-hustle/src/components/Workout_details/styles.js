@@ -26,9 +26,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
       },
       image: {
-        width: '100%',
+        width: '60%',
         height: 200,
         resizeMode: 'cover',
+        marginLeft:'15%'
       },
       videoContainer: {
         width: '100%',
