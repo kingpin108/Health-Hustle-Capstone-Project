@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
   appHeaderContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     backgroundColor: 'white',
     elevation: 4, 
     shadowOpacity: 0.3, 
