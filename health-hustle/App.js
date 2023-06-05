@@ -28,6 +28,7 @@ const AppNavigator = () => {
       <Stack.Navigator>
         {user ? (
           <>
+            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="Workout" component={Workout} options={{ headerShown: false }} />
             <Stack.Screen name="RegistrationForm" component={RegistrationForm} options={{ headerShown: false }} />
             <Stack.Screen name="WorkoutCalendar" component={WorkoutCalendar} options={{ headerShown: false }} />

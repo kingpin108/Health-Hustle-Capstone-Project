@@ -49,6 +49,7 @@ const LoginRegister = () => {
             // If the email is not registered, proceed with registration
             await signup(email, password);
             setIsRegistering(true);
+            navigation.navigate('RegistrationForm');
             clearForm();
         } catch (error) {
             console.log('Signup error:', error);
@@ -62,7 +63,7 @@ const LoginRegister = () => {
         try {
             await login(email, password);
             setIsRegistering(false);
-            navigation.navigate('Workout');
+            navigation.navigate('Home');
             clearForm();
         } catch (error) {
             console.log('Login error:', error);
