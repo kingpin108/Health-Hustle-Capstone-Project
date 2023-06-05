@@ -62,7 +62,7 @@ const LoginRegister = () => {
         try {
             await login(email, password);
             setIsRegistering(false);
-            navigation.navigate('Home');
+            navigation.navigate('Workout');
             clearForm();
         } catch (error) {
             console.log('Login error:', error);

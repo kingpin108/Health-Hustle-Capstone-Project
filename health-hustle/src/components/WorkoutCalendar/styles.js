@@ -16,8 +16,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   appHeaderTitle: {
+    
     marginLeft: Platform.OS === 'ios' ? -32 : 10,
-    alignSelf: 'flex-start',
+    // alignSelf: 'flex-start',
     fontSize: 20,
     fontWeight: 'bold',
   }, 
