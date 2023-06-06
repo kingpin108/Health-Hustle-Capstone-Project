@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
-import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch } from 'react-native-paper';
+import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch, Snackbar } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import ConfettiCannon from 'react-native-confetti-cannon';
@@ -15,6 +15,8 @@ const RegistrationForm = () => {
             background: '#FFFFFF',
         },
     };
+
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     const [step, setStep] = useState(1);
     const [gender, setGender] = useState('');
@@ -42,9 +44,31 @@ const RegistrationForm = () => {
     const { user } = useContext(AuthContext);
     const { uid } = user;
 
-
     const handleNext = () => {
-        setStep((prevStep) => prevStep + 1);
+        if (step === 1 && !gender) {
+            setShowSnackbar(true);
+        } else if (step === 2 && !bodyGoals) {
+            setShowSnackbar(true);
+        } else if (step === 3 && !bodyType) {
+            setShowSnackbar(true);
+        } else if (step === 4 && !focusArea) {
+            setShowSnackbar(true);
+        } else if (step === 5 && !weight) {
+                setShowSnackbar(true);
+        } else if (step === 6 && !height) {
+            setShowSnackbar(true);
+        } else if (step === 7 && !age) {
+            setShowSnackbar(true);
+        } else if (step === 8 && !equipment) {
+            setShowSnackbar(true);
+        }
+         else {
+            setStep((prevStep) => prevStep + 1);
+        }
+    };
+
+    const handleSnackbarDismiss = () => {
+        setShowSnackbar(false);
     };
 
     const handlePrev = () => {
@@ -526,6 +550,15 @@ const RegistrationForm = () => {
                         fadeOut
                     />
                 )}
+
+                <Snackbar
+                    visible={showSnackbar}
+                    onDismiss={handleSnackbarDismiss}
+                    duration={3000}
+                    style={styles.snackbar}
+                >
+                    <Text style={{color: 'white', textAlign: 'center'}}>Please fill in all required fields.</Text>
+                </Snackbar>
             </PaperProvider>
         </SafeAreaView>
     );

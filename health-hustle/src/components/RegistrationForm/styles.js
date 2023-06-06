@@ -96,6 +96,11 @@ const styles = StyleSheet.create({
     },
     sectionBottomMargin: {
         marginBottom: 20
+    },
+    snackbar: {
+        backgroundColor: 'black',
+        color: 'white',
+        opacity: 0.8,
     }
 });
 
