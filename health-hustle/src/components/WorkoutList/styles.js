@@ -28,12 +28,22 @@ const styles = StyleSheet.create({
         marginTop: 5
       },
       titleInstruction:{
-        marginTop: 20,
+        marginVertical: 10,
         marginLeft: 20,
         fontWeight: 'bold',
       },
       textInstruction:{
         marginLeft: 20,
+      },
+      itemContainer: {
+        elevation: 4, 
+        shadowOpacity: 0.3, 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowRadius: 2, 
+        marginHorizontal: 20,
+        marginVertical: 5,
+        backgroundColor: 'white',
+        borderRadius: 10,
       },
       listItem: {
         flexDirection: 'row',
@@ -43,9 +53,9 @@ const styles = StyleSheet.create({
       image: {
         width: 80,
         height: 80,
-        marginLeft: 15,
         borderRadius: 10,
-        marginRight: 20
+        marginRight: 20,
+        resizeMode: 'contain'
       },
       textContainer: {
         flex: 1,

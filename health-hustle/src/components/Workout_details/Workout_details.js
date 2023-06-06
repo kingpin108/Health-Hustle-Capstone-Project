@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Dimensions, Image } from 'react-native';
-import { Avatar, Card, IconButton, FAB, Chip, Button, Appbar } from 'react-native-paper';
+import { Text, View, ScrollView, Dimensions, Image } from 'react-native';
+import { Card, Chip, Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -17,7 +16,6 @@ const fetchData = async () => {
         {
             headers: {
                 'Accept': 'application/json',
-                // 'Authorization': `Bearer ${token}`
             }
         }
     )

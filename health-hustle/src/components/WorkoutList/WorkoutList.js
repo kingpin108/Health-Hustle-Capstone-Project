@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native';
-import { Button, Text, IconButton, Appbar } from 'react-native-paper';
+import React, { useState, useEffect } from "react";
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity } from 'react-native';
+import { Text, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import styles from './styles';
@@ -8,13 +8,15 @@ import axios from "axios";
 
 const WorkoutList = () => {
     const navigation = useNavigation();
-    const [jsonData, setJsonData] = useState(null);
+    const [workoutData, setWorkoutData] = useState([]);
+    const [isWorkoutDone, setIsWorkoutDone] = useState(false);
 
     useEffect(() => {
-        axios.get('https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json')
+        axios.get('https://health-hustle-88599-default-rtdb.firebaseio.com/Workouts.json')
           .then(response => {
             const jsonData = response.data;
-            setJsonData(jsonData);
+            const workoutArray = Object.values(jsonData); // Convert the object into an array
+            setWorkoutData(workoutArray);
           })
           .catch(error => {
             console.error('Error fetching API data:', error);
@@ -24,31 +26,18 @@ const WorkoutList = () => {
     const handleBack = () => {
         navigation.goBack();
     };
-    const [isWorkoutDone, setIsWorkoutDone] = useState(false);
 
-
-    const data = [
-        {
-            id: '1',
-            image: require('../../../assets/workout.png'),
-            title: 'Item 1',
-            duration: '00:50'
-        },
-    ];
     const ListItem = ({ item }) => (
         <TouchableOpacity
-            style={styles.listItem}
+            style={styles.itemContainer}
             onPress={() => navigation.navigate('Workout_details')}
         >
-            {jsonData && (
-            <View style={styles.listItem}>        
-                <Image source={item.image} style={styles.image} />
+            <View style={styles.listItem}>
+                <Image source={{ uri: item.imageUrl }} style={styles.image} />
                 <View style={styles.textContainer}>
-                    
-                    <Text style={styles.title}>{JSON.stringify(jsonData.exerciseName).replace(/"/g, '')}</Text>
-                    <Text style={styles.duration}>{JSON.stringify(jsonData.bodyGoals).replace(/"/g, '')}</Text>
+                    <Text style={styles.title}>{item.exerciseName}</Text>
+                    <Text style={styles.duration}>{item.bodyGoals}</Text>
                 </View>
-               
                 <TouchableOpacity style={styles.playButton}>
                     {isWorkoutDone ? (
                         <AntDesign name="checkcircle" size={24} color="#EE7CDC" />
@@ -57,8 +46,6 @@ const WorkoutList = () => {
                     )}
                 </TouchableOpacity>
             </View>
-            )}
-            
         </TouchableOpacity>
     );
 
@@ -68,33 +55,30 @@ const WorkoutList = () => {
                 <Appbar.BackAction onPress={handleBack} />
                 <Appbar.Content
                     title="Day 1"
-                    titleStyle={styles.appHeaderTitle} />
+                    titleStyle={styles.appHeaderTitle}
+                />
             </Appbar.Header>
             <SafeAreaView style={styles.container}>
                 <FlatList
-                    data={data}
+                    data={workoutData}
                     keyExtractor={(item) => item.id}
                     ListHeaderComponent={
                         <>
-                        {jsonData && (
-                            <View>
                             <Text style={styles.titleTime} variant="titleMedium">
                                 Estimated time: 9 mins
                             </Text>
                             <Text style={styles.titleTime} variant="titleMedium">
-                                Total Exercises: 1
+                                Total Exercises: {workoutData.length}
                             </Text>
                             <Text style={styles.titleInstruction} variant="titleLarge">
                                 Instruction
                             </Text>
                             <Text style={styles.textInstruction} variant="titleSmall">
-                               {JSON.stringify(jsonData.description).replace(/"/g, '')}
+                                {workoutData.length > 0 ? workoutData[0].description : ''}
                             </Text>
                             <Text style={styles.titleInstruction} variant="headlineSmall">
                                 Exercises
                             </Text>
-                            </View>
-                        )}
                         </>
                     }
                     renderItem={ListItem}
@@ -102,7 +86,6 @@ const WorkoutList = () => {
                 />
             </SafeAreaView>
         </>
-
     );
 };
 
