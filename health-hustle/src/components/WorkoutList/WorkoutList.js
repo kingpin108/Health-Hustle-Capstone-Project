@@ -5,22 +5,44 @@ import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import styles from './styles';
 import axios from "axios";
+import { database } from '../../database/config';
+import { auth } from '../../database/config';
 
 const WorkoutList = () => {
     const navigation = useNavigation();
     const [workoutData, setWorkoutData] = useState([]);
     const [isWorkoutDone, setIsWorkoutDone] = useState(false);
 
+    let workoutSet = 'default'
+    const user = auth.currentUser;
+    const uid = user.uid;
+
+    const fetchFormData = (uid) => {
+        try {
+            const usersRef = database.ref('users');
+            const formDataRef = usersRef.child(uid).child('formData');
+            formDataRef.on('value', (snapshot) => {
+                workoutSet = snapshot.val().workoutList;
+
+            });
+
+        } catch (error) {
+            console.log('Error fetching form data:', error);
+            throw error;
+        }
+    };
+
+    fetchFormData(uid)
     useEffect(() => {
-        axios.get('https://health-hustle-88599-default-rtdb.firebaseio.com/Workouts.json')
-          .then(response => {
-            const jsonData = response.data;
-            const workoutArray = Object.values(jsonData); // Convert the object into an array
-            setWorkoutData(workoutArray);
-          })
-          .catch(error => {
-            console.error('Error fetching API data:', error);
-          });
+        axios.get(`https://health-hustle-88599-default-rtdb.firebaseio.com/Exercises/${workoutSet}.json`)
+            .then(response => {
+                const jsonData = response.data;
+                const workoutArray = Object.values(jsonData); // Convert the object into an array
+                setWorkoutData(workoutArray);
+            })
+            .catch(error => {
+                console.error('Error fetching API data:', error);
+            });
     }, []);
 
     const handleBack = () => {

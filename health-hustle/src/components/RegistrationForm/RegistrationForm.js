@@ -43,6 +43,7 @@ const RegistrationForm = () => {
     const [equipment, setEquipment] = useState('true');
     const { user } = useContext(AuthContext);
     const { uid } = user;
+    const [workoutList, setWorkoutList] = useState('default');
 
     const handleNext = () => {
         if (step === 1 && !gender) {
@@ -54,7 +55,7 @@ const RegistrationForm = () => {
         } else if (step === 4 && !focusArea) {
             setShowSnackbar(true);
         } else if (step === 5 && !weight) {
-                setShowSnackbar(true);
+            setShowSnackbar(true);
         } else if (step === 6 && !height) {
             setShowSnackbar(true);
         } else if (step === 7 && !age) {
@@ -62,7 +63,7 @@ const RegistrationForm = () => {
         } else if (step === 8 && !equipment) {
             setShowSnackbar(true);
         }
-         else {
+        else {
             setStep((prevStep) => prevStep + 1);
         }
     };
@@ -115,6 +116,38 @@ const RegistrationForm = () => {
             return Math.round(weight / 2.20462);
         }
     };
+    const selectedBodyGoal = bodyGoals.find(goal => goal.checked);
+    const selectedFocusArea = focusArea.find(area => area.checked);
+
+    function handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList) {
+        if (selectedBodyGoal.label === 'Weight Loss' && selectedFocusArea.label === 'Upper Body') {
+            if (workoutList !== '1') {
+                setWorkoutList('1');
+            }
+        } else if (selectedBodyGoal.label === 'Posture Correction' && selectedFocusArea.label === 'Lower Body') {
+            if (workoutList !== '2') {
+                setWorkoutList('2');
+            }
+        } else if (selectedBodyGoal.label === 'Muscle Gain' && selectedFocusArea.label === 'Core') {
+            if (workoutList !== '3') {
+                setWorkoutList('3');
+            }
+        } else if (selectedBodyGoal.label === 'Posture Correction' && selectedFocusArea.label === 'Flexibility') {
+            if (workoutList !== '4') {
+                setWorkoutList('4');
+            }
+        } else if (selectedBodyGoal.label === 'Muscle Gain' && selectedFocusArea.label === 'Lower Body') {
+            if (workoutList !== '5') {
+                setWorkoutList('5');
+            }
+        } else {
+            if (workoutList !== 'default') {
+                setWorkoutList('default');
+            }
+        }
+    }
+
+    handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList);
 
     const saveFormData = (formData, uid) => {
         try {
@@ -145,7 +178,8 @@ const RegistrationForm = () => {
             n_height,
             n_age,
             equipment,
-            isKg
+            isKg,
+            workoutList
         };
 
         console.log(formData);
@@ -162,21 +196,6 @@ const RegistrationForm = () => {
         }, 3000);
     };
 
-    const CustomBodyTypeContainer = ({ imageSource, onPress, containerStyle }) => {
-        return (
-            <TouchableOpacity style={[styles.typeImageContainer, containerStyle]} onPress={onPress}>
-                <Image source={imageSource} style={styles.typeImage} />
-            </TouchableOpacity>
-        );
-    };
-
-    const CustomBodyTypeContainer2 = ({ imageSource, onPress, containerStyle }) => {
-        return (
-            <TouchableOpacity style={[styles.typeImageContainer2, containerStyle]} onPress={onPress}>
-                <Image source={imageSource} style={styles.typeImage2} />
-            </TouchableOpacity>
-        );
-    };
 
     const renderStepContent = () => {
         switch (step) {
@@ -557,7 +576,7 @@ const RegistrationForm = () => {
                     duration={3000}
                     style={styles.snackbar}
                 >
-                    <Text style={{color: 'white', textAlign: 'center'}}>Please fill in all required fields.</Text>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>Please fill in all required fields.</Text>
                 </Snackbar>
             </PaperProvider>
         </SafeAreaView>
