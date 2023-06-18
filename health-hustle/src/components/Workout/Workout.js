@@ -5,8 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
-const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
+import { MaterialIcons } from '@expo/vector-icons';
 
 const Workout = () => {
     const navigation = useNavigation();
@@ -84,17 +83,11 @@ const Workout = () => {
                             </View>
                         </ImageBackground>
                     </View>
-                    <Text style={styles.header}>Daily</Text>
-                    <View style={styles.imageRow}>
-                        <DailyCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('WorkoutList')}
-                        />
-                        <DailyCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('WorkoutList')}
-                        />
-                    </View>
+                    
+                    <TouchableOpacity style={{alignSelf:'center', marginTop:'5%', backgroundColor: "#EE7CDC",paddingBottom:'5%' ,width:"90%",borderRadius:10}} onPress={() => navigation.navigate('WorkoutList')}>
+                    <Text style={{textAlign:'center',fontWeight:'bold',color:'white',fontSize:17,marginTop:'5%'}}>Dient Plans</Text>
+                    </TouchableOpacity>
+
                     <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>
                         <BodyFocusCardView

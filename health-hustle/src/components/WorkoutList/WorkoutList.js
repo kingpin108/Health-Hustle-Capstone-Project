@@ -52,7 +52,7 @@ const WorkoutList = () => {
     const ListItem = ({ item }) => (
         <TouchableOpacity
             style={styles.itemContainer}
-            onPress={() => navigation.navigate('Workout_details')}
+            onPress={() => navigation.navigate('Workout_details', { item })}
         >
             <View style={styles.listItem}>
                 <Image source={{ uri: item.imageUrl }} style={styles.image} />
