@@ -9,6 +9,8 @@ import Workout from './src/components/Workout/Workout';
 import WorkoutList from './src/components/WorkoutList/WorkoutList';
 import WorkoutCalendar from './src/components/WorkoutCalendar/WorkoutCalendar';
 import Workout_details from './src/components/Workout_details/Workout_details';
+import WorkoutGoal from './src/components/WorkoutGoal/WorkoutGoal';
+
 
 const Stack = createStackNavigator();
 

@@ -124,7 +124,6 @@ const Workout_details = () => {
                         inactiveDotOpacity={0.4}
                         inactiveDotScale={0.6}
                     />
-                      {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
                     <View style={{ alignItems: 'center'}}>
                         <Text style={{ fontWeight: 'bold' }}>{JSON.stringify(jsonData.exerciseName).replace(/"/g, '')}</Text>
                     </View>
@@ -155,11 +154,6 @@ const Workout_details = () => {
                     </View>
                 )}
                 </Card>
-
-                {/* <Button style={{ marginTop: '6%' }} mode="contained" onPress={() => console.log('Start workout pressed')}>
-                    Start workout
-                </Button> */}
-
         </>
     );
 };

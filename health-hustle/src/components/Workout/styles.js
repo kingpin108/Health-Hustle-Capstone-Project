@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
   },
   appHeaderContainer: {
     flexDirection: 'row',
-    // justifyContent: 'flex-start',
     backgroundColor: 'white',
     elevation: 4, 
     shadowOpacity: 0.3, 
@@ -53,20 +52,21 @@ const styles = StyleSheet.create({
     width: 120,
     height: 50,
     alignSelf: 'flex-end',
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#EE7CDC',
   },
   buttonLabel: {
     fontSize: 16,
+    fontWeight: 'bold'
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 16,
+    // marginTop: 20,
     marginLeft: 16,
-    paddingTop: 10
+    paddingTop: 20,
+    
   },
   imageRow: {
     flexDirection: 'row',
@@ -84,6 +84,49 @@ const styles = StyleSheet.create({
     height: windowWidth * 0.3,
     borderRadius: 10,
   },
+  buttonContainer: {
+    paddingTop: 20,
+    paddingHorizontal: 10
+  },
+  buttonGoal:{
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fab: {
+    margin: 10,
+    width: windowWidth * 0.25,
+    marginHorizontal: 8,
+  },
+  scrollContainer: {
+    paddingHorizontal: 10,
+  },
+  slideButtonContainer: {
+    flexDirection: 'row',
+  },
+  icon: {
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  FABContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  fab: {
+    margin: 10,
+    right: 0,
+    bottom: 0,
+  },
+  iconContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
 });
 
 export default styles;
