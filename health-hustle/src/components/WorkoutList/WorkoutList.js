@@ -9,30 +9,42 @@ import { database } from '../../database/config';
 import { auth } from '../../database/config';
 import { AuthContext } from '../../contexts/AuthContext';
 
+
 const WorkoutList = ({route}) => {
     const navigation = useNavigation();
     const [workoutData, setWorkoutData] = useState([]);
     const [completedExercisesList, setCompletedExercisesList] = useState(completedExercises || []);
-    const { uid } = useContext(AuthContext);
     const { completedExercises } = route.params;
-    console.log(uid)
+    const [isWorkoutDone, setIsWorkoutDone] = useState({});
 
-    let workoutSet = 'default';
 
-    useEffect(() => {
-        const fetchFormData = async () => {
-            try {
-                const usersRef = database.ref('users');
-                const formDataRef = usersRef.child(uid).child('formData');
-                const snapshot = await formDataRef.once('value');
-                workoutSet = snapshot.val().workoutList;
-            } catch (error) {
-                console.log('Error fetching form data:', error);
+    let workoutSet = 'default'
+    // const user = auth.currentUser;
+    const { uid } = useContext(AuthContext);
+    console.log("Uid",uid)
+
+
+    const fetchFormData = (uid) => {
+        try {
+          const usersRef = database.ref('users');
+          const formDataRef = usersRef.child(uid).child('formData');
+          formDataRef.on('value', (snapshot) => {
+            const snapshotValue = snapshot.val();
+            if (snapshotValue && snapshotValue.workoutList) {
+              workoutSet = snapshotValue.workoutList;
+            } else {
+              // Handle the case when the workoutList is null or undefined
+              workoutSet = 'default';
             }
-        };
+          });
+        } catch (error) {
+          console.log('Error fetching form data:', error);
+          throw error;
+        }
+      };
+      
 
-        fetchFormData();
-    }, [uid]);
+    fetchFormData(uid)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,52 +61,51 @@ const WorkoutList = ({route}) => {
         fetchData();
     }, [workoutSet]);
 
+    useEffect(() => {
+        if (workoutData.length > 0) {
+          const allDone = workoutData.every(item => isWorkoutDone[item.id]);
+          if (allDone) {
+            const userRef = database.ref(`users/${uid}/formData/workoutTrack/day1`);
+            userRef.update({ isCompleted: true })
+              .then(() => console.log('Day 1 workout marked as completed'))
+              .catch(error => console.log('Error marking day 1 workout as completed:', error));
+          }
+        }
+      }, [isWorkoutDone, uid, workoutData]);
+
     const handleBack = () => {
         navigation.goBack();
     };
 
-    const handleItemPress = (exerciseId) => {
-        navigation.navigate('Workout_details', { exerciseId });
-        if (!completedExercisesList.includes(exerciseId)) {
-            const updatedCompletedExercises = [...completedExercisesList, exerciseId];
-            setCompletedExercisesList(updatedCompletedExercises);
-        }
+    const handleItemPress = (item) => {
+        navigation.navigate('Workout_details', { item });
+        setIsWorkoutDone(prevState => ({
+          ...prevState,
+          [item.id]: true
+        }));
+      };
 
-        if (completedExercises.length + 1 === workoutData.length) {
-            try {
-                const workoutTrackRef = database.ref(`users/${uid}/formData/workoutTrack/Day1`);
-                workoutTrackRef.update({ isCompleted: true });
-            } catch (error) {
-                console.log('Error updating Firebase database:', error);
-            }
-        }
-    };
-
-    const ListItem = ({ item }) => {
-        const isExerciseCompleted = completedExercisesList.includes(item.id);
-
-        return (
-            <TouchableOpacity
-                style={styles.itemContainer}
-                onPress={() => handleItemPress(item.id)}
-            >
-                <View style={styles.listItem}>
-                    <Image source={{ uri: item.imageUrl }} style={styles.image} />
-                    <View style={styles.textContainer}>
-                        <Text style={styles.title}>{item.exerciseName}</Text>
-                        <Text style={styles.duration}>{item.bodyGoals}</Text>
-                    </View>
-                    <TouchableOpacity style={styles.playButton}>
-                        {isExerciseCompleted ? (
-                            <AntDesign name="checkcircle" size={24} color="#EE7CDC" />
-                        ) : (
-                            <AntDesign name="checkcircleo" size={24} color="#ABB2B9" />
-                        )}
-                    </TouchableOpacity>
+    const ListItem = ({ item }) => (
+        <TouchableOpacity
+            style={styles.itemContainer}
+            onPress={() => handleItemPress(item)}
+                >
+            <View style={styles.listItem}>
+                <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                <View style={styles.textContainer}>
+                    <Text style={styles.title}>{item.exerciseName}</Text>
+                    <Text style={styles.duration}>{item.bodyGoals}</Text>
                 </View>
-            </TouchableOpacity>
-        );
-    };
+                <TouchableOpacity style={styles.playButton}>
+                    {isWorkoutDone[item.id] ? (
+                        <AntDesign name="checkcircle" size={24} color="#EE7CDC" />
+                    ) : (
+                        <AntDesign name="checkcircleo" size={24} color="#ABB2B9" />
+                    )}
+                </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
+    );
 
     return (
         <>

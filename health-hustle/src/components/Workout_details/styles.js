@@ -26,10 +26,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
       },
       image: {
-        width: '100%',
+        width: '55%',
         height: 200,
-        resizeMode: 'cover',
-        marginLeft:'15%'
+        // resizeMode: 'cover',
+         marginLeft:'15%'
       },
       videoContainer: {
         width: '100%',

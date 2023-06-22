@@ -136,7 +136,8 @@ const Workout = () => {
                                 size="large"
                                 onPress={handleOpenWorkoutList}
                             />
-                        </View><View style={styles.FABContainer}>
+                        </View>
+                        <View style={styles.FABContainer}>
                             <FAB
                                 icon={() => (
                                     <View style={styles.iconContainer}>
