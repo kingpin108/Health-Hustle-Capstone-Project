@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
-import { Button, Text, IconButton, Appbar, useTheme } from 'react-native-paper';
+import { Button, Text, IconButton, Appbar, useTheme, Drawer, Divider, TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -15,6 +15,13 @@ const Settings = () => {
         navigation.navigate('Home');
     };
 
+    const [activeItem, setActiveItem] = React.useState('home');
+
+    const handleItemPress = (item) => {
+        setActiveItem(item);
+        navigation.navigate(item);
+    };
+
     return (
         <>
             <StatusBar bar-style='dark-content' />
@@ -25,7 +32,48 @@ const Settings = () => {
                 />
                 <Appbar.Action icon="home" onPress={handleHomePress} />
             </Appbar.Header>
-            <></>
+            <>
+                <View style={{ flex: 1, paddingTop: 30, backgroundColor: 'white' }}>
+                    <Drawer.Section>
+                        <Drawer.Item
+                            label="Profile"
+                            icon="account"
+                            active={activeItem === 'profile'}
+                            onPress={() => handleItemPress('WorkoutProfile')}
+                        />
+                    </Drawer.Section>
+                    <Drawer.Section>
+                        <Drawer.Item
+                            label="Notifications"
+                            icon="bell"
+                            active={activeItem === 'settings'}
+                            onPress={() => handleItemPress('settings')}
+                        />
+                    </Drawer.Section>
+                    <Drawer.Section>
+                        <Drawer.Item
+                            label="Theme"
+                            icon="theme-light-dark"
+                            active={activeItem === 'theme'}
+                            onPress={() => handleItemPress('theme')}
+                            right={() => (
+                                <Text>Light</Text>
+                            )}
+                        />
+                    </Drawer.Section>
+                    <Drawer.Section>
+                        <Drawer.Item
+                            label="About"
+                            icon="information"
+                            active={activeItem === 'about'}
+                            onPress={() => handleItemPress('about')}
+                        />
+                    </Drawer.Section>
+                    <Button icon="logout" mode="contained" onPress={() => handleItemPress('logout')} style={{ margin: 16 }}>
+                        Logout
+                    </Button>
+                </View>
+            </>
         </>
     );
 };

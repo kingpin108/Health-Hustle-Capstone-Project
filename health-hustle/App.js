@@ -10,6 +10,7 @@ import WorkoutList from './src/components/WorkoutList/WorkoutList';
 import WorkoutCalendar from './src/components/WorkoutCalendar/WorkoutCalendar';
 import Workout_details from './src/components/Workout_details/Workout_details';
 import Settings from './src/components/Settings/Settings';
+import WorkoutProfile from './src/components/WorkoutProfile/WorkoutProfile';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +37,7 @@ const AppNavigator = () => {
             <Stack.Screen name="WorkoutCalendar" component={WorkoutCalendar} options={{ headerShown: false }} />
             <Stack.Screen name="WorkoutList" component={WorkoutList} options={{ headerShown: false }} />
             <Stack.Screen name="Workout_details" component={Workout_details} options={{ headerShown: false }} />
-
+            <Stack.Screen name="WorkoutProfile" component={WorkoutProfile} options={{ headerShown: false }} />
           </>
         ) : (
           <>
