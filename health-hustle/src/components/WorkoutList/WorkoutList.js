@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, SafeAreaView, Image, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Appbar } from 'react-native-paper';
+import { Text, Appbar, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import styles from './styles';
@@ -40,7 +40,6 @@ const WorkoutList = ({ route }) => {
         }
     };
 
-
     fetchFormData(uid)
 
     useEffect(() => {
@@ -63,9 +62,9 @@ const WorkoutList = ({ route }) => {
             const allDone = workoutData.every(item => isWorkoutDone[item.id]);
             if (allDone) {
                 const userRef = database.ref(`users/${uid}/formData/workoutDays`);
-
                 userRef.transaction((workoutDays) => {
                     return (workoutDays || 0) + 1;
+
                 })
                     .then((result) => {
                         console.log('Workout days updated successfully');
@@ -88,13 +87,15 @@ const WorkoutList = ({ route }) => {
         userRef.on('value', (snapshot) => {
             const workoutDays = snapshot.val();
             setWorkoutDay(workoutDays + 1);
+            setIsWorkoutDone({}); // Clear the checkmarks when the day is incremented
+
         });
 
         return () => userRef.off();
     }, [uid]);
 
     const handleBack = () => {
-        navigation.goBack();
+        navigation.navigate('Workout', { workoutDay: workoutDay });
     };
 
     const handleItemPress = (item) => {
@@ -103,6 +104,28 @@ const WorkoutList = ({ route }) => {
             ...prevState,
             [item.id]: true
         }));
+    };
+
+    const handlePlayButtonPress = () => {
+        setWorkoutDay(prevDay => prevDay + 1);
+
+        if (workoutDay % 3 === 0) {
+            const userRef = database.ref(`users/${uid}/formData/workoutDays`);
+            userRef.transaction((workoutDays) => {
+                return (workoutDays || 0) + 1;
+            })
+                .then((result) => {
+                    console.log('Workout days updated successfully');
+                    if (result.committed) {
+                        console.log('Day', workoutDay + 1, 'workout marked as completed');
+                    } else {
+                        console.log('Transaction aborted');
+                    }
+                })
+                .catch((error) => {
+                    console.log('Error updating workout days:', error);
+                });
+        }
     };
 
     const ListItem = ({ item }) => (
@@ -137,31 +160,50 @@ const WorkoutList = ({ route }) => {
                 />
             </Appbar.Header>
             <SafeAreaView style={styles.container}>
-                <FlatList
-                    data={workoutData}
-                    keyExtractor={(item) => item.id}
-                    ListHeaderComponent={
-                        <>
-                            <Text style={styles.titleTime} variant="titleMedium">
-                                Estimated time: 9 mins
-                            </Text>
-                            <Text style={styles.titleTime} variant="titleMedium">
-                                Total Exercises: {workoutData.length}
-                            </Text>
-                            <Text style={styles.titleInstruction} variant="titleLarge">
-                                Instruction
-                            </Text>
-                            <Text style={styles.textInstruction} variant="titleSmall">
-                                {workoutData.length > 0 ? workoutData[0].description : ''}
-                            </Text>
-                            <Text style={styles.titleInstruction} variant="headlineSmall">
-                                Exercises
-                            </Text>
-                        </>
-                    }
-                    renderItem={ListItem}
-                    showsVerticalScrollIndicator={false}
-                />
+                {workoutDay % 3 === 0 ? (
+                    <View style={styles.containerBreak}>
+                        <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
+                        <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
+
+                        {/* <Text style={styles.textBreak}>Take a moment to appreciate your progress.</Text> */}
+                        <View style={styles.fabContainer}>
+                            <FAB
+                                label="Resume workout"
+                                icon="play"
+                                style={styles.fab}
+                                onPress={handlePlayButtonPress}
+                            />
+
+                        </View>
+
+                    </View>
+                ) : (
+                    <FlatList
+                        data={workoutData}
+                        keyExtractor={(item) => item.id}
+                        ListHeaderComponent={
+                            <>
+                                <Text style={styles.titleTime} variant="titleMedium">
+                                    Estimated time: 9 mins
+                                </Text>
+                                <Text style={styles.titleTime} variant="titleMedium">
+                                    Total Exercises: {workoutData.length}
+                                </Text>
+                                <Text style={styles.titleInstruction} variant="titleLarge">
+                                    Instruction
+                                </Text>
+                                <Text style={styles.textInstruction} variant="titleSmall">
+                                    {workoutData.length > 0 ? workoutData[0].description : ''}
+                                </Text>
+                                <Text style={styles.titleInstruction} variant="headlineSmall">
+                                    Exercises
+                                </Text>
+                            </>
+                        }
+                        renderItem={ListItem}
+                        showsVerticalScrollIndicator={false}
+                    />
+                )}
             </SafeAreaView>
         </>
     );

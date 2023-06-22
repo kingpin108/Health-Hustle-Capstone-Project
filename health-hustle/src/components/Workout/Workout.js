@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
 import { Button, Text, IconButton, Appbar, useTheme, FAB } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -13,11 +13,13 @@ const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/d
 
 const Workout = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+
     const theme = useTheme();
     const [completedExercises, setCompletedExercises] = useState([]);
 
     const handleOpenWorkoutList = () => {
-        navigation.navigate('WorkoutList', { completedExercises });
+        navigation.navigate('WorkoutList', { completedExercises, workoutDay });
     };
     const [calendarVisible, setCalendarVisible] = useState(false);
 
@@ -37,13 +39,18 @@ const Workout = () => {
     useEffect(() => {
         const userRef = database.ref(`users/${uid}/formData/workoutDays`);
 
-        userRef.on('value', (snapshot) => {
+        const handleSnapshot = (snapshot) => {
             const workoutDays = snapshot.val();
             setWorkoutDay(workoutDays + 1);
-        });
+            console.log(workoutDay)
+        };
 
-        return () => userRef.off();
-    }, [uid]);
+        userRef.on('value', handleSnapshot);
+
+        return () => {
+            userRef.off('value', handleSnapshot);
+        };
+    }, [uid, workoutDay]);
 
     const BodyFocusCardView = ({ imageSource, onPress }) => {
         return (
@@ -96,7 +103,7 @@ const Workout = () => {
                                     labelStyle={styles.buttonLabel}
                                     onPress={handleOpenWorkoutList}
                                 >
-                                    {`Day ${workoutDay}`}
+                                    {`Day ${route.params?.workoutDay || workoutDay}`}
                                 </Button>
                             </View>
                         </ImageBackground>
@@ -108,15 +115,15 @@ const Workout = () => {
 
                     <Text style={styles.header}>Set Workout Goal</Text>
                     <View>
-                    <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
-                        Workout Goal
-                    </Button>
-                    {/* <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
+                        <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
+                            Workout Goal
+                        </Button>
+                        {/* <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
                         Step Counter
                     </Button> */}
 
                     </View>
-                    
+
                     <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>
                         <BodyFocusCardView

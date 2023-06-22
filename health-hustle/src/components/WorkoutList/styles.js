@@ -95,6 +95,27 @@ const styles = StyleSheet.create({
     modalButton: {
         marginTop: 10,
     },
+    containerBreak: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: 20
+    },
+    imageBreak: {
+      width: 100,
+      height: 100,
+      // resizeMode: 'contain',
+    },
+    textBreak: {
+      marginTop: 10,
+      fontSize: 18,
+      // fontWeight: 'bold',
+    },
+    fabContainer:{
+      paddingTop: 20
+
+    }
+    
 });
 
 export default styles;

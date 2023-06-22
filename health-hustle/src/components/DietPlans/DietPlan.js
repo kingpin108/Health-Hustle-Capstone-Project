@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { View, SafeAreaView, Image, FlatList, TouchableOpacity,Modal,ScrollView } from 'react-native';
 import { Text, Appbar, Button,Checkbox } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import styles from './styles';
 import axios from "axios";
 import { database } from '../../database/config';
 import { auth } from '../../database/config';
+import { AuthContext } from "../../contexts/AuthContext";
 
 const ListItem = ({ item }) => {
     const [showRecipeModal, setShowRecipeModal] = useState(false);
@@ -73,8 +74,7 @@ const DietPlan = () => {
   const[filteredWorkoutData, setFilteredWorkoutData] = useState(false);
  
   let workoutSet = 'default'
-  const user = auth.currentUser;
-  const uid = user.uid;
+  const { uid } = useContext(AuthContext);
 
   const handleModalToggle = () => {
     setShowModal(!showModal);
