@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
 import { Button, Text, IconButton, Appbar, useTheme, Drawer, Divider, TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
 
@@ -20,6 +20,17 @@ const Settings = () => {
     const handleItemPress = (item) => {
         setActiveItem(item);
         navigation.navigate(item);
+    };
+
+    const { logout } = useContext(AuthContext);
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            console.log('User logged out successfully.');
+        } catch (error) {
+            console.log('Error logging out:', error);
+        }
     };
 
     return (
@@ -69,7 +80,7 @@ const Settings = () => {
                             onPress={() => handleItemPress('about')}
                         />
                     </Drawer.Section>
-                    <Button icon="logout" mode="contained" onPress={() => handleItemPress('logout')} style={{ margin: 16 }}>
+                    <Button icon="logout" mode="contained" onPress={handleLogout} style={{ margin: 16 }}>
                         Logout
                     </Button>
                 </View>
