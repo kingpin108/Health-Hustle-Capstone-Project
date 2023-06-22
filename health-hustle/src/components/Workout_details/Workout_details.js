@@ -138,7 +138,7 @@ const Workout_details = ({ route }) => {
                   </View>
                   <View>
                     <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Time</Text>
-                    <Text variant="titleLarge">30 Mins</Text>
+                    <Text variant="titleLarge">{jsonData.estimatedTime} Min</Text>
                   </View>
                 </View>
                 <Text variant="bodyMedium">{jsonData.description}</Text>

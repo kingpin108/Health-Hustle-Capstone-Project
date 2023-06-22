@@ -61,8 +61,8 @@ const WorkoutList = ({route}) => {
         if (workoutData.length > 0) {
           const allDone = workoutData.every(item => isWorkoutDone[item.id]);
           if (allDone) {
-            const userRef = database.ref(`users/${uid}/formData/workoutTrack/day1`);
-            userRef.update({ isCompleted: true })
+            const userRef = database.ref(`users/${uid}/formData`);
+            userRef.update({ daysCompleted: 1 })
               .then(() => console.log('Day 1 workout marked as completed'))
               .catch(error => console.log('Error marking day 1 workout as completed:', error));
           }

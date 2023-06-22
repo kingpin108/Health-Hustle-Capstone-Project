@@ -26,7 +26,7 @@ const Workout = () => {
     const handleHomePress = () => {
         navigation.navigate('Home');
     };
-    
+
     const BodyFocusCardView = ({ imageSource, onPress }) => {
         return (
             <View>
@@ -39,18 +39,18 @@ const Workout = () => {
 
     const loadCompletedExercises = async () => {
         try {
-          const completedExercisesString = await AsyncStorage.getItem('completedExercises');
-          return completedExercisesString ? JSON.parse(completedExercisesString) : [];
+            const completedExercisesString = await AsyncStorage.getItem('completedExercises');
+            return completedExercisesString ? JSON.parse(completedExercisesString) : [];
         } catch (error) {
-          console.log('Error loading completed exercises:', error);
-          return [];
+            console.log('Error loading completed exercises:', error);
+            return [];
         }
-      };
+    };
     useEffect(() => {
         loadCompletedExercises().then((completedExercisesData) => {
-          setCompletedExercises(completedExercisesData);
+            setCompletedExercises(completedExercisesData);
         });
-      }, []);
+    }, []);
 
     return (
         <>
@@ -77,13 +77,6 @@ const Workout = () => {
                                     mode="contained"
                                     style={styles.button}
                                     labelStyle={styles.buttonLabel}
-                                    // icon={({ size, color }) => (
-                                    //     <IconButton
-                                    //         icon="play"
-                                    //         color={color}
-                                    //         size={28}
-                                    //     />
-                                    // )}
                                     onPress={handleOpenWorkoutList}
                                 >
                                     Day 1
@@ -91,14 +84,46 @@ const Workout = () => {
                             </View>
                         </ImageBackground>
                     </View>
-                    
-                    <TouchableOpacity style={{alignSelf:'center', marginTop:'5%', backgroundColor: "#EE7CDC",paddingBottom:'5%' ,width:"90%",borderRadius:10}} onPress={() => navigation.navigate('DietPlan')}>
-                    <Text style={{textAlign:'center',fontWeight:'bold',color:'white',fontSize:17,marginTop:'5%'}}>Diet Plans</Text>
+
+                    <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#EE7CDC", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('DietPlan')}>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Diet Plans</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.header}>Set Workout Goal</Text>
+                    <View>
+                    <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
+                        Workout Goal
+                    </Button>
+                    {/* <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
+                        Step Counter
+                    </Button> */}
 
+                    </View>
                     
+                    <Text style={styles.header}>Body Focus</Text>
+                    <View style={styles.imageRow}>
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={handleOpenWorkoutList}
+                        />
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={handleOpenWorkoutList}
+                        />
+                    </View>
+                    <View style={styles.imageRow}>
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={handleOpenWorkoutList}
+                        />
+                        <BodyFocusCardView
+                            imageSource={require('../../../assets/workout.png')}
+                            onPress={handleOpenWorkoutList}
+                        />
+                    </View>
+
+
+
                 </View>
             </ScrollView>
         </>
