@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, Dimensions, Image } from 'react-native';
 import { Card, Chip, Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import Carousel from 'react-native-new-snap-carousel/src/carousel/Carousel';
@@ -21,7 +21,9 @@ const fetchData = async () => {
 const { width } = Dimensions.get('window');
 
 const Workout_details = ({ route }) => {
-  const { item } = route.params;
+  const { params } = useRoute();
+
+  const item = params?.item || null;
   const [jsonData, setJsonData] = useState(item);
   const [carouselData, setCarouselData] = useState([]);
   const navigation = useNavigation();
@@ -30,8 +32,8 @@ const Workout_details = ({ route }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    setCarouselData([]);
-  }, []);
+    setCarouselData([item]);
+  }, [item]);
 
   useEffect(() => {
     if (jsonData) {

@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
-import { Button, Text, IconButton, Appbar, useTheme } from 'react-native-paper';
+import { Button, Text, IconButton, Appbar, useTheme, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
 
 const Workout = () => {
     const navigation = useNavigation();
     const theme = useTheme();
+    const [completedExercises, setCompletedExercises] = useState([]);
 
     const handleOpenWorkoutList = () => {
-        navigation.navigate('WorkoutList');
+        navigation.navigate('WorkoutList', { completedExercises });
     };
     const [calendarVisible, setCalendarVisible] = useState(false);
 
@@ -23,17 +26,7 @@ const Workout = () => {
     const handleHomePress = () => {
         navigation.navigate('Home');
     };
-
-    const DailyCardView = ({ imageSource, onPress }) => {
-        return (
-            <View>
-                <TouchableOpacity onPress={onPress}>
-                    <Image source={imageSource} style={styles.image} />
-                </TouchableOpacity>
-            </View>
-        );
-    };
-
+    
     const BodyFocusCardView = ({ imageSource, onPress }) => {
         return (
             <View>
@@ -43,6 +36,21 @@ const Workout = () => {
             </View>
         );
     };
+
+    const loadCompletedExercises = async () => {
+        try {
+          const completedExercisesString = await AsyncStorage.getItem('completedExercises');
+          return completedExercisesString ? JSON.parse(completedExercisesString) : [];
+        } catch (error) {
+          console.log('Error loading completed exercises:', error);
+          return [];
+        }
+      };
+    useEffect(() => {
+        loadCompletedExercises().then((completedExercisesData) => {
+          setCompletedExercises(completedExercisesData);
+        });
+      }, []);
 
     return (
         <>

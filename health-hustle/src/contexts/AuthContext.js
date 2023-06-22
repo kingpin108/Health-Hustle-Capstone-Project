@@ -7,13 +7,18 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uid, setUid] = useState(null);
+
 
   useEffect(() => {
     const checkUser = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setUid(parsedUser.uid);
+
         }
         setLoading(false);
       } catch (error) {
@@ -25,6 +30,7 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser);
+        setUid(authUser.uid);
         try {
           AsyncStorage.setItem('user', JSON.stringify(authUser));
         } catch (error) {
@@ -32,6 +38,8 @@ const AuthProvider = ({ children }) => {
         }
       } else {
         setUser(null);
+        setUid(null);
+
         try {
           AsyncStorage.removeItem('user');
         } catch (error) {
@@ -85,7 +93,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, uid, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

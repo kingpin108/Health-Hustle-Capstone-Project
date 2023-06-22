@@ -75,26 +75,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: 'gray',
       },
-      modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    modalText: {
-        fontSize: 18,
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    modalButton: {
-        marginTop: 10,
-    },
 });
 
 export default styles;
