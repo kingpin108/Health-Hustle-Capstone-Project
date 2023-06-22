@@ -168,8 +168,9 @@ const RegistrationForm = () => {
     const n_weight = parseInt(weight)
     const n_height = parseFloat(height)
     const n_age = parseFloat(age)
-    const workoutDuration = formData.workoutDuration
+    const workoutDuration = 0
     const workoutDays = 0
+    const totalSteps = 0
     const handleSubmit = () => {
         const formData = {
             gender,
@@ -183,7 +184,8 @@ const RegistrationForm = () => {
             isKg,
             workoutList,
             workoutDuration,
-            workoutDays
+            workoutDays,
+            totalSteps
         };
 
         console.log(formData);

@@ -113,16 +113,9 @@ const Workout = () => {
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Diet Plans</Text>
                     </TouchableOpacity>
 
-                    <Text style={styles.header}>Set Workout Goal</Text>
-                    <View>
-                        <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
-                            Workout Goal
-                        </Button>
-                        {/* <Button icon="camera" mode="elevated" onPress={() => console.log('Pressed')}>
-                        Step Counter
-                    </Button> */}
-
-                    </View>
+                    <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#150359", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('WorkoutGoal')}>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Set Workout Goals</Text>
+                    </TouchableOpacity>
 
                     <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>

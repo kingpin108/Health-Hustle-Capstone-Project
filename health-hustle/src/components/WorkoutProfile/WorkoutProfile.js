@@ -35,6 +35,9 @@ const WorkoutProfile = () => {
     const [age, setAge] = useState('');
     const [equipment, setEquipment] = useState('true');
     const [workoutList, setWorkoutList] = useState('default');
+    const [workoutDays, setWorkoutDays] = useState('');
+    const [workoutDuration, setWorkoutDuration] = useState('');
+    const [totalSteps, setTotalSteps] = useState('');
 
     useEffect(() => {
         const formDataRef = database.ref(`users/${uid}/formData`);
@@ -54,6 +57,9 @@ const WorkoutProfile = () => {
                 setAge((formData.n_age).toString())
                 setWorkoutList(formData.workoutList)
                 setEquipment(formData.equipment)
+                setWorkoutDays(formData.workoutDays)
+                setWorkoutDuration(formData.workoutDuration)
+                setTotalSteps(formData.totalSteps)
             } catch (error) {
                 console.error('Error fetching formData:', error);
             }
@@ -173,7 +179,6 @@ const WorkoutProfile = () => {
     const n_weight = parseInt(weight)
     const n_height = parseFloat(height)
     const n_age = parseFloat(age)
-    const workoutDays = formData.workoutDays
     const handleSubmit = () => {
         const formData = {
             gender,
@@ -186,7 +191,9 @@ const WorkoutProfile = () => {
             equipment,
             isKg,
             workoutList,
-            workoutDays
+            workoutDays,
+            workoutDuration,
+            totalSteps
         };
         saveFormData(formData, uid);
 
