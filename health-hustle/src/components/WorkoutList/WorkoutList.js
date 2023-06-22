@@ -13,16 +13,13 @@ import { AuthContext } from '../../contexts/AuthContext';
 const WorkoutList = ({route}) => {
     const navigation = useNavigation();
     const [workoutData, setWorkoutData] = useState([]);
-    const [completedExercisesList, setCompletedExercisesList] = useState(completedExercises || []);
     const { completedExercises } = route.params;
+    const [completedExercisesList, setCompletedExercisesList] = useState(completedExercises || []);
     const [isWorkoutDone, setIsWorkoutDone] = useState({});
 
-
     let workoutSet = 'default'
-    // const user = auth.currentUser;
     const { uid } = useContext(AuthContext);
     console.log("Uid",uid)
-
 
     const fetchFormData = (uid) => {
         try {
@@ -33,7 +30,6 @@ const WorkoutList = ({route}) => {
             if (snapshotValue && snapshotValue.workoutList) {
               workoutSet = snapshotValue.workoutList;
             } else {
-              // Handle the case when the workoutList is null or undefined
               workoutSet = 'default';
             }
           });

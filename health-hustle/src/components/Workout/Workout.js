@@ -92,31 +92,13 @@ const Workout = () => {
                         </ImageBackground>
                     </View>
                     
-                    <TouchableOpacity style={{alignSelf:'center', marginTop:'5%', backgroundColor: "#EE7CDC",paddingBottom:'5%' ,width:"90%",borderRadius:10}} onPress={() => navigation.navigate('WorkoutList')}>
-                    <Text style={{textAlign:'center',fontWeight:'bold',color:'white',fontSize:17,marginTop:'5%'}}>Dient Plans</Text>
+                    <TouchableOpacity style={{alignSelf:'center', marginTop:'5%', backgroundColor: "#EE7CDC",paddingBottom:'5%' ,width:"90%",borderRadius:10}} onPress={() => navigation.navigate('DietPlan')}>
+                    <Text style={{textAlign:'center',fontWeight:'bold',color:'white',fontSize:17,marginTop:'5%'}}>Diet Plans</Text>
                     </TouchableOpacity>
 
-                    <Text style={styles.header}>Body Focus</Text>
-                    <View style={styles.imageRow}>
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('WorkoutList')}
-                        />
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('WorkoutList')}
-                        />
-                    </View>
-                    <View style={styles.imageRow}>
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('WorkoutList')}
-                        />
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={() => navigation.navigate('WorkoutList')}
-                        />
-                    </View>
+                    <Text style={styles.header}>Set Workout Goal</Text>
+
+                    
                 </View>
             </ScrollView>
         </>
