@@ -69,13 +69,7 @@ const Workout = () => {
                                     mode="contained"
                                     style={styles.button}
                                     labelStyle={styles.buttonLabel}
-                                    // icon={({ size, color }) => (
-                                    //     <IconButton
-                                    //         icon="play"
-                                    //         color={color}
-                                    //         size={28}
-                                    //     />
-                                    // )}
+                                    
                                     onPress={handleOpenWorkoutList}
                                 >
                                     Day 1
@@ -84,8 +78,8 @@ const Workout = () => {
                         </ImageBackground>
                     </View>
                     
-                    <TouchableOpacity style={{alignSelf:'center', marginTop:'5%', backgroundColor: "#EE7CDC",paddingBottom:'5%' ,width:"90%",borderRadius:10}} onPress={() => navigation.navigate('WorkoutList')}>
-                    <Text style={{textAlign:'center',fontWeight:'bold',color:'white',fontSize:17,marginTop:'5%'}}>Dient Plans</Text>
+                    <TouchableOpacity style={{alignSelf:'center', marginTop:'5%', backgroundColor: "#EE7CDC",paddingBottom:'5%' ,width:"90%",borderRadius:10}} onPress={() => navigation.navigate('DietPlan')}>
+                    <Text style={{textAlign:'center',fontWeight:'bold',color:'white',fontSize:17,marginTop:'5%'}}>Diet Plans</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.header}>Body Focus</Text>
