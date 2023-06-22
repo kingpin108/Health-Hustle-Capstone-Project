@@ -173,6 +173,7 @@ const WorkoutProfile = () => {
     const n_weight = parseInt(weight)
     const n_height = parseFloat(height)
     const n_age = parseFloat(age)
+    const workoutDays = formData.workoutDays
     const handleSubmit = () => {
         const formData = {
             gender,
@@ -184,7 +185,8 @@ const WorkoutProfile = () => {
             n_age,
             equipment,
             isKg,
-            workoutList
+            workoutList,
+            workoutDays
         };
         saveFormData(formData, uid);
 

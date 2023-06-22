@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
 import { Button, Text, IconButton, Appbar, useTheme, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -6,6 +6,8 @@ import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../../contexts/AuthContext';
+import { database } from '../../database/config';
 
 const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
 
@@ -26,6 +28,22 @@ const Workout = () => {
     const handleHomePress = () => {
         navigation.navigate('Home');
     };
+
+    const [workoutDay, setWorkoutDay] = useState(1);
+
+    const { uid } = useContext(AuthContext);
+    console.log("Uid", uid)
+
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData/workoutDays`);
+
+        userRef.on('value', (snapshot) => {
+            const workoutDays = snapshot.val();
+            setWorkoutDay(workoutDays + 1);
+        });
+
+        return () => userRef.off();
+    }, [uid]);
 
     const BodyFocusCardView = ({ imageSource, onPress }) => {
         return (
@@ -61,7 +79,6 @@ const Workout = () => {
                     titleStyle={styles.appHeaderTitle}
                 />
                 <Appbar.Action icon="home" onPress={handleHomePress} />
-                <Appbar.Action icon="theme-light-dark" onPress={() => { }} />
             </Appbar.Header>
             <></>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -79,7 +96,7 @@ const Workout = () => {
                                     labelStyle={styles.buttonLabel}
                                     onPress={handleOpenWorkoutList}
                                 >
-                                    Day 1
+                                    {`Day ${workoutDay}`}
                                 </Button>
                             </View>
                         </ImageBackground>

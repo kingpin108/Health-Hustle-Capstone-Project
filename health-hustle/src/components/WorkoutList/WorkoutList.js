@@ -10,35 +10,36 @@ import { auth } from '../../database/config';
 import { AuthContext } from '../../contexts/AuthContext';
 
 
-const WorkoutList = ({route}) => {
+const WorkoutList = ({ route }) => {
     const navigation = useNavigation();
     const [workoutData, setWorkoutData] = useState([]);
     const { completedExercises } = route.params;
     const [completedExercisesList, setCompletedExercisesList] = useState(completedExercises || []);
     const [isWorkoutDone, setIsWorkoutDone] = useState({});
+    const [workoutDay, setWorkoutDay] = useState(1);
 
     let workoutSet = 'default'
     const { uid } = useContext(AuthContext);
-    console.log("Uid",uid)
+    console.log("Uid", uid)
 
     const fetchFormData = (uid) => {
         try {
-          const usersRef = database.ref('users');
-          const formDataRef = usersRef.child(uid).child('formData');
-          formDataRef.on('value', (snapshot) => {
-            const snapshotValue = snapshot.val();
-            if (snapshotValue && snapshotValue.workoutList) {
-              workoutSet = snapshotValue.workoutList;
-            } else {
-              workoutSet = 'default';
-            }
-          });
+            const usersRef = database.ref('users');
+            const formDataRef = usersRef.child(uid).child('formData');
+            formDataRef.on('value', (snapshot) => {
+                const snapshotValue = snapshot.val();
+                if (snapshotValue && snapshotValue.workoutList) {
+                    workoutSet = snapshotValue.workoutList;
+                } else {
+                    workoutSet = 'default';
+                }
+            });
         } catch (error) {
-          console.log('Error fetching form data:', error);
-          throw error;
+            console.log('Error fetching form data:', error);
+            throw error;
         }
-      };
-      
+    };
+
 
     fetchFormData(uid)
 
@@ -59,15 +60,38 @@ const WorkoutList = ({route}) => {
 
     useEffect(() => {
         if (workoutData.length > 0) {
-          const allDone = workoutData.every(item => isWorkoutDone[item.id]);
-          if (allDone) {
-            const userRef = database.ref(`users/${uid}/formData`);
-            userRef.update({ daysCompleted: 1 })
-              .then(() => console.log('Day 1 workout marked as completed'))
-              .catch(error => console.log('Error marking day 1 workout as completed:', error));
-          }
+            const allDone = workoutData.every(item => isWorkoutDone[item.id]);
+            if (allDone) {
+                const userRef = database.ref(`users/${uid}/formData/workoutDays`);
+
+                userRef.transaction((workoutDays) => {
+                    return (workoutDays || 0) + 1;
+                })
+                    .then((result) => {
+                        console.log('Workout days updated successfully');
+                        if (result.committed) {
+                            console.log('Day 1 workout marked as completed');
+                        } else {
+                            console.log('Transaction aborted');
+                        }
+                    })
+                    .catch((error) => {
+                        console.log('Error updating workout days:', error);
+                    });
+            }
         }
-      }, [isWorkoutDone, uid, workoutData]);
+    }, [isWorkoutDone, uid, workoutData]);
+
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData/workoutDays`);
+
+        userRef.on('value', (snapshot) => {
+            const workoutDays = snapshot.val();
+            setWorkoutDay(workoutDays + 1);
+        });
+
+        return () => userRef.off();
+    }, [uid]);
 
     const handleBack = () => {
         navigation.goBack();
@@ -76,16 +100,16 @@ const WorkoutList = ({route}) => {
     const handleItemPress = (item) => {
         navigation.navigate('Workout_details', { item });
         setIsWorkoutDone(prevState => ({
-          ...prevState,
-          [item.id]: true
+            ...prevState,
+            [item.id]: true
         }));
-      };
+    };
 
     const ListItem = ({ item }) => (
         <TouchableOpacity
             style={styles.itemContainer}
             onPress={() => handleItemPress(item)}
-                >
+        >
             <View style={styles.listItem}>
                 <Image source={{ uri: item.imageUrl }} style={styles.image} />
                 <View style={styles.textContainer}>
@@ -108,7 +132,7 @@ const WorkoutList = ({route}) => {
             <Appbar.Header style={styles.appHeaderContainer}>
                 <Appbar.BackAction onPress={handleBack} />
                 <Appbar.Content
-                    title="Day 1"
+                    title={`Day ${workoutDay}`}
                     titleStyle={styles.appHeaderTitle}
                 />
             </Appbar.Header>
