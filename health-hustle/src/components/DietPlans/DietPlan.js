@@ -9,6 +9,7 @@ import { database } from '../../database/config';
 import { auth } from '../../database/config';
 import { AuthContext } from "../../contexts/AuthContext";
 
+//Issue #5
 const ListItem = ({ item }) => {
   const [showRecipeModal, setShowRecipeModal] = useState(false);
 
