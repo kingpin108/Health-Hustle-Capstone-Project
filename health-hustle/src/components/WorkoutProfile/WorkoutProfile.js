@@ -8,7 +8,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import Popover from 'react-native-popover-view';
 import { database } from '../../database/config';
 
-
+//Issue 15
 const WorkoutProfile = () => {
     const { user } = useContext(AuthContext);
     const { uid } = user;
