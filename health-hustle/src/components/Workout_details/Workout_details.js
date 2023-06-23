@@ -10,6 +10,8 @@ import styles from './styles';
 import { database } from '../../database/config';
 import { AuthContext } from '../../contexts/AuthContext';
 
+
+//#1 Users will be provided audio/video tutorials as a part of their daily workout routine.
 const fetchData = async () => {
   const response = await fetch(url, {
     headers: {
