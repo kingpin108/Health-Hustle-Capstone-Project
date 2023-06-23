@@ -1,12 +1,14 @@
 import { Text, View, ScrollView, Dimensions, Image } from 'react-native';
 import { Card, Chip, Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import Carousel from 'react-native-new-snap-carousel/src/carousel/Carousel';
 import Pagination from 'react-native-new-snap-carousel/src/pagination/Pagination';
 import styles from './styles';
+import { database } from '../../database/config';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const fetchData = async () => {
   const response = await fetch(url, {
@@ -30,6 +32,8 @@ const Workout_details = ({ route }) => {
   const [playing, setPlaying] = useState(false);
   const [isMute, setMute] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const { uid } = useContext(AuthContext);
 
   useEffect(() => {
     setCarouselData([item]);
@@ -62,6 +66,25 @@ const Workout_details = ({ route }) => {
   // useEffect(() => {
   //   fetchData();
   // }, []);
+
+  useEffect(() => {
+    const updateWorkoutDuration = async () => {
+      try {
+        const userRef = database.ref(`users/${uid}/formData/workoutDuration`);
+        const snapshot = await userRef.once('value');
+        const currentDuration = snapshot.val() || 0;
+        const updatedDuration = currentDuration + jsonData.estimatedTime;
+
+        await userRef.set(updatedDuration);
+        console.log('Workout duration updated successfully:', updatedDuration);
+      } catch (error) {
+        console.log('Error updating workout duration:', error);
+      }
+    };
+
+    updateWorkoutDuration();
+  }, []);
+
 
   const onStateChange = (state) => {
     if (state === 'ended') {

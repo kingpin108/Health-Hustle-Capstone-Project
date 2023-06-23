@@ -1,6 +1,6 @@
-import React, { useState, useEffect,useContext } from "react";
-import { View, SafeAreaView, Image, FlatList, TouchableOpacity,Modal,ScrollView } from 'react-native';
-import { Text, Appbar, Button,Checkbox } from 'react-native-paper';
+import React, { useState, useEffect, useContext } from "react";
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, Appbar, Button, Checkbox, Provider, Portal, Dialog } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import styles from './styles';
@@ -31,32 +31,26 @@ const ListItem = ({ item }) => {
       </View>
 
       {showRecipeModal && (
-        <Modal
-          visible={showRecipeModal}
-          onRequestClose={handleRecipeModalToggle}
-        >
-          <View style={styles.recipeModalContainer}>
-            <Text style={styles.modalTitle}>{item.recipe.mealName}</Text>
-            <Image source={{ uri: item.image }} style={styles.recipeImage} />
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={styles.recipeScrollView}
-            >
-              {item.recipe.instructions.map((step, index) => (
-                <Text key={index} style={styles.recipeStep}>
-                  {step}
-                </Text>
-              ))}
-            </ScrollView>
-            <Button
-              mode="contained"
-              onPress={handleRecipeModalToggle}
-              style={styles.closeButton}
-            >
-              Close Recipe
-            </Button>
-          </View>
-        </Modal>
+        <Portal>
+          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle}>
+            <Dialog.Title style={styles.modalTitle}>{item.recipe.mealName}</Dialog.Title>
+            <Dialog.Content>
+              <Image source={{ uri: item.image }} style={styles.recipeImage} />
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.recipeScrollView}>
+                {item.recipe.instructions.map((step, index) => (
+                  <Text key={index} style={styles.recipeStep}>
+                    {'\u2022'} {step}
+                  </Text>
+                ))}
+              </ScrollView>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={handleRecipeModalToggle} style={styles.closeButton}>
+                Close Recipe
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       )}
     </TouchableOpacity>
   );
@@ -72,47 +66,59 @@ const DietPlan = () => {
   const [glutenFreeChecked, setGlutenFreeChecked] = useState(false);
   const [lactoseFreeChecked, setLactoseFreeChecked] = useState(false);
   const [filteredWorkoutData, setFilteredWorkoutData] = useState(false);
+  const [bodyGoal, setBodyGoal] = useState('');
 
-  let workoutSet = 'default'
+
+  let workoutSet = 'default';
   const { uid } = useContext(AuthContext);
 
   const handleModalToggle = () => {
     setShowModal(!showModal);
-  }
+  };
 
   const fetchFormData = (uid) => {
     try {
       const usersRef = database.ref('users');
-      const formDataRef = usersRef.child(uid).child('formData');
+      const formDataRef = usersRef.child(uid).child('formData').child('bodyGoals');
       formDataRef.on('value', (snapshot) => {
-        workoutSet = snapshot.val().workoutList;
-      });
+        const bodyGoals = snapshot.val();
 
+        // Find the selected body goal
+        const selectedGoal = Object.keys(bodyGoals).find((key) => bodyGoals[key].checked === true);
+
+        // Set the selected body goal to state
+        if (selectedGoal) {
+          setBodyGoal(bodyGoals[selectedGoal].label);
+        }
+      });
     } catch (error) {
       console.log('Error fetching form data:', error);
       throw error;
     }
   };
 
+  useEffect(() => {
+    fetchFormData(uid);
+  }, []);
+
   const handleFilterApply = () => {
     const filteredData = workoutData.filter(item => {
       return (
-        (!vegChecked || item.type === 'veg') &&
-        (!nonVegChecked || item.type === 'non-veg') &&
-        (!glutenFreeChecked || item.type === 'gluten-free') &&
-        (!lactoseFreeChecked || item.type === 'lectose free')
+        (!vegChecked || item.type === 'Veg') &&
+        (!nonVegChecked || item.type === 'Non-veg') &&
+        (!glutenFreeChecked || item.type === 'Gluten-free') &&
+        (!lactoseFreeChecked || item.type === 'Lectose free')
       );
     });
     setFilteredWorkoutData(filteredData);
     handleModalToggle();
   };
 
-  fetchFormData(uid)
   useEffect(() => {
     axios.get(`https://health-hustle-88599-default-rtdb.firebaseio.com/DietPlan/diet.json`)
       .then(response => {
         const jsonData = response.data;
-        const workoutArray = Object.values(jsonData); // Convert the object into an array
+        const workoutArray = Object.values(jsonData);
         setWorkoutData(workoutArray);
         setFilteredWorkoutData(workoutArray);
       })
@@ -140,8 +146,7 @@ const DietPlan = () => {
       }
 
       const data = await response.json();
-      console.log(data);
-      // Process the retrieved data here
+      // console.log(data);
     } catch (error) {
       console.log('Error fetching data:', error);
     }
@@ -150,13 +155,10 @@ const DietPlan = () => {
   fetchData();
 
   return (
-    <>
+    <Provider>
       <Appbar.Header style={styles.appHeaderContainer}>
         <Appbar.BackAction onPress={handleBack} />
-        <Appbar.Content
-          title="Diet Plans"
-          titleStyle={styles.appHeaderTitle}
-        />
+        <Appbar.Content title="Diet Plans" titleStyle={styles.appHeaderTitle} />
       </Appbar.Header>
       <SafeAreaView style={styles.container}>
         <FlatList
@@ -164,52 +166,66 @@ const DietPlan = () => {
           keyExtractor={(item) => item.recipe.mealName}
           ListHeaderComponent={
             <>
-              <Button icon="filter" mode="contained" style={{ margin: '5%', backgroundColor: '#EE7CDC' }} onPress={handleModalToggle}>Filter</Button>
+              <Button
+                icon="filter"
+                mode="contained"
+                style={{ margin: '5%', backgroundColor: '#EE7CDC' }}
+                onPress={handleModalToggle}
+              >
+                Filter
+              </Button>
               <Text style={styles.titleInstruction} variant="headlineSmall">
-                Recipes
+                Recipes for {bodyGoal}
               </Text>
             </>
           }
           renderItem={({ item }) => <ListItem item={item} />}
           showsVerticalScrollIndicator={false}
         />
-        <Modal visible={showModal} onRequestClose={handleModalToggle}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Select Filters:</Text>
-            <View style={styles.checkboxContainer}>
-              <Checkbox.Item
-                label="Vegetarian"
-                status={vegChecked ? 'checked' : 'unchecked'}
-                onPress={() => setVegChecked(!vegChecked)}
-                color="#EE7CDC"
-              />
-              <Checkbox.Item
-                label="Non-Vegetarian"
-                status={nonVegChecked ? 'checked' : 'unchecked'}
-                onPress={() => setNonVegChecked(!nonVegChecked)}
-                color="#EE7CDC"
-              />
-              <Checkbox.Item
-                label="Gluten-Free"
-                status={glutenFreeChecked ? 'checked' : 'unchecked'}
-                onPress={() => setGlutenFreeChecked(!glutenFreeChecked)}
-                color="#EE7CDC"
-              />
-              <Checkbox.Item
-                label="Lactose-Free"
-                status={lactoseFreeChecked ? 'checked' : 'unchecked'}
-                onPress={() => setLactoseFreeChecked(!lactoseFreeChecked)}
-                color="#EE7CDC"
-              />
-            </View>
-            <Button mode="contained" onPress={handleFilterApply} style={{ backgroundColor: "#EE7CDC" }}>Apply Filters</Button>
-          </View>
-        </Modal>
+        <Portal>
+          <Dialog visible={showModal} onDismiss={handleModalToggle}>
+            <Dialog.Title style={styles.modalTitle}>Select Filters:</Dialog.Title>
+            <Dialog.Content>
+              <View style={styles.checkboxContainer}>
+                <Checkbox.Item
+                  label="Vegetarian"
+                  status={vegChecked ? 'checked' : 'unchecked'}
+                  onPress={() => setVegChecked(!vegChecked)}
+                  color="#EE7CDC"
+                />
+                <Checkbox.Item
+                  label="Non-Vegetarian"
+                  status={nonVegChecked ? 'checked' : 'unchecked'}
+                  onPress={() => setNonVegChecked(!nonVegChecked)}
+                  color="#EE7CDC"
+                />
+                <Checkbox.Item
+                  label="Gluten-Free"
+                  status={glutenFreeChecked ? 'checked' : 'unchecked'}
+                  onPress={() => setGlutenFreeChecked(!glutenFreeChecked)}
+                  color="#EE7CDC"
+                />
+                <Checkbox.Item
+                  label="Lactose-Free"
+                  status={lactoseFreeChecked ? 'checked' : 'unchecked'}
+                  onPress={() => setLactoseFreeChecked(!lactoseFreeChecked)}
+                  color="#EE7CDC"
+                />
+              </View>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                mode="contained"
+                onPress={handleFilterApply}
+                style={{ backgroundColor: "#EE7CDC" }}
+              >
+                Apply Filters
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </SafeAreaView>
-
-    </>
-
-
+    </Provider>
   );
 };
 

@@ -89,7 +89,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'cover',
-    margin:'10%'
+    margin:'10%',
+    alignSelf: 'center',
+    marginVertical: 10,
   },
 });
 

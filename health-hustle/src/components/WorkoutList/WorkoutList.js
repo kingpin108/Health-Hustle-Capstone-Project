@@ -42,6 +42,14 @@ const WorkoutList = ({ route }) => {
 
     fetchFormData(uid)
 
+    const handleItemPress = (item) => {
+        navigation.navigate('Workout_details', { item });
+        setIsWorkoutDone(prevState => ({
+            ...prevState,
+            [item.id]: true
+        }));
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -87,7 +95,7 @@ const WorkoutList = ({ route }) => {
         userRef.on('value', (snapshot) => {
             const workoutDays = snapshot.val();
             setWorkoutDay(workoutDays + 1);
-            setIsWorkoutDone({}); // Clear the checkmarks when the day is incremented
+            setIsWorkoutDone({});
 
         });
 
@@ -98,18 +106,12 @@ const WorkoutList = ({ route }) => {
         navigation.navigate('Workout', { workoutDay: workoutDay });
     };
 
-    const handleItemPress = (item) => {
-        navigation.navigate('Workout_details', { item });
-        setIsWorkoutDone(prevState => ({
-            ...prevState,
-            [item.id]: true
-        }));
-    };
+    
 
     const handlePlayButtonPress = () => {
         setWorkoutDay(prevDay => prevDay + 1);
 
-        if (workoutDay % 3 === 0) {
+        if (workoutDay % 5 === 0) {
             const userRef = database.ref(`users/${uid}/formData/workoutDays`);
             userRef.transaction((workoutDays) => {
                 return (workoutDays || 0) + 1;
@@ -160,7 +162,7 @@ const WorkoutList = ({ route }) => {
                 />
             </Appbar.Header>
             <SafeAreaView style={styles.container}>
-                {workoutDay % 3 === 0 ? (
+                {workoutDay % 5 === 0 ? (
                     <View style={styles.containerBreak}>
                         <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
                         <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
