@@ -26,6 +26,7 @@ const RegistrationForm = () => {
         { label: 'Muscle Gain', checked: false },
         { label: 'Agility', checked: false },
     ]);
+    const allBodyGoals = bodyGoals.every(goal => !goal.checked);
     const [bodyType, setBodyType] = useState('A');
     const [selectedType, setSelectedType] = useState('A');
 
@@ -36,6 +37,7 @@ const RegistrationForm = () => {
         { label: 'Cardio', checked: false },
         { label: 'Flexibility', checked: false }
     ]);
+    const allFocusArea = focusArea.every(goal => !goal.checked);
     const [weight, setWeight] = useState('');
     const [isKg, setIsKg] = useState(true);
     const [height, setHeight] = useState('');
@@ -44,21 +46,33 @@ const RegistrationForm = () => {
     const { user } = useContext(AuthContext);
     const { uid } = user;
     const [workoutList, setWorkoutList] = useState('default');
+    const [alertMessage, setAlertMessage] = useState('');
+    const ageNumeric = !isNaN(age) && Number.isFinite(parseFloat(age));
+    const ageInRange = parseFloat(age) >= 16 && parseFloat(age) <= 70;
+    const heightNumeric = !isNaN(height) && Number.isFinite(parseFloat(height));
+    const heightInRange = parseFloat(height) >= 3 && parseFloat(height) <= 9;
+    const weightNumeric = !isNaN(weight) && Number.isFinite(parseFloat(weight));
+    const weightInRange = parseFloat(weight) >= 40 && parseFloat(weight) <= 450;
 
     const handleNext = () => {
         if (step === 1 && !gender) {
             setShowSnackbar(true);
-        } else if (step === 2 && !bodyGoals) {
+        } else if (step === 2 && allBodyGoals) {
+            setAlertMessage("Please select atleast one body goal")
             setShowSnackbar(true);
         } else if (step === 3 && !bodyType) {
             setShowSnackbar(true);
-        } else if (step === 4 && !focusArea) {
+        } else if (step === 4 && allFocusArea) {
+            setAlertMessage("Please select atleast one focus area")
             setShowSnackbar(true);
-        } else if (step === 5 && !weight) {
+        } else if (step === 5 && (!weight || !weightInRange || !weightNumeric)) {
+            setAlertMessage("Enter a numeric value between 40.0 and 450.0")
             setShowSnackbar(true);
-        } else if (step === 6 && !height) {
+        } else if (step === 6 && (!height || !heightInRange || !heightNumeric)) {
+            setAlertMessage("Enter a numeric value between 3.0 and 9.0")
             setShowSnackbar(true);
-        } else if (step === 7 && !age) {
+        } else if (step === 7 && (!age || !ageInRange || !ageNumeric)) {
+            setAlertMessage("Enter a numeric value between 16 and 70")
             setShowSnackbar(true);
         } else if (step === 8 && !equipment) {
             setShowSnackbar(true);
@@ -95,8 +109,8 @@ const RegistrationForm = () => {
     const handleGenderChange = (selectedGender) => {
         if (gender !== selectedGender) {
             setGender(selectedGender);
-            setStep((prevStep) => prevStep + 1);;
         }
+        setStep((prevStep) => prevStep + 1);
     }
 
     const handleWeightChange = (value) => {
@@ -147,8 +161,6 @@ const RegistrationForm = () => {
         }
     }
 
-    handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList);
-
     const saveFormData = (formData, uid) => {
         try {
             const usersRef = database.ref('users');
@@ -172,6 +184,7 @@ const RegistrationForm = () => {
     const workoutDays = 0
     const totalSteps = 0
     const handleSubmit = () => {
+        handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList);
         const formData = {
             gender,
             bodyGoals,
@@ -561,7 +574,7 @@ const RegistrationForm = () => {
                 </View>
                 {showPopover && (
                     <Popover isVisible={showPopover}>
-                        <Text>Signing up...</Text>
+                        <Text variant="titleLarge" style={{ padding: 20 }}>Signing up</Text>
                     </Popover>
                 )}
 
@@ -582,7 +595,7 @@ const RegistrationForm = () => {
                     duration={3000}
                     style={styles.snackbar}
                 >
-                    <Text style={{ color: 'white', textAlign: 'center' }}>Please fill in all required fields.</Text>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>{alertMessage}</Text>
                 </Snackbar>
             </PaperProvider>
         </SafeAreaView>

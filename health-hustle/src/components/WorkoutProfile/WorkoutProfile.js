@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, TouchableOpacity } from 'react-native';
-import { Drawer, Appbar, Divider, Text, Button, Checkbox, TextInput, Switch, RadioButton } from 'react-native-paper';
+import { Drawer, Appbar, Divider, Text, Button, Checkbox, TextInput, Switch, RadioButton, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -20,6 +20,7 @@ const WorkoutProfile = () => {
         { label: 'Muscle Gain', checked: false },
         { label: 'Agility', checked: false },
     ]);
+    const allBodyGoals = bodyGoals.every(goal => !goal.checked);
     const [bodyType, setBodyType] = useState('A');
 
     const [focusArea, setFocusArea] = useState([
@@ -29,6 +30,7 @@ const WorkoutProfile = () => {
         { label: 'Cardio', checked: false },
         { label: 'Flexibility', checked: false }
     ]);
+    const allFocusArea = focusArea.every(goal => !goal.checked);
     const [weight, setWeight] = useState('');
     const [isKg, setIsKg] = useState(true);
     const [height, setHeight] = useState('');
@@ -38,6 +40,19 @@ const WorkoutProfile = () => {
     const [workoutDays, setWorkoutDays] = useState('');
     const [workoutDuration, setWorkoutDuration] = useState('');
     const [totalSteps, setTotalSteps] = useState('');
+
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const ageNumeric = !isNaN(age) && Number.isFinite(parseFloat(age));
+    const ageInRange = parseFloat(age) >= 16 && parseFloat(age) <= 70;
+    const heightNumeric = !isNaN(height) && Number.isFinite(parseFloat(height));
+    const heightInRange = parseFloat(height) >= 3 && parseFloat(height) <= 9;
+    const weightNumeric = !isNaN(weight) && Number.isFinite(parseFloat(weight));
+    const weightInRange = parseFloat(weight) >= 40 && parseFloat(weight) <= 450;
+
+    const handleSnackbarDismiss = () => {
+        setShowSnackbar(false);
+    };
 
     useEffect(() => {
         const formDataRef = database.ref(`users/${uid}/formData`);
@@ -143,8 +158,6 @@ const WorkoutProfile = () => {
         }
     }
 
-    handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList);
-
     const navigation = useNavigation();
 
     const handleHomePress = () => {
@@ -180,28 +193,58 @@ const WorkoutProfile = () => {
     const n_height = parseFloat(height)
     const n_age = parseFloat(age)
     const handleSubmit = () => {
-        const formData = {
-            gender,
-            bodyGoals,
-            bodyType,
-            focusArea,
-            n_weight,
-            n_height,
-            n_age,
-            equipment,
-            isKg,
-            workoutList,
-            workoutDays,
-            workoutDuration,
-            totalSteps
-        };
-        saveFormData(formData, uid);
+        if (!gender) {
+            setShowSnackbar(true);
+        } else if (allBodyGoals) {
+            setAlertMessage("Please select atleast one body goal")
+            setShowSnackbar(true);
+        } else if (!bodyType) {
+            setShowSnackbar(true);
+        } else if (gender === "male" && !["A", "B", "C", "D"].includes(bodyType)) {
+            setAlertMessage("Please select body type for male")
+            setShowSnackbar(true);
+        } else if (gender === "female" && !["E", "F", "G", "H", "I"].includes(bodyType)) {
+            setAlertMessage("Please select body type for female")
+            setShowSnackbar(true);
+        } else if (allFocusArea) {
+            setAlertMessage("Please select atleast one focus area")
+            setShowSnackbar(true);
+        } else if ((!weight || !weightInRange || !weightNumeric)) {
+            setAlertMessage("Enter a numeric value between 40.0 and 450.0")
+            setShowSnackbar(true);
+        } else if ((!height || !heightInRange || !heightNumeric)) {
+            setAlertMessage("Enter a numeric value between 3.0 and 9.0")
+            setShowSnackbar(true);
+        } else if ((!age || !ageInRange || !ageNumeric)) {
+            setAlertMessage("Enter a numeric value between 16 and 70")
+            setShowSnackbar(true);
+        } else if (!equipment) {
+            setShowSnackbar(true);
+        } else {
+            handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList);
+            const formData = {
+                gender,
+                bodyGoals,
+                bodyType,
+                focusArea,
+                n_weight,
+                n_height,
+                n_age,
+                equipment,
+                isKg,
+                workoutList,
+                workoutDays,
+                workoutDuration,
+                totalSteps
+            };
+            saveFormData(formData, uid);
 
-        setShowPopover(true);
+            setShowPopover(true);
 
-        setTimeout(() => {
-            setShowPopover(false);
-        }, 2000);
+            setTimeout(() => {
+                setShowPopover(false);
+            }, 2000);
+        }
     };
 
     const renderContent = () => {
@@ -592,6 +635,14 @@ const WorkoutProfile = () => {
                         <Button icon="check-bold" mode="elevated" dark={true} buttonColor='#150359' onPress={handleSubmit} style={{ borderRadius: 0 }}>
                             Save Changes
                         </Button>
+                        <Snackbar
+                            visible={showSnackbar}
+                            onDismiss={handleSnackbarDismiss}
+                            duration={3000}
+                            style={styles.snackbar}
+                        >
+                            <Text style={{ color: 'white', textAlign: 'center' }}>{alertMessage}</Text>
+                        </Snackbar>
                     </View>
                 </View>
             </SafeAreaView>
