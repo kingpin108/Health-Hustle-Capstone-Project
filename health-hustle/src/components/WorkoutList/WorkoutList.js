@@ -9,7 +9,6 @@ import { database } from '../../database/config';
 import { auth } from '../../database/config';
 import { AuthContext } from '../../contexts/AuthContext';
 
-
 const WorkoutList = ({ route }) => {
     const navigation = useNavigation();
     const [workoutData, setWorkoutData] = useState([]);

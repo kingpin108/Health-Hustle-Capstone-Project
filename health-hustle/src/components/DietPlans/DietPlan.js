@@ -33,11 +33,19 @@ const ListItem = ({ item }) => {
 
       {showRecipeModal && (
         <Portal>
-          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle}>
+          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle} >
             <Dialog.Title style={styles.modalTitle}>{item.recipe.mealName}</Dialog.Title>
             <Dialog.Content>
               <Image source={{ uri: item.image }} style={styles.recipeImage} />
               <ScrollView showsVerticalScrollIndicator={false} style={styles.recipeScrollView}>
+              <Text variant="headlineSmall">Ingredients</Text>
+                {item.recipe.ingredients.map((step, index) => (
+                  <Text key={index} style={styles.recipeStep}>
+                    {'\u2022'} {step}
+                  </Text>
+                ))}
+
+              <Text variant="headlineSmall">Recipe</Text>
                 {item.recipe.instructions.map((step, index) => (
                   <Text key={index} style={styles.recipeStep}>
                     {'\u2022'} {step}

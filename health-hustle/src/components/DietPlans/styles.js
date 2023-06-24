@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+const window = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -93,6 +94,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 10,
   },
+  recipeScrollView: {
+    height: 350,
+    marginTop: 20
+  }
 });
 
 export default styles;
