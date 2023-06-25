@@ -29,7 +29,7 @@ const Home = () => {
                                 <Text variant="titleMedium" style={styles.tileText}>Workouts</Text>
                             </Surface>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleTilePress('Fitness Blogs')}>
+                        <TouchableOpacity onPress={() => handleTilePress('FitnessBlogs')}>
                             <Surface style={styles.tile}>
                                 <Image
                                     style={styles.tileImage}
@@ -40,7 +40,7 @@ const Home = () => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.row}>
-                        <TouchableOpacity onPress={() => handleTilePress('Step Count')}>
+                        <TouchableOpacity onPress={() => handleTilePress('StepCount')}>
                             <Surface style={styles.tile}>
                                 <Image
                                     style={styles.tileImage}

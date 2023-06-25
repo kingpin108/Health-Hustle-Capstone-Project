@@ -10,10 +10,11 @@ import WorkoutList from './src/components/WorkoutList/WorkoutList';
 import WorkoutCalendar from './src/components/WorkoutCalendar/WorkoutCalendar';
 import Workout_details from './src/components/Workout_details/Workout_details';
 import WorkoutGoal from './src/components/WorkoutGoal/WorkoutGoal';
-
 import Settings from './src/components/Settings/Settings';
 import WorkoutProfile from './src/components/WorkoutProfile/WorkoutProfile';
 import DietPlan from './src/components/DietPlans/DietPlan';
+import FitnessBlogs from './src/components/FitnessBlogs/FitnessBlogs';
+import StepCount from './src/components/StepCount/StepCount';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,9 @@ const AppNavigator = () => {
             <Stack.Screen name="WorkoutProfile" component={WorkoutProfile} options={{ headerShown: false }} />
             <Stack.Screen name="DietPlan" component={DietPlan} options={{ headerShown: false }} />
             <Stack.Screen name="WorkoutGoal" component={WorkoutGoal} options={{ headerShown: false }} />
+            <Stack.Screen name="FitnessBlogs" component={FitnessBlogs} options={{ headerShown: false }} />
+            <Stack.Screen name="StepCount" component={StepCount} options={{ headerShown: false }} />
+
           </>
         ) : (
           <>
