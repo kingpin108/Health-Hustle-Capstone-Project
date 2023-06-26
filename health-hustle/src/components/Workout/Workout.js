@@ -41,7 +41,7 @@ const Workout = () => {
 
         const handleSnapshot = (snapshot) => {
             const workoutDays = snapshot.val();
-            setWorkoutDay(workoutDays + 1);
+            setWorkoutDay(workoutDays);
             console.log(workoutDay)
         };
 
@@ -117,7 +117,7 @@ const Workout = () => {
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Set Workout Goals</Text>
                     </TouchableOpacity>
 
-                    <Text style={styles.header}>Body Focus</Text>
+                    {/* <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>
                         <BodyFocusCardView
                             imageSource={require('../../../assets/workout.png')}
@@ -137,7 +137,7 @@ const Workout = () => {
                             imageSource={require('../../../assets/workout.png')}
                             onPress={handleOpenWorkoutList}
                         />
-                    </View>
+                    </View> */}
 
 
 

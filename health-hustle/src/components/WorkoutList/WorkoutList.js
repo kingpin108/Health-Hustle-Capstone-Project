@@ -71,19 +71,21 @@ const WorkoutList = ({ route }) => {
                 const userRef = database.ref(`users/${uid}/formData/workoutDays`);
                 userRef.transaction((workoutDays) => {
                     return (workoutDays || 0) + 1;
-
                 })
-                    .then((result) => {
-                        console.log('Workout days updated successfully');
-                        if (result.committed) {
-                            console.log('Day 1 workout marked as completed');
-                        } else {
-                            console.log('Transaction aborted');
+                .then((result) => {
+                    console.log('Workout days updated successfully');
+                    if (result.committed) {
+                        console.log('Day 1 workout marked as completed');
+                        if (result.snapshot.val() > 7) {
+                            userRef.set(1); // Reset workout days to 1
                         }
-                    })
-                    .catch((error) => {
-                        console.log('Error updating workout days:', error);
-                    });
+                    } else {
+                        console.log('Transaction aborted');
+                    }
+                })
+                .catch((error) => {
+                    console.log('Error updating workout days:', error);
+                });
             }
         }
     }, [isWorkoutDone, uid, workoutData]);
@@ -93,9 +95,8 @@ const WorkoutList = ({ route }) => {
 
         userRef.on('value', (snapshot) => {
             const workoutDays = snapshot.val();
-            setWorkoutDay(workoutDays + 1);
+            setWorkoutDay(workoutDays);
             setIsWorkoutDone({});
-
         });
 
         return () => userRef.off();
@@ -105,27 +106,28 @@ const WorkoutList = ({ route }) => {
         navigation.navigate('Workout', { workoutDay: workoutDay });
     };
 
-    
-
     const handlePlayButtonPress = () => {
         setWorkoutDay(prevDay => prevDay + 1);
 
-        if (workoutDay % 5 === 0) {
+        if (workoutDay % 4 === 0) {
             const userRef = database.ref(`users/${uid}/formData/workoutDays`);
             userRef.transaction((workoutDays) => {
                 return (workoutDays || 0) + 1;
             })
-                .then((result) => {
-                    console.log('Workout days updated successfully');
-                    if (result.committed) {
-                        console.log('Day', workoutDay + 1, 'workout marked as completed');
-                    } else {
-                        console.log('Transaction aborted');
+            .then((result) => {
+                console.log('Workout days updated successfully');
+                if (result.committed) {
+                    console.log('Day', workoutDay, 'workout marked as completed');
+                    if (result.snapshot.val() > 7) {
+                        userRef.set(1); // Reset workout days to 1
                     }
-                })
-                .catch((error) => {
-                    console.log('Error updating workout days:', error);
-                });
+                } else {
+                    console.log('Transaction aborted');
+                }
+            })
+            .catch((error) => {
+                console.log('Error updating workout days:', error);
+            });
         }
     };
 
@@ -161,12 +163,10 @@ const WorkoutList = ({ route }) => {
                 />
             </Appbar.Header>
             <SafeAreaView style={styles.container}>
-                {workoutDay % 5 === 0 ? (
+                {workoutDay % 4 === 0 ? (
                     <View style={styles.containerBreak}>
                         <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
                         <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
-
-                        {/* <Text style={styles.textBreak}>Take a moment to appreciate your progress.</Text> */}
                         <View style={styles.fabContainer}>
                             <FAB
                                 label="Resume workout"
@@ -174,9 +174,7 @@ const WorkoutList = ({ route }) => {
                                 style={styles.fab}
                                 onPress={handlePlayButtonPress}
                             />
-
                         </View>
-
                     </View>
                 ) : (
                     <FlatList
