@@ -53,7 +53,7 @@ const Settings = () => {
                             onPress={() => handleItemPress('WorkoutProfile')}
                         />
                     </Drawer.Section>
-                    <Drawer.Section>
+                    {/* <Drawer.Section>
                         <Drawer.Item
                             label="Notifications"
                             icon="bell"
@@ -79,7 +79,7 @@ const Settings = () => {
                             active={activeItem === 'about'}
                             onPress={() => handleItemPress('about')}
                         />
-                    </Drawer.Section>
+                    </Drawer.Section> */}
                     <Button icon="logout" mode="contained" onPress={handleLogout} style={{ margin: 16 }}>
                         Logout
                     </Button>

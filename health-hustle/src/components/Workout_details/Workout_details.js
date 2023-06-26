@@ -65,6 +65,10 @@ const Workout_details = ({ route }) => {
     navigation.navigate('WorkoutVideo');
   };
 
+  const getVideoId = (url) => {
+    return url.split('v=')[1]?.split('&')[0];
+  }
+
   // useEffect(() => {
   //   fetchData();
   // }, []);
@@ -111,7 +115,7 @@ const Workout_details = ({ route }) => {
             height={300}
             play={playing}
             mute={isMute}
-            videoId={item.videoId}
+            videoId={getVideoId(item.videoId)}
             onChangeState={onStateChange}
           />
         </View>
