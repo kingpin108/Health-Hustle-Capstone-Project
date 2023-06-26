@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 2,
     zIndex: 1,
-    paddingTop: 20
+    paddingTop: 10
   },
   mainContent: {
     flex: 4,

@@ -33,11 +33,11 @@ const ListItem = ({ item }) => {
 
       {showRecipeModal && (
         <Portal>
-          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle} >
+          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle} style={{height: 600}}>
             <Dialog.Title style={styles.modalTitle}>{item.recipe.mealName}</Dialog.Title>
             <Dialog.Content>
               <Image source={{ uri: item.image }} style={styles.recipeImage} />
-              <ScrollView showsVerticalScrollIndicator={false} style={styles.recipeScrollView}>
+              <ScrollView showsVerticalScrollIndicator={true} style={styles.recipeScrollView}>
               <Text variant="headlineSmall">Ingredients</Text>
                 {item.recipe.ingredients.map((step, index) => (
                   <Text key={index} style={styles.recipeStep}>
@@ -54,7 +54,7 @@ const ListItem = ({ item }) => {
               </ScrollView>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={handleRecipeModalToggle} style={styles.closeButton}>
+              <Button onPress={handleRecipeModalToggle} style={{marginTop:-20}}>
                 Close Recipe
               </Button>
             </Dialog.Actions>

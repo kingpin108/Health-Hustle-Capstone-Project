@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
   modalTitle:{
     fontSize:17,
     fontWeight:'bold',
-    textAlign:'center'
+    textAlign:'center',
+    marginBottom: -5
   },
   recipeModalContainer:{
     margin:'20%'
@@ -95,8 +96,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   recipeScrollView: {
-    height: 350,
-    marginTop: 20
+    height: 240,
+    marginTop: 10
   }
 });
 
