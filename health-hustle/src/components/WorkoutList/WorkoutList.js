@@ -72,20 +72,20 @@ const WorkoutList = ({ route }) => {
                 userRef.transaction((workoutDays) => {
                     return (workoutDays || 0) + 1;
                 })
-                .then((result) => {
-                    console.log('Workout days updated successfully');
-                    if (result.committed) {
-                        console.log('Day 1 workout marked as completed');
-                        if (result.snapshot.val() > 7) {
-                            userRef.set(1); // Reset workout days to 1
+                    .then((result) => {
+                        console.log('Workout days updated successfully');
+                        if (result.committed) {
+                            console.log('Day 1 workout marked as completed');
+                            if (result.snapshot.val() > 7) {
+                                userRef.set(1); // Reset workout days to 1
+                            }
+                        } else {
+                            console.log('Transaction aborted');
                         }
-                    } else {
-                        console.log('Transaction aborted');
-                    }
-                })
-                .catch((error) => {
-                    console.log('Error updating workout days:', error);
-                });
+                    })
+                    .catch((error) => {
+                        console.log('Error updating workout days:', error);
+                    });
             }
         }
     }, [isWorkoutDone, uid, workoutData]);
@@ -114,20 +114,20 @@ const WorkoutList = ({ route }) => {
             userRef.transaction((workoutDays) => {
                 return (workoutDays || 0) + 1;
             })
-            .then((result) => {
-                console.log('Workout days updated successfully');
-                if (result.committed) {
-                    console.log('Day', workoutDay, 'workout marked as completed');
-                    if (result.snapshot.val() > 7) {
-                        userRef.set(1); // Reset workout days to 1
+                .then((result) => {
+                    console.log('Workout days updated successfully');
+                    if (result.committed) {
+                        console.log('Day', workoutDay, 'workout marked as completed');
+                        if (result.snapshot.val() > 7) {
+                            userRef.set(1); // Reset workout days to 1
+                        }
+                    } else {
+                        console.log('Transaction aborted');
                     }
-                } else {
-                    console.log('Transaction aborted');
-                }
-            })
-            .catch((error) => {
-                console.log('Error updating workout days:', error);
-            });
+                })
+                .catch((error) => {
+                    console.log('Error updating workout days:', error);
+                });
         }
     };
 
@@ -183,16 +183,16 @@ const WorkoutList = ({ route }) => {
                         ListHeaderComponent={
                             <>
                                 <Text style={styles.titleTime} variant="titleMedium">
-                                    Estimated time: 9 mins
+                                    Estimated time: 45 mins
                                 </Text>
                                 <Text style={styles.titleTime} variant="titleMedium">
                                     Total Exercises: {workoutData.length}
                                 </Text>
                                 <Text style={styles.titleInstruction} variant="titleLarge">
-                                    Instruction
+                                    Tip
                                 </Text>
                                 <Text style={styles.textInstruction} variant="titleSmall">
-                                    {workoutData.length > 0 ? workoutData[0].description : ''}
+                                    Proper nutrition and hydration are crucial for optimal performance and recovery. Fuel your body with nutritious foods, including a balance of proteins, carbohydrates, and healthy fats. Drink plenty of water throughout the day to stay hydrated before, during, and after your workouts.
                                 </Text>
                                 <Text style={styles.titleInstruction} variant="headlineSmall">
                                     Exercises
