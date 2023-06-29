@@ -40,7 +40,21 @@ const styles = StyleSheet.create({
         color: '#EE7CDC',
         fontSize: 20,
         marginVertical: 10,
-    }
+    },
+    passwordInput: {
+        width: 200,
+        fontSize: 20
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: 300,
+        height: 50,
+        marginBottom: 30,
+        backgroundColor: 'white',
+        paddingRight: 10
+    },
 });
 
 export default styles;

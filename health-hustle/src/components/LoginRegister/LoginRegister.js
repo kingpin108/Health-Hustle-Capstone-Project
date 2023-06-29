@@ -5,6 +5,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { auth } from '../../database/config';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { Entypo } from '@expo/vector-icons';
+
 
 const LoginRegister = () => {
     const { login, signup } = useContext(AuthContext);
@@ -12,6 +14,9 @@ const LoginRegister = () => {
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // Added state for password visibility
+
+
     const navigation = useNavigation();
 
     const theme = {
@@ -33,6 +38,10 @@ const LoginRegister = () => {
         })
         return unsubscribe
     }, [])
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleRegister = async () => {
         if (!validateForm()) return;
@@ -78,7 +87,7 @@ const LoginRegister = () => {
             Alert.alert('Error', 'Please enter both email and password');
             return false;
         }
-        if(password.length !=6 ){
+        if (password.length != 6) {
             Alert.alert('Error', 'Password should be at least 6 characters');
             return false;
         }
@@ -109,13 +118,18 @@ const LoginRegister = () => {
                     placeholder='Email'
                     autoCapitalize="none"
                 />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    secureTextEntry
-                    onChangeText={(text) => setPassword(text)}
-                    value={password}
-                />
+                  <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={styles.passwordInput}
+                        placeholder="Password"
+                        secureTextEntry={!showPassword}
+                        onChangeText={(text) => setPassword(text)}
+                        value={password}
+                    />
+                    <TouchableOpacity onPress={togglePasswordVisibility}>
+                        <Entypo name={showPassword ? 'eye' : 'eye-with-line'} size={24} color="black" />
+                    </TouchableOpacity>
+                </View>
 
                 <TouchableOpacity
                     style={styles.button}
