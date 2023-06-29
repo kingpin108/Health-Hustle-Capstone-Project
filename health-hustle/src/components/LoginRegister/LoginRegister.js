@@ -87,7 +87,7 @@ const LoginRegister = () => {
             Alert.alert('Error', 'Please enter both email and password');
             return false;
         }
-        if (password.length != 6) {
+        if(password.length < 6 ){
             Alert.alert('Error', 'Password should be at least 6 characters');
             return false;
         }
@@ -117,6 +117,7 @@ const LoginRegister = () => {
                     value={email}
                     placeholder='Email'
                     autoCapitalize="none"
+                    selectionColor="#EE7CDC"
                 />
                   <View style={styles.passwordContainer}>
                     <TextInput
@@ -125,6 +126,7 @@ const LoginRegister = () => {
                         secureTextEntry={!showPassword}
                         onChangeText={(text) => setPassword(text)}
                         value={password}
+                        selectionColor="#EE7CDC"
                     />
                     <TouchableOpacity onPress={togglePasswordVisibility}>
                         <Entypo name={showPassword ? 'eye' : 'eye-with-line'} size={24} color="black" />

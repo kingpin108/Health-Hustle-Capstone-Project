@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, TouchableOpacity } from 'react-native';
+import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, TouchableOpacity, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { Drawer, Appbar, Divider, Text, Button, Checkbox, TextInput, Switch, RadioButton, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
@@ -125,6 +125,10 @@ const WorkoutProfile = () => {
             // Convert weight from lbs to kg
             return Math.round(weight / 2.20462);
         }
+    };
+
+    const dismissKeyboard = () => {
+        Keyboard.dismiss();
     };
 
     const selectedBodyGoal = bodyGoals.find(goal => goal.checked);
@@ -476,7 +480,7 @@ const WorkoutProfile = () => {
             </View>)
         } else if (active === 'weight') {
             return (
-                <View style={styles.contentContainer}>
+                <KeyboardAvoidingView style={styles.contentContainer} behavior="padding">
                     <Text style={styles.questionText}>Enter weight:</Text>
                     <View style={styles.sectionBottomMargin}>
                         <Image
@@ -488,7 +492,10 @@ const WorkoutProfile = () => {
                             keyboardType="numeric"
                             value={weight}
                             mode="outlined"
+                            selectionColor="#EE7CDC"
                             onChangeText={handleWeightChange}
+                            returnKeyType="done"
+                            onSubmitEditing={dismissKeyboard}
                         />
                     </View>
                     <Text>{`${weight} ${isKg ? 'kg' : 'lbs'}`}</Text>
@@ -498,11 +505,11 @@ const WorkoutProfile = () => {
                         color="#1e0578"
                     />
                     <Text>{`${convertWeight()} ${isKg ? 'lbs' : 'kg'}`}</Text>
-                </View >
+                </KeyboardAvoidingView >
             )
         } else if (active === 'height') {
             return (
-                <View style={styles.contentContainer}>
+                <KeyboardAvoidingView style={styles.contentContainer} behavior="padding">
                     <Text style={styles.questionText}>Enter height in feet:</Text>
                     <View>
                         <Image
@@ -514,13 +521,16 @@ const WorkoutProfile = () => {
                             keyboardType="numeric"
                             value={height}
                             mode="outlined"
+                            selectionColor="#EE7CDC"
                             onChangeText={(height) => setHeight(height)}
+                            returnKeyType="done"
+                            onSubmitEditing={dismissKeyboard}
                         />
                     </View>
-                </View >
+                </KeyboardAvoidingView>
             )
         } else if (active === 'age') {
-            return (<View style={styles.contentContainer}>
+            return (<KeyboardAvoidingView style={styles.contentContainer} behavior="padding">
                 <Text style={styles.questionText}>Enter your age:</Text>
                 <View>
                     <Image
@@ -532,10 +542,13 @@ const WorkoutProfile = () => {
                         keyboardType="numeric"
                         value={age}
                         mode="outlined"
+                        selectionColor="#EE7CDC"
                         onChangeText={(age) => setAge(age)}
+                        returnKeyType="done"
+                        onSubmitEditing={dismissKeyboard}
                     />
                 </View>
-            </View>)
+            </KeyboardAvoidingView>)
         } else if (active === 'workout') {
             return (
                 <View style={styles.contentContainer}>
