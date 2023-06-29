@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch, Snackbar } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';

@@ -78,7 +78,7 @@ const LoginRegister = () => {
             Alert.alert('Error', 'Please enter both email and password');
             return false;
         }
-        if(password.length !=6 ){
+        if(password.length < 6 ){
             Alert.alert('Error', 'Password should be at least 6 characters');
             return false;
         }
@@ -108,6 +108,7 @@ const LoginRegister = () => {
                     value={email}
                     placeholder='Email'
                     autoCapitalize="none"
+                    selectionColor="#EE7CDC"
                 />
                 <TextInput
                     style={styles.input}
@@ -115,6 +116,7 @@ const LoginRegister = () => {
                     secureTextEntry
                     onChangeText={(text) => setPassword(text)}
                     value={password}
+                    selectionColor="#EE7CDC"
                 />
 
                 <TouchableOpacity
