@@ -16,7 +16,6 @@ const LoginRegister = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false); // Added state for password visibility
 
-
     const navigation = useNavigation();
 
     const theme = {
@@ -45,11 +44,9 @@ const LoginRegister = () => {
 
     const handleRegister = async () => {
         if (!validateForm()) return;
-
         try {
             // Check if the email is already registered
             const signInMethods = await auth.fetchSignInMethodsForEmail(email);
-
             if (signInMethods && signInMethods.length > 0) {
                 Alert.alert('Error', 'Email is already registered');
                 return;
@@ -68,7 +65,6 @@ const LoginRegister = () => {
 
     const handleLogin = async () => {
         if (!validateForm()) return;
-
         try {
             await login(email, password);
             setIsRegistering(false);
@@ -76,8 +72,14 @@ const LoginRegister = () => {
             clearForm();
         } catch (error) {
             console.log('Login error:', error);
-            Alert.alert('Error', 'Invalid email or password');
-        }
+            if (error.code === 'auth/user-not-found') {
+              Alert.alert('Error', 'No user found');
+            } else if (error.code === 'auth/wrong-password') {
+              Alert.alert('Error', 'Incorrect password! Please try again.');
+            } else {
+              Alert.alert('Error', 'Invalid email or password');
+            }
+          }
     };
 
     const validateForm = () => {
@@ -118,6 +120,7 @@ const LoginRegister = () => {
                     placeholder='Email'
                     autoCapitalize="none"
                     selectionColor="#EE7CDC"
+                    keyboardType="email-address"
                 />
                   <View style={styles.passwordContainer}>
                     <TextInput

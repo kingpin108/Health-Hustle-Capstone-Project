@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { View, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch, Snackbar } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
@@ -47,12 +47,16 @@ const RegistrationForm = () => {
     const { uid } = user;
     const [workoutList, setWorkoutList] = useState('default');
     const [alertMessage, setAlertMessage] = useState('');
-    const ageNumeric = !isNaN(age) && Number.isFinite(parseFloat(age));
+    const ageNumeric = Number.isInteger(parseFloat(age));
     const ageInRange = parseFloat(age) >= 16 && parseFloat(age) <= 70;
     const heightNumeric = !isNaN(height) && Number.isFinite(parseFloat(height));
     const heightInRange = parseFloat(height) >= 3 && parseFloat(height) <= 9;
+    const heightDecimalCount = (height.split('.')[1] || '').length;
     const weightNumeric = !isNaN(weight) && Number.isFinite(parseFloat(weight));
     const weightInRange = parseFloat(weight) >= 40 && parseFloat(weight) <= 450;
+    const weightDecimalCount = (weight.split('.')[1] || '').length;
+    console.log("DecimalCount" + weightDecimalCount)
+
 
     const handleNext = () => {
         if (step === 1 && !gender) {
@@ -65,14 +69,30 @@ const RegistrationForm = () => {
         } else if (step === 4 && allFocusArea) {
             setAlertMessage("Please select atleast one focus area")
             setShowSnackbar(true);
-        } else if (step === 5 && (!weight || !weightInRange || !weightNumeric)) {
-            setAlertMessage("Enter a numeric value between 40.0 and 450.0")
+        } else if (step === 5 && (!weight || !weightInRange || !weightNumeric || weightDecimalCount > 1)) {
+            if (!weightNumeric) {
+                setAlertMessage("Please enter a valid numeric value for weight.");
+            } else if (!weightInRange) {
+                setAlertMessage("Enter a numeric value between 40.0 and 450.0 for weight.");
+            }else if (weightDecimalCount > 1)  {
+                setAlertMessage("Weight should be upto 1 decimal place.");
+            }
             setShowSnackbar(true);
-        } else if (step === 6 && (!height || !heightInRange || !heightNumeric)) {
-            setAlertMessage("Enter a numeric value between 3.0 and 9.0")
+        } else if (step === 6 && (!height || !heightInRange || !heightNumeric || heightDecimalCount > 2)) {
+            if (!heightNumeric) {
+                setAlertMessage("Please enter a numeric value for height.");
+            } else if (!heightInRange) {
+                setAlertMessage("Enter a numeric value between 3.0 and 9.0 for height.");
+            } else if (heightDecimalCount > 2) {
+                setAlertMessage("Height should be upto 2 decimal places.");
+            }
             setShowSnackbar(true);
         } else if (step === 7 && (!age || !ageInRange || !ageNumeric)) {
-            setAlertMessage("Enter a numeric value between 16 and 70")
+            if (!ageNumeric || !age) {
+                setAlertMessage("Please enter an integer value for age.")
+            } else {
+                setAlertMessage("Enter an integer value between 16 and 70.")
+            }
             setShowSnackbar(true);
         } else if (step === 8 && !equipment) {
             setShowSnackbar(true);
@@ -122,12 +142,15 @@ const RegistrationForm = () => {
     };
 
     const convertWeight = () => {
+        if (isNaN(weight)) {
+            return 0;
+        }
         if (isKg) {
             // Convert weight from kg to lbs
-            return Math.round(weight * 2.20462);
+            return (weight * 2.20462).toFixed(1);
         } else {
             // Convert weight from lbs to kg
-            return Math.round(weight / 2.20462);
+            return (weight / 2.20462).toFixed(1);
         }
     };
     const selectedBodyGoal = bodyGoals.find(goal => goal.checked);
@@ -210,11 +233,13 @@ const RegistrationForm = () => {
         setTimeout(() => {
             setShowPopover(false);
             setConfettiActive(false);
-
             navigation.navigate('Home');
         }, 3000);
     };
 
+    const dismissKeyboard = () => {
+        Keyboard.dismiss();
+    };
 
     const renderStepContent = () => {
         switch (step) {
@@ -464,10 +489,13 @@ const RegistrationForm = () => {
                                 keyboardType="numeric"
                                 value={weight}
                                 mode="outlined"
+                                selectionColor="#EE7CDC"
                                 onChangeText={handleWeightChange}
+                                returnKeyType="done"
+                                onSubmitEditing={dismissKeyboard}
                             />
                         </View>
-                        <Text>{`${weight} ${isKg ? 'kg' : 'lbs'}`}</Text>
+                        <Text>{`${isNaN(weight) || weight === '' ? '0.0' : weight} ${isKg ? 'kg' : 'lbs'}`}</Text>
                         <Switch
                             value={isKg}
                             onValueChange={handleUnitChange}
@@ -491,7 +519,10 @@ const RegistrationForm = () => {
                                 keyboardType="numeric"
                                 value={height}
                                 mode="outlined"
+                                selectionColor="#EE7CDC"
                                 onChangeText={(height) => setHeight(height)}
+                                returnKeyType="done"
+                                onSubmitEditing={dismissKeyboard}
                             />
                         </View>
                     </View >
@@ -511,7 +542,10 @@ const RegistrationForm = () => {
                                 keyboardType="numeric"
                                 value={age}
                                 mode="outlined"
+                                selectionColor="#EE7CDC"
                                 onChangeText={(age) => setAge(age)}
+                                returnKeyType="done"
+                                onSubmitEditing={dismissKeyboard}
                             />
                         </View>
                     </View>
