@@ -6,6 +6,7 @@ import { auth } from '../../database/config';
 import { Provider as PaperProvider, TextInput, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Entypo } from '@expo/vector-icons';
+import NetInfo from '@react-native-community/netinfo'
 
 
 const LoginRegister = () => {
@@ -15,6 +16,7 @@ const LoginRegister = () => {
     const [isRegistering, setIsRegistering] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false); // Added state for password visibility
+    const [isConnected, setIsConnected] = useState(true);
 
     const navigation = useNavigation();
 
@@ -35,14 +37,33 @@ const LoginRegister = () => {
                 console.log('Testing');
             }
         })
-        return unsubscribe
+
+        // Check internet connectivity
+        const unsubscribeNetInfo = NetInfo.addEventListener(state => {
+            setIsConnected(state.isConnected);
+        });
+
+        return () => {
+            unsubscribe();
+            unsubscribeNetInfo();
+        };
     }, [])
+
+    useEffect(() => {
+        if (!isConnected) {
+            Alert.alert('Error', 'No internet connection');
+        }
+    }, [isConnected]);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     const handleRegister = async () => {
+        if (!isConnected) {
+            Alert.alert('Error', 'No internet connection');
+            return;
+        }
         if (!validateForm()) return;
         try {
             // Check if the email is already registered
@@ -64,6 +85,10 @@ const LoginRegister = () => {
     };
 
     const handleLogin = async () => {
+        if (!isConnected) {
+            Alert.alert('Error', 'No internet connection');
+            return;
+        }
         if (!validateForm()) return;
         try {
             await login(email, password);
