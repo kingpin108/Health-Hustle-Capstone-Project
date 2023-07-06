@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, Image, FlatList, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Text, Appbar, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -16,6 +16,8 @@ const WorkoutList = ({ route }) => {
     const [completedExercisesList, setCompletedExercisesList] = useState(completedExercises || []);
     const [isWorkoutDone, setIsWorkoutDone] = useState({});
     const [workoutDay, setWorkoutDay] = useState(1);
+    const [loading, setLoading] = useState(true); // Add loading state
+
 
     let workoutSet = 'default'
     const { uid } = useContext(AuthContext);
@@ -56,6 +58,8 @@ const WorkoutList = ({ route }) => {
                 const jsonData = response.data;
                 const workoutArray = Object.values(jsonData);
                 setWorkoutData(workoutArray);
+                setLoading(false); // Set loading to false when data is fetched
+
             } catch (error) {
                 console.error('Error fetching API data:', error);
             }
@@ -162,47 +166,54 @@ const WorkoutList = ({ route }) => {
                     titleStyle={styles.appHeaderTitle}
                 />
             </Appbar.Header>
+
+
             <SafeAreaView style={styles.container}>
-                {workoutDay % 4 === 0 ? (
-                    <View style={styles.containerBreak}>
-                        <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
-                        <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
-                        <View style={styles.fabContainer}>
-                            <FAB
-                                label="Resume workout"
-                                icon="play"
-                                style={styles.fab}
-                                onPress={handlePlayButtonPress}
-                            />
-                        </View>
+                {loading ? ( // Render loader if loading state is true
+                    <View style={styles.loaderContainer}>
+                        <ActivityIndicator size="large" color="#0000ff" />
                     </View>
-                ) : (
-                    <FlatList
-                        data={workoutData}
-                        keyExtractor={(item) => item.id}
-                        ListHeaderComponent={
-                            <>
-                                <Text style={styles.titleTime} variant="titleMedium">
-                                    Estimated time: 45 mins
-                                </Text>
-                                <Text style={styles.titleTime} variant="titleMedium">
-                                    Total Exercises: {workoutData.length}
-                                </Text>
-                                <Text style={styles.titleInstruction} variant="titleLarge">
-                                    Tip
-                                </Text>
-                                <Text style={styles.textInstruction} variant="titleSmall">
-                                    Proper nutrition and hydration are crucial for optimal performance and recovery. Fuel your body with nutritious foods, including a balance of proteins, carbohydrates, and healthy fats. Drink plenty of water throughout the day to stay hydrated before, during, and after your workouts.
-                                </Text>
-                                <Text style={styles.titleInstruction} variant="headlineSmall">
-                                    Exercises
-                                </Text>
-                            </>
-                        }
-                        renderItem={ListItem}
-                        showsVerticalScrollIndicator={false}
-                    />
-                )}
+                ) :
+                    workoutDay % 4 === 0 ? (
+                        <View style={styles.containerBreak}>
+                            <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
+                            <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
+                            <View style={styles.fabContainer}>
+                                <FAB
+                                    label="Resume workout"
+                                    icon="play"
+                                    style={styles.fab}
+                                    onPress={handlePlayButtonPress}
+                                />
+                            </View>
+                        </View>
+                    ) : (
+                        <FlatList
+                            data={workoutData}
+                            keyExtractor={(item) => item.id}
+                            ListHeaderComponent={
+                                <>
+                                    <Text style={styles.titleTime} variant="titleMedium">
+                                        Estimated time: 45 mins
+                                    </Text>
+                                    <Text style={styles.titleTime} variant="titleMedium">
+                                        Total Exercises: {workoutData.length}
+                                    </Text>
+                                    <Text style={styles.titleInstruction} variant="titleLarge">
+                                        Tip
+                                    </Text>
+                                    <Text style={styles.textInstruction} variant="titleSmall">
+                                        Proper nutrition and hydration are crucial for optimal performance and recovery. Fuel your body with nutritious foods, including a balance of proteins, carbohydrates, and healthy fats. Drink plenty of water throughout the day to stay hydrated before, during, and after your workouts.
+                                    </Text>
+                                    <Text style={styles.titleInstruction} variant="headlineSmall">
+                                        Exercises
+                                    </Text>
+                                </>
+                            }
+                            renderItem={ListItem}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    )}
             </SafeAreaView>
         </>
     );

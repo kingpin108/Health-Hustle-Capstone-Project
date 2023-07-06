@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, Dimensions, Image } from 'react-native';
+import { Text, View, ScrollView, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { Card, Chip, Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState,useContext } from 'react';
@@ -12,15 +12,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 
 
 //#1 Users will be provided audio/video tutorials as a part of their daily workout routine.
-const fetchData = async () => {
-  const response = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-    }
-  });
-  const json_dataa = await response.json();
-  console.log(json_dataa.bodyGoals, "fetched data");
-};
+
 
 const { width } = Dimensions.get('window');
 
@@ -34,6 +26,8 @@ const Workout_details = ({ route }) => {
   const [playing, setPlaying] = useState(false);
   const [isMute, setMute] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [loading, setLoading] = useState(true); // Add loading state
+
 
   const { uid } = useContext(AuthContext);
 
@@ -54,6 +48,8 @@ const Workout_details = ({ route }) => {
         },
       ];
       setCarouselData(newCarouselData);
+      setLoading(false); // Set loading to false when data is fetched
+
     }
   }, [jsonData]);
 
@@ -69,9 +65,7 @@ const Workout_details = ({ route }) => {
     return url.split('v=')[1]?.split('&')[0];
   }
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+ 
 
   useEffect(() => {
     const updateWorkoutDuration = async () => {
@@ -136,7 +130,11 @@ const Workout_details = ({ route }) => {
       </Appbar.Header>
 
       <Card style={{ marginTop: 10 }}>
-        {jsonData && (
+        {jsonData === null || loading ? ( // Display loader if loading state is true
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#000000" />
+          </View>
+        ) : (
           <View>
             <Carousel
               data={carouselData}
@@ -158,7 +156,7 @@ const Workout_details = ({ route }) => {
               <Text style={{ fontWeight: 'bold' }}>{jsonData.exerciseName}</Text>
             </View>
 
-            <ScrollView style={{ height:'100%' }} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ height: '100%' }} showsVerticalScrollIndicator={false}>
               <Card.Content>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: '5%' }}>
                   <View>
@@ -191,7 +189,7 @@ const Workout_details = ({ route }) => {
                 {jsonData.equipmentNeeded.map((equipment, index) => (
                   <Chip
                     key={index}
-                    style={{ marginRight: "60%", marginLeft: '4%', marginBottom: '4%', width:"40%",backgroundColor: "#ffffff" }}
+                    style={{ marginRight: "60%", marginLeft: '4%', marginBottom: '4%', width: "40%", backgroundColor: "#ffffff" }}
                     onPress={() => console.log('Pressed')}
                   >
                     <Ionicons name="barbell" size={24} color="black" />{equipment}

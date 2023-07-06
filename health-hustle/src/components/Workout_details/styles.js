@@ -48,5 +48,10 @@ const styles = StyleSheet.create({
         margin: 10,
         marginHorizontal: 6,
       },
+      loaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
     });
 export default styles;

@@ -32,12 +32,18 @@ const WorkoutGoal = () => {
             setCardData(prevData => [...prevData, newCard]);
             setDuration('');
 
+            const durationValue = parseInt(duration);
+            const sum = durationValue + percent;
+            const percentage = ((percent / sum) * 100).toFixed(2);
+            console.log("Percent: " + percent)
+            console.log("Percentage %: " + percentage)
+
             const formDataRef = database.ref(`users/${uid}/goals`);
             formDataRef.push({
                 type: 'Duration',
                 value: duration,
                 text: 'minutes',
-                percent: percent,
+                percent: percentage,
             });
         } else if (value === 'B' && count) {
             const newCard = { title: 'Step Count', description: count };
@@ -61,8 +67,13 @@ const WorkoutGoal = () => {
             try {
                 const snapshot = await goalsRef.once('value');
                 const goalsData = snapshot.val();
-                const goalsArray = Object.values(goalsData);
-                setCardData(goalsArray);
+
+                if (goalsData === null) {
+                    setCardData([]);
+                } else {
+                    const goalsArray = Object.values(goalsData);
+                    setCardData(goalsArray);
+                }
             } catch (error) {
                 console.error('Error fetching goals:', error);
             }
@@ -72,6 +83,25 @@ const WorkoutGoal = () => {
 
         return () => goalsRef.off();
     }, [uid]);
+
+    // useEffect(() => {
+    //     const goalsRef = database.ref(`users/${uid}/goals`);
+
+    //     const fetchGoals = async () => {
+    //         try {
+    //             const snapshot = await goalsRef.once('value');
+    //             const goalsData = snapshot.val();
+    //             const goalsArray = Object.values(goalsData);
+    //             setCardData(goalsArray);
+    //         } catch (error) {
+    //             console.error('Error fetching goals:', error);
+    //         }
+    //     };
+
+    //     fetchGoals();
+
+    //     return () => goalsRef.off();
+    // }, [uid]);
 
     const { user } = useContext(AuthContext);
     const { uid } = user;
@@ -163,6 +193,9 @@ const WorkoutGoal = () => {
                                         <View style={styles.cardTextContainer}>
                                             <Title>{item.type}</Title>
                                             <Paragraph>{item.value}</Paragraph>
+                                            <Paragraph>{item.percent}</Paragraph>
+
+
                                         </View>
                                         {/* <ProgressCircle
                                             percent={0}
