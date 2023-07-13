@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         color: 'white',
         opacity: 0.8,
-    }
+    },
 });
 
 export default styles;

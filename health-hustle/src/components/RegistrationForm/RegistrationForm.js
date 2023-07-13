@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Keyboard } from 'react-native';
-import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch, Snackbar } from 'react-native-paper';
+import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch, Snackbar, TouchableRipple } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import ConfettiCannon from 'react-native-confetti-cannon';
@@ -13,6 +13,7 @@ const RegistrationForm = () => {
         colors: {
             primary: '#EE7CDC',
             background: '#FFFFFF',
+            accent: 'transparent',
         },
     };
 
@@ -74,7 +75,7 @@ const RegistrationForm = () => {
                 setAlertMessage("Please enter a valid numeric value for weight.");
             } else if (!weightInRange) {
                 setAlertMessage("Enter a numeric value between 40.0 and 450.0 for weight.");
-            }else if (weightDecimalCount > 1)  {
+            } else if (weightDecimalCount > 1) {
                 setAlertMessage("Weight should be upto 1 decimal place.");
             }
             setShowSnackbar(true);
@@ -272,13 +273,18 @@ const RegistrationForm = () => {
                                 style={styles.genderImage}
                             />
                             {bodyGoals.map((checkbox, index) => (
-                                <Checkbox.Item
+                                <TouchableRipple
                                     key={index}
-                                    label={checkbox.label}
-                                    status={checkbox.checked ? 'checked' : 'unchecked'}
                                     onPress={() => handleBodyGoals(index)}
-                                    style={styles.checkBox}
-                                />
+                                    rippleColor="transparent"
+                                >
+                                    <Checkbox.Item
+                                        key={index}
+                                        label={checkbox.label}
+                                        status={checkbox.checked ? 'checked' : 'unchecked'}
+                                        style={styles.checkBox}
+                                    />
+                                </TouchableRipple>
                             ))}
                         </View>
                     </View>
@@ -463,13 +469,18 @@ const RegistrationForm = () => {
                                 style={styles.focusAreaImage}
                             />
                             {focusArea.map((checkbox, index) => (
-                                <Checkbox.Item
+                                <TouchableRipple
                                     key={index}
-                                    label={checkbox.label}
-                                    status={checkbox.checked ? 'checked' : 'unchecked'}
                                     onPress={() => handleFocusArea(index)}
-                                    style={styles.checkBox}
-                                />
+                                    rippleColor="transparent"
+                                >
+                                    <Checkbox.Item
+                                        key={index}
+                                        label={checkbox.label}
+                                        status={checkbox.checked ? 'checked' : 'unchecked'}
+                                        style={styles.checkBox}
+                                    />
+                                </TouchableRipple>
                             ))}
                         </View>
                     </View>
@@ -560,13 +571,16 @@ const RegistrationForm = () => {
                                 source={require('../../../assets/workout_type.jpg')}
                                 style={styles.formImage}
                             />
-                            <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
-                                <View>
-                                    <RadioButton.Item label="With equipment" value="true" style={styles.checkBox} />
-                                    <RadioButton.Item label="Without Equipment" value="false" style={styles.checkBox} />
-                                    <RadioButton.Item label="Both" value="neutral" style={styles.checkBox} />
-                                </View>
-                            </RadioButton.Group>
+
+                            <TouchableRipple rippleColor='transparent' onPress={null}>
+                                <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
+                                    <View>
+                                        <RadioButton.Item label="With equipment" value="true" style={styles.checkBox} />
+                                        <RadioButton.Item label="Without Equipment" value="false" style={styles.checkBox} />
+                                        <RadioButton.Item label="Both" value="neutral" style={styles.checkBox} />
+                                    </View>
+                                </RadioButton.Group>
+                            </TouchableRipple>
                         </View>
                     </View>
                 )

@@ -15,6 +15,7 @@ import WorkoutProfile from './src/components/WorkoutProfile/WorkoutProfile';
 import DietPlan from './src/components/DietPlans/DietPlan';
 import FitnessBlogs from './src/components/FitnessBlogs/FitnessBlogs';
 import StepCount from './src/components/StepCount/StepCount';
+import SocialShare from './src/components/SocialShare/SocialShare';
 
 const Stack = createStackNavigator();
 
@@ -32,8 +33,11 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      {/* <Stack.Screen name="SocialShare" component={SocialShare} options={{ headerShown: false }} /> */}
+
         {user ? (
           <>
+
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="Workout" component={Workout} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
