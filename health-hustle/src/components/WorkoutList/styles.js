@@ -114,7 +114,29 @@ const styles = StyleSheet.create({
     fabContainer:{
       paddingTop: 20
 
-    }
+    },
+    loaderContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    errorText: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 10,
+    },
+    errorMessage: {
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 20,
+    },
     
 });
 
