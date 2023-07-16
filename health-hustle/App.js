@@ -33,7 +33,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      {/* <Stack.Screen name="SocialShare" component={SocialShare} options={{ headerShown: false }} /> */}
+        {/* <Stack.Screen name="SocialShare" component={SocialShare} options={{ headerShown: false }} /> */}
 
         {user ? (
           <>

@@ -29,7 +29,7 @@ const Home = () => {
                                 <Text variant="titleMedium" style={styles.tileText}>Workouts</Text>
                             </Surface>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity onPress={() => handleTilePress('FitnessBlogs')}>
+                        <TouchableOpacity onPress={() => handleTilePress('FitnessBlogs')}>
                             <Surface style={styles.tile}>
                                 <Image
                                     style={styles.tileImage}
@@ -37,18 +37,9 @@ const Home = () => {
                                 />
                                 <Text variant="titleMedium" style={styles.tileText}>Fitness Blogs</Text>
                             </Surface>
-                        </TouchableOpacity> */}
-                        <TouchableOpacity onPress={() => handleTilePress('Settings')}>
-                            <Surface style={styles.tile}>
-                                <Image
-                                    style={styles.tileImage}
-                                    source={require('../../../assets/tileIcon4.png')}
-                                />
-                                <Text variant="titleMedium" style={styles.tileText}>Settings</Text>
-                            </Surface>
                         </TouchableOpacity>
                     </View>
-                    {/* <View style={styles.row}>
+                    <View style={styles.row}>
                         <TouchableOpacity onPress={() => handleTilePress('StepCount')}>
                             <Surface style={styles.tile}>
                                 <Image
@@ -67,7 +58,7 @@ const Home = () => {
                                 <Text variant="titleMedium" style={styles.tileText}>Settings</Text>
                             </Surface>
                         </TouchableOpacity>
-                    </View> */}
+                    </View>
                 </>
             </ImageBackground>
         </View>

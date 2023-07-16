@@ -13,7 +13,6 @@ const RegistrationForm = () => {
         colors: {
             primary: '#EE7CDC',
             background: '#FFFFFF',
-            accent: 'transparent',
         },
     };
 
@@ -572,15 +571,14 @@ const RegistrationForm = () => {
                                 style={styles.formImage}
                             />
 
-                            <TouchableRipple rippleColor='transparent' onPress={null}>
-                                <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
-                                    <View>
-                                        <RadioButton.Item label="With equipment" value="true" style={styles.checkBox} />
-                                        <RadioButton.Item label="Without Equipment" value="false" style={styles.checkBox} />
-                                        <RadioButton.Item label="Both" value="neutral" style={styles.checkBox} />
-                                    </View>
-                                </RadioButton.Group>
-                            </TouchableRipple>
+
+                            <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
+                                <View>
+                                    <RadioButton.Item label="With equipment" value="true" style={styles.checkBox} />
+                                    <RadioButton.Item label="Without Equipment" value="false" style={styles.checkBox} />
+                                    <RadioButton.Item label="Both" value="neutral" style={styles.checkBox} />
+                                </View>
+                            </RadioButton.Group>
                         </View>
                     </View>
                 )

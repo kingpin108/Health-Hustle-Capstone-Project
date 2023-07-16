@@ -20,6 +20,8 @@
     "date-fns": "^2.30.0",
     "deprecated-react-native-prop-types": "^4.1.0",
     "expo": "~48.0.15",
+    "expo-sensors": "~12.1.1",
+    "expo-sharing": "~11.2.2",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.22.1",
     "patch-package": "^7.0.0",
@@ -27,6 +29,7 @@
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-calendars": "^1.1298.0",
+    "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-confetti": "^0.1.0",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-elements": "^3.4.3",
@@ -41,13 +44,13 @@
     "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "^3.20.0",
     "react-native-share": "^9.2.0",
+    "react-native-svg": "13.4.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-view-shot": "^3.7.0",
     "react-native-webview": "11.26.0",
     "react-native-youtube": "^2.0.2",
     "react-native-youtube-iframe": "^2.2.2",
-    "react-youtube": "^10.1.0",
-    "expo-sharing": "~11.2.2"
+    "react-youtube": "^10.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
