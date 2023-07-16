@@ -1,7 +1,7 @@
-import { Text, View, ScrollView, Dimensions, Image, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, Dimensions, Image, ActivityIndicator, Alert } from 'react-native';
 import { Card, Chip, Appbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState,useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import Carousel from 'react-native-new-snap-carousel/src/carousel/Carousel';
@@ -9,7 +9,7 @@ import Pagination from 'react-native-new-snap-carousel/src/pagination/Pagination
 import styles from './styles';
 import { database } from '../../database/config';
 import { AuthContext } from '../../contexts/AuthContext';
-
+import * as Notifications from 'expo-notifications';
 
 //#1 Users will be provided audio/video tutorials as a part of their daily workout routine.
 
@@ -27,6 +27,7 @@ const Workout_details = ({ route }) => {
   const [isMute, setMute] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [goalsData, setGoalsData] = useState(null);
 
 
   const { uid } = useContext(AuthContext);
@@ -57,15 +58,29 @@ const Workout_details = ({ route }) => {
     navigation.goBack();
   };
 
-  const handleOpenVideo = () => {
-    navigation.navigate('WorkoutVideo');
-  };
-
   const getVideoId = (url) => {
     return url.split('v=')[1]?.split('&')[0];
   }
 
- 
+  useEffect(() => {
+    const goalsRef = database.ref(`users/${uid}/goals`);
+    const goalsListener = goalsRef.on('value', (snapshot) => {
+      const goalsData = snapshot.val();
+
+      if (goalsData === null) {
+        console.log('No goals found');
+      } else {
+        setGoalsData(goalsData);
+      }
+    }, (error) => {
+      console.log('Error retrieving goals data:', error);
+    });
+
+    return () => {
+      goalsRef.off('value', goalsListener);
+    };
+  }, []);
+
 
   useEffect(() => {
     const updateWorkoutDuration = async () => {
@@ -77,6 +92,7 @@ const Workout_details = ({ route }) => {
 
         await userRef.set(updatedDuration);
         console.log('Workout duration updated successfully:', updatedDuration);
+
       } catch (error) {
         console.log('Error updating workout duration:', error);
       }
@@ -84,6 +100,38 @@ const Workout_details = ({ route }) => {
 
     updateWorkoutDuration();
   }, []);
+
+  useEffect(() => {
+    const formDataRef = database.ref(`users/${uid}/formData`);
+    const formDataListener = formDataRef.on('value', (snapshot) => {
+      const formData = snapshot.val();
+      const currentDuration = formData?.workoutDuration || 0;
+
+      if (goalsData) {
+        Object.entries(goalsData).forEach(([key, value]) => {
+          const goalRef = database.ref(`users/${uid}/goals/${key}`);
+          const updatedPercent = (((currentDuration - value.breakpoint) / value.value) * 100).toFixed(0);
+          goalRef.update({ percent: updatedPercent });
+          console.log(`Goal "${key}" percentage updated to ${updatedPercent}`);
+          //For Developers
+          const newPercent = ((currentDuration / value.goal) * 100).toFixed(0);
+          console.log("(Developers)New Percent %: ", newPercent)
+          console.log(value.isActive)
+          if (updatedPercent >= 100 && value.isActive) {
+            sendLocalNotification(`Goal "${key}" Achieved`, 'Congratulations! You have achieved your goal.')
+            goalRef.update({ isActive: false }); // Set isActive to false 
+          }
+
+        });
+      }
+    }, (error) => {
+      console.log('Error retrieving form data:', error);
+    });
+
+    return () => {
+      formDataRef.off('value', formDataListener);
+    };
+  }, [goalsData]);
 
 
   const onStateChange = (state) => {
@@ -117,6 +165,25 @@ const Workout_details = ({ route }) => {
     }
 
     return null;
+  };
+
+
+  const sendLocalNotification = async (title, body) => {
+    const handler = async () => {
+      return { shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: true };
+    };
+
+    Notifications.setNotificationHandler(handler);
+
+    await Notifications.presentNotificationAsync({
+      title,
+      body,
+      ios: {
+        _displayInForeground: true,
+      },
+    });
+
+    console.log('Notification sent:', title, body);
   };
 
   return (
