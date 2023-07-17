@@ -293,7 +293,7 @@ const WorkoutGoal = () => {
                                         <View style={styles.cardTextContainer}>
                                             <Title>{item.type}</Title>
                                             <Paragraph>{'Goal: ' + item.value + ' minutes'}</Paragraph>
-                                            <Paragraph>{+ item.percent >= 100 ? 'Completed: 100%' : 'Completed: ' + item.percent + '%'}</Paragraph>
+                                            {/* <Paragraph>{+ item.percent >= 100 ? 'Completed: 100%' : 'Completed: ' + item.percent + '%'}</Paragraph> */}
                                         </View>
                                         <CircularProgress
                                             value={item.percent >= 100 ? 100 : item.percent}
