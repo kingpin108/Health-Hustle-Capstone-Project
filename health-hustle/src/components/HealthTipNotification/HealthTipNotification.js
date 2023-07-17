@@ -17,11 +17,10 @@ export default function HealthTipNotification() {
     };
 
     const [activeItem, setActiveItem] = React.useState('home');
-
     const [healthTips, setHealthTips] = useState([]);
     const [selectedTip, setSelectedTip] = useState('');
-
     const [reminder, setReminder] = useState(false);
+    const [hydration, setHydration] = useState(false);
     const [schedule, setSchedule] = useState([]);
 
     const handleReminderPress = async () => {
@@ -41,6 +40,10 @@ export default function HealthTipNotification() {
         // }
     }
 
+    const handleHydrationPress = async () => {
+        setHydration(!hydration)
+    }
+
     //Load scheduled reminders
     useEffect(() => {
         (async () => {
@@ -48,6 +51,9 @@ export default function HealthTipNotification() {
             setSchedule(previouslyScheduled);
             if (previouslyScheduled.find((item) => item.type === 'reminder')) {
                 setReminder(true);
+            }
+            if (previouslyScheduled.find((item) => item.type === 'hydration')) {
+                setHydration(true);
             }
         })();
     }, []);
@@ -62,6 +68,12 @@ export default function HealthTipNotification() {
             await scheduleReminder();
         } else {
             await cancelReminder();
+        }
+
+        if (hydration) {
+            await scheduleHydrationReminder();
+        } else {
+            await cancelHydrationReminder();
         }
     };
 
@@ -96,7 +108,7 @@ export default function HealthTipNotification() {
             <StatusBar bar-style='dark-content' />
             <Appbar.Header style={styles.appHeaderContainer}>
                 <Appbar.Content
-                    title="Settings"
+                    title="Notification"
                     titleStyle={styles.appHeaderTitle}
                 />
                 <Appbar.Action icon="home" onPress={handleHomePress} />
@@ -116,17 +128,19 @@ export default function HealthTipNotification() {
                             )}
                         />
                     </Drawer.Section>
-                    {/* <Drawer.Section>
+                    <Drawer.Section>
                         <Drawer.Item
-                            label="Theme"
-                            icon="theme-light-dark"
-                            active={activeItem === 'theme'}
-                            onPress={() => handleItemPress('theme')}
+                            label="Hydration Check"
+                            icon={({ color, size }) => <MaterialCommunityIcons name="cup" size={size} color={color} />}
+                            active={activeItem === 'hydrationCheck'}
                             right={() => (
-                                <Text>Light</Text>
+                                <Switch
+                                    value={hydration} // Replace with your toggle value state
+                                    onValueChange={handleHydrationPress} // Replace with your toggle value change handler
+                                />
                             )}
                         />
-                    </Drawer.Section> */}
+                    </Drawer.Section>
                     <Button icon={({ color, size }) => <MaterialCommunityIcons name="content-save" size={size} color={color} />}
                         mode="contained"
                         onPress={handleSave}
@@ -204,7 +218,6 @@ async function cancelReminder() {
             console.log('Cancelled:', item.id);
             cancelled = true;
         }
-
     }
 
     console.log('Was cancelled:', cancelled);
@@ -223,5 +236,77 @@ async function getSchedule() {
 
     return schedule;
 
+}
+
+
+async function scheduleHydrationReminder() {
+    console.log('Schedule for', Platform.OS);
+
+    try {
+        const permissions = await Notifications.getPermissionsAsync();
+        console.log('Permissions:', permissions);
+        if (!permissions.granted) {
+            const request = await Notifications.requestPermissionsAsync({
+                ios: {
+                    allowAlert: true,
+                    allowSound: true,
+                    allowBadge: true
+                }
+            });
+            console.log('Request: ', request);
+            if (!request.granted) {
+                return false;
+            }
+        }
+
+        //Schedule a Notification
+        const id = await Notifications.scheduleNotificationAsync({
+            content: {
+                title: 'Hydration Check',
+                body: 'Remember to drink water',
+                sound: true,
+                subtitle: 'Stay Hydrated!',
+                color: 'blue',
+                priority: Notifications.AndroidNotificationPriority.HIGH,
+                badge: 1,
+                data: {
+                    userId: 205,
+                    userName: 'Ruhi',
+                    type: 'hydration'
+                },
+            },
+            trigger: {
+                seconds: 8,
+                repeats: true
+            }
+        });
+        console.log('Schedule Id: ', id);
+
+        if (!id) {
+            return false
+        }
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
+
+async function cancelHydrationReminder() {
+    console.log('Cancel for', Platform.OS);
+    let cancelled = false;
+
+    const schedule = await getSchedule();
+
+    for (const item of schedule) {
+        if (item.type === 'hydration') {
+            await Notifications.cancelScheduledNotificationAsync(item.id);
+            console.log('Cancelled:', item.id);
+            cancelled = true;
+        }
+    }
+
+    console.log('Was cancelled:', cancelled);
+    return cancelled;
 }
 
