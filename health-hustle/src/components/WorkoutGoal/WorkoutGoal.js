@@ -30,47 +30,47 @@ const WorkoutGoal = () => {
 
     const fetchGoals = async () => {
         try {
-          const goalsRef = database.ref(`users/${uid}/goals`);
-          const formDataRef = database.ref(`users/${uid}/formData`);
-          
-          const snapshot = await goalsRef.once('value');
-          const goalsData = snapshot.val();
-      
-          if (goalsData === null) {
-            setCardData([]);
-          } else {
-            const goalsArray = Object.entries(goalsData).map(([key, value]) => ({
-              key,
-              ...value,
-            }));
-      
-            const formDataSnapshot = await formDataRef.once('value');
-            const formData = formDataSnapshot.val();
-            const workoutDuration = formData.workoutDuration;
-            console.log("Workout Duration: ", workoutDuration)
-      
-            const updatedGoals = goalsArray.map((goal) => {
-              if (goal.type === 'Duration') {
-                //For Developers
-                const newPercent = ((workoutDuration / goal.goal) * 100).toFixed(0);
-                console.log("(Developers)New Percent %: ", newPercent)
+            const goalsRef = database.ref(`users/${uid}/goals`);
+            const formDataRef = database.ref(`users/${uid}/formData`);
 
-                //For Users
-                const newPercentage = (((workoutDuration - goal.breakpoint) / goal.value) * 100).toFixed(0);
-                console.log("(Users)New Percent %: ", newPercentage)
+            const snapshot = await goalsRef.once('value');
+            const goalsData = snapshot.val();
 
-                const updatedGoal = { ...goal, percent: newPercentage };
-                goalsRef.child(goal.key).update({ percent: newPercentage });
-                return updatedGoal;
-              }
-              return goal;
-            });
-            setCardData(updatedGoals);
-          }
+            if (goalsData === null) {
+                setCardData([]);
+            } else {
+                const goalsArray = Object.entries(goalsData).map(([key, value]) => ({
+                    key,
+                    ...value,
+                }));
+
+                const formDataSnapshot = await formDataRef.once('value');
+                const formData = formDataSnapshot.val();
+                const workoutDuration = formData.workoutDuration;
+                console.log("Workout Duration: ", workoutDuration)
+
+                const updatedGoals = goalsArray.map((goal) => {
+                    if (goal.type === 'Duration') {
+                        //For Developers
+                        const newPercent = ((workoutDuration / goal.goal) * 100).toFixed(0);
+                        console.log("(Developers)New Percent %: ", newPercent)
+
+                        //For Users
+                        const newPercentage = (((workoutDuration - goal.breakpoint) / goal.value) * 100).toFixed(0);
+                        console.log("(Users)New Percent %: ", newPercentage)
+
+                        const updatedGoal = { ...goal, percent: newPercentage };
+                        goalsRef.child(goal.key).update({ percent: newPercentage });
+                        return updatedGoal;
+                    }
+                    return goal;
+                });
+                setCardData(updatedGoals);
+            }
         } catch (error) {
-          console.error('Error fetching goals:', error);
+            console.error('Error fetching goals:', error);
         }
-      };
+    };
     const handleSubmit = async () => {
         setIsLoading(true);
 
@@ -115,7 +115,6 @@ const WorkoutGoal = () => {
             }
 
             const trimmedValue = durationVal.toString().replace(/^0+/, '');
-
             const newCard = {
                 title: 'Duration',
                 description: trimmedValue + ' minutes'
@@ -293,8 +292,8 @@ const WorkoutGoal = () => {
                                     <Card.Content style={styles.cardContent}>
                                         <View style={styles.cardTextContainer}>
                                             <Title>{item.type}</Title>
-                                            <Paragraph>{item.value}</Paragraph>
-                                            {/* <Paragraph>{item.percent >= 100 ? '100%' : item.percent + '%'}</Paragraph> */}
+                                            <Paragraph>{'Goal: ' + item.value + ' minutes'}</Paragraph>
+                                            <Paragraph>{+ item.percent >= 100 ? 'Completed: 100%' : 'Completed: ' + item.percent + '%'}</Paragraph>
                                         </View>
                                         <CircularProgress
                                             value={item.percent >= 100 ? 100 : item.percent}

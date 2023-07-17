@@ -16,8 +16,24 @@ import DietPlan from './src/components/DietPlans/DietPlan';
 import FitnessBlogs from './src/components/FitnessBlogs/FitnessBlogs';
 import StepCount from './src/components/StepCount/StepCount';
 import SocialShare from './src/components/SocialShare/SocialShare';
+import HealthTipNotification from './src/components/HealthTipNotification/HealthTipNotification';
+import * as Notifications from 'expo-notifications'
 
 const Stack = createStackNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true
+  }),
+  handleSuccess: (notificationId) => {
+    console.log('Handler Success:', notificationId)
+  },
+  handleError: (notificationId, error) => {
+    console.log('Handler Error:', error);
+  }
+});
 
 export default function App() {
   return (
@@ -29,15 +45,12 @@ export default function App() {
 
 const AppNavigator = () => {
   const { user } = useContext(AuthContext);
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen name="SocialShare" component={SocialShare} options={{ headerShown: false }} /> */}
-
         {user ? (
           <>
-
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="Workout" component={Workout} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
@@ -50,7 +63,7 @@ const AppNavigator = () => {
             <Stack.Screen name="WorkoutGoal" component={WorkoutGoal} options={{ headerShown: false }} />
             <Stack.Screen name="FitnessBlogs" component={FitnessBlogs} options={{ headerShown: false }} />
             <Stack.Screen name="StepCount" component={StepCount} options={{ headerShown: false }} />
-
+            <Stack.Screen name="HealthTipNotification" component={HealthTipNotification} options={{ headerShown: false }} />
           </>
         ) : (
           <>
