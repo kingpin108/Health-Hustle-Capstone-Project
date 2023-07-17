@@ -53,15 +53,15 @@ const Settings = () => {
                             onPress={() => handleItemPress('WorkoutProfile')}
                         />
                     </Drawer.Section>
-                    {/* <Drawer.Section>
+                    <Drawer.Section>
                         <Drawer.Item
                             label="Notifications"
                             icon="bell"
                             active={activeItem === 'settings'}
-                            onPress={() => handleItemPress('settings')}
+                            onPress={() => handleItemPress('HealthTipNotification')}
                         />
                     </Drawer.Section>
-                    <Drawer.Section>
+                    {/* <Drawer.Section>
                         <Drawer.Item
                             label="Theme"
                             icon="theme-light-dark"
@@ -71,8 +71,8 @@ const Settings = () => {
                                 <Text>Light</Text>
                             )}
                         />
-                    </Drawer.Section>
-                    <Drawer.Section>
+                    </Drawer.Section> */}
+                    {/* <Drawer.Section>
                         <Drawer.Item
                             label="About"
                             icon="information"
