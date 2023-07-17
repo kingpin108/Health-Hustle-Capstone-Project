@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar, PermissionsAndroid } from 'react-native';
+import { StatusBar, PermissionsAndroid, Platform } from 'react-native';
 import { View, Dimensions, Image } from 'react-native';
 import { Pedometer } from 'expo-sensors';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import { useNavigation } from '@react-navigation/native';
 import { Badge, Text, Appbar } from 'react-native-paper';
 import styles from './styles';
@@ -20,21 +19,30 @@ export default function App() {
   const subscribe = async () => {
     try {
       if (Platform.OS === 'android') {
-        // const granted = await PermissionsAndroid.request(
-        //   PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
-        // );
-        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        //   console.log('Activity recognition permission granted');
-        //   startStepCountSubscription();
-        // } else {
-        //   console.log('Activity recognition permission denied');
-        // }
-        startStepCountSubscription();
+        const granted = await requestAndroidPermission();
+        if (granted) {
+          console.log('Activity recognition permission granted');
+          startStepCountSubscription();
+        } else {
+          console.log('Activity recognition permission denied');
+        }
       } else {
         startStepCountSubscription();
       }
     } catch (error) {
       console.log('Error requesting permission:', error);
+    }
+  };
+
+  const requestAndroidPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (error) {
+      console.log('Error requesting permission:', error);
+      return false;
     }
   };
 
@@ -86,18 +94,18 @@ export default function App() {
           source={require('../../../assets/step_count.png')}
           resizeMode="contain"
         />
-        <View style={{flex:1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.stepCountCircle}>
             <Text variant="titleMedium" style={{ alignSelf: 'center' }}>Step Count</Text>
-            <Text variant="titleLarge" style={{ alignSelf: 'center', fontWeight:'700' }}>{stepCount}</Text>
+            <Text variant="titleLarge" style={{ alignSelf: 'center', fontWeight: '700' }}>{stepCount}</Text>
           </View>
           <View style={styles.stepCountCircle}>
             <Text variant="titleMedium" style={{ alignSelf: 'center', textAlign: 'center', paddingBottom: 5 }}>Distance Covered</Text>
-            <Text variant="titleLarge" style={{ alignSelf: 'center', fontWeight:'700' }}>{distanceCovered} km</Text>
+            <Text variant="titleLarge" style={{ alignSelf: 'center', fontWeight: '700' }}>{distanceCovered} km</Text>
           </View>
           <View style={styles.stepCountCircle}>
             <Text variant="titleMedium" style={{ alignSelf: 'center', textAlign: 'center', paddingBottom: 5 }}>Calories Burnt</Text>
-            <Text variant="titleLarge" style={{ alignSelf: 'center', fontWeight:'700' }}>{caloriesBurnt}</Text>
+            <Text variant="titleLarge" style={{ alignSelf: 'center', fontWeight: '700' }}>{caloriesBurnt}</Text>
           </View>
         </View>
       </View>

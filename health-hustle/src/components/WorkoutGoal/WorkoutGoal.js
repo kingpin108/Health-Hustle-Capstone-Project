@@ -3,10 +3,10 @@ import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, Scr
 import { Drawer, Appbar, Divider, Text, Button, Checkbox, TextInput, Switch, RadioButton, SegmentedButtons, Card, Title, Paragraph } from 'react-native-paper';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-// import ProgressCircle from 'react-native-progress-circle'
 import styles from './styles';
 import { AuthContext } from '../../contexts/AuthContext';
 import { database } from '../../database/config';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 
 const WorkoutGoal = () => {
@@ -294,18 +294,24 @@ const WorkoutGoal = () => {
                                         <View style={styles.cardTextContainer}>
                                             <Title>{item.type}</Title>
                                             <Paragraph>{item.value}</Paragraph>
-                                            <Paragraph>{item.percent >= 100 ? '100%' : item.percent + '%'}</Paragraph>
+                                            {/* <Paragraph>{item.percent >= 100 ? '100%' : item.percent + '%'}</Paragraph> */}
                                         </View>
-                                        {/* <ProgressCircle
-                      percent={0}
-                      radius={30}
-                      borderWidth={4}
-                      color="purple"
-                      shadowColor="#999"
-                      bgColor="#fff"
-                    >
-                      <Text style={{ fontSize: 14 }}>{0 + '%'}</Text>
-                    </ProgressCircle> */}
+                                        <CircularProgress
+                                            value={item.percent >= 100 ? 100 : item.percent}
+                                            maxValue={100}
+                                            initialValue={0}
+                                            radius={40}
+                                            textColor={"#352472"}
+                                            activeStrokeColor={"#352472"}
+                                            inActiveStrokeColor={"#9b59b6"}
+                                            inActiveStrokeOpacity={0.5}
+                                            inActiveStrokeWidth={10}
+                                            activeStrokeWidth={10}
+                                            title={"%"}
+                                            titleFontSize={12}
+                                            titleColor={"#352472"}
+                                            titleStyle={{ fontWeight: "bold" }}
+                                        />
                                     </Card.Content>
                                 </Card>
                             ))
