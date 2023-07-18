@@ -277,7 +277,7 @@ async function scheduleHydrationReminder() {
             },
             trigger: {
                 seconds: 8,
-                repeats: true
+                // repeats: true
             }
         });
         console.log('Schedule Id: ', id);

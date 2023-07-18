@@ -11,15 +11,12 @@ import ViewShot, { captureRef } from "react-native-view-shot";
 import * as Sharing from 'expo-sharing';
 
 //[#7] Users can share their achievements on social media platforms
+//[#3]Users can set workout goals and check how they have done on a weekly summary
 const WorkoutGoal = () => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
     const [shareGoal, setShareGoal] = useState('')
-
-    const handleHomePress = () => {
-        navigation.navigate('Workout');
-    };
 
     const handleBack = () => {
         navigation.goBack();
@@ -77,7 +74,6 @@ const WorkoutGoal = () => {
     };
     const handleSubmit = async () => {
         setIsLoading(true);
-
         if (value === 'A' && duration) {
             const trimmedDuration = duration.trim();
             const durationVal = parseInt(trimmedDuration, 10);
@@ -99,7 +95,9 @@ const WorkoutGoal = () => {
                         'Invalid Input',
                         'Please set an achievable goal which is less than 101!'
                     );
-                } else {
+
+                }
+                else {
                     Alert.alert(
                         'Invalid Input',
                         'Duration should be a valid numeric input.'
@@ -233,7 +231,7 @@ const WorkoutGoal = () => {
     }
 
     useEffect(() => {
-        console.log("GOAL:" +shareGoal);
+        console.log("GOAL:" + shareGoal);
     }, [shareGoal]);
 
     const shareImage = async () => {
@@ -257,7 +255,7 @@ const WorkoutGoal = () => {
             <Appbar.Header style={styles.appHeaderContainer}>
                 <Appbar.BackAction onPress={handleBack} />
                 <Appbar.Content
-                    title="Set Workout Goal"
+                    title="Set Weekly Workout Goal"
                     titleStyle={styles.appHeaderTitle}
                 />
             </Appbar.Header>
@@ -274,6 +272,7 @@ const WorkoutGoal = () => {
                             {
                                 value: 'B',
                                 label: 'Step Count',
+                                disabled: 'true'
                             },
                         ]}
                     />
@@ -288,7 +287,12 @@ const WorkoutGoal = () => {
                                 keyboardType='numeric'
                                 style={{ marginVertical: 10, width: 300 }}
                             />
-                            <Button mode="contained" onPress={handleSubmit} style={{ marginVertical: 10 }}>
+                            <Button
+                                mode="contained"
+                                onPress={handleSubmit}
+                                style={{ marginVertical: 10 }}
+                                disabled={!duration} // Disable the button if duration is empty
+                            >
                                 Add Goal
                             </Button>
                         </View>
@@ -373,8 +377,8 @@ const WorkoutGoal = () => {
                                         style={styles.generatedImage}
                                         source={require('../../../assets/trophy.png')}
                                     />
-                                    <Text variant='headlineLarge' style={{fontWeight:'bold',color:'#2D4356'}}>ACHIEVED</Text>
-                                    <Text variant='headlineSmall' style={{fontWeight:'bold',color:'#1D267D',textAlign:'center'}}>{"I worked out for "+shareGoal+" minutes"}</Text>
+                                    <Text variant='headlineLarge' style={{ fontWeight: 'bold', color: '#2D4356' }}>ACHIEVED</Text>
+                                    <Text variant='headlineSmall' style={{ fontWeight: 'bold', color: '#1D267D', textAlign: 'center' }}>{"I worked out for " + shareGoal + " minutes"}</Text>
                                 </ViewShot>
                                 <View style={{ flexDirection: 'row' }}>
                                     <FAB
