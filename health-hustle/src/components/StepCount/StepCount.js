@@ -8,6 +8,7 @@ import styles from './styles';
 import { AuthContext } from '../../contexts/AuthContext';
 import { database } from '../../database/config';
 
+//[#11] Users get a daily step count update.
 export default function App() {
   const [pedometerAvailability, setPedometerAvailability] = useState('');
   const [stepCount, setStepCount] = useState(0);
