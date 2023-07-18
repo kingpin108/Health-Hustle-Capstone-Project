@@ -9,6 +9,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications'
 import { database } from '../../database/config';
 
+//[#4] Users get daily health tip notifications
+
 export default function HealthTipNotification() {
     const navigation = useNavigation();
 

@@ -272,7 +272,7 @@ const WorkoutGoal = () => {
                             {
                                 value: 'B',
                                 label: 'Step Count',
-                                disabled: 'true'
+                                disabled: true
                             },
                         ]}
                     />
@@ -291,7 +291,7 @@ const WorkoutGoal = () => {
                                 mode="contained"
                                 onPress={handleSubmit}
                                 style={{ marginVertical: 10 }}
-                                disabled={!duration} // Disable the button if duration is empty
+                                disabled={!duration}
                             >
                                 Add Goal
                             </Button>
