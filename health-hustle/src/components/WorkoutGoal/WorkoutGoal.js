@@ -1,17 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { Drawer, Appbar, Divider, Text, Button, Checkbox, TextInput, Switch, RadioButton, SegmentedButtons, Card, Title, Paragraph } from 'react-native-paper';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { View, SafeAreaView, ScrollView, ActivityIndicator, Alert, Modal, Image, ImageBackground } from 'react-native';
+import { Appbar, Text, Button, TextInput, SegmentedButtons, Card, Title, Paragraph, FAB } from 'react-native-paper';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import styles from './styles';
 import { AuthContext } from '../../contexts/AuthContext';
 import { database } from '../../database/config';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import ViewShot, { captureRef } from "react-native-view-shot";
+import * as Sharing from 'expo-sharing';
 
-
+//[#7] Users can share their achievements on social media platforms
 const WorkoutGoal = () => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [shareGoal, setShareGoal] = useState('')
 
     const handleHomePress = () => {
         navigation.navigate('Workout');
@@ -222,6 +226,31 @@ const WorkoutGoal = () => {
         }
     }, [isFocused]);
 
+    const ref = useRef();
+    const shareAchievement = (goal) => {
+        setShareGoal(goal)
+        setModalVisible(true)
+    }
+
+    useEffect(() => {
+        console.log("GOAL:" +shareGoal);
+    }, [shareGoal]);
+
+    const shareImage = async () => {
+        try {
+            const uri = await captureRef(ref, {
+                format: 'png',
+                quality: 0.7,
+            });
+            console.log('uri', uri);
+            await Sharing.shareAsync(uri);
+
+            // await Share.open({url: uri});
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <>
             <StatusBar bar-style='dark-content' />
@@ -281,7 +310,7 @@ const WorkoutGoal = () => {
                         </View>
                     )}
 
-                    <ScrollView contentContainerStyle={{ padding: 16 }} style={{ margin: 10 }}>
+                    <ScrollView contentContainerStyle={{ padding: 16 }}>
                         {isLoading ? (
                             <ActivityIndicator size="small" color="gray" />
                         ) : cardData.length === 0 ? (
@@ -312,11 +341,59 @@ const WorkoutGoal = () => {
                                             titleStyle={{ fontWeight: "bold" }}
                                         />
                                     </Card.Content>
+                                    <Card.Content>
+                                        {item.percent >= 100 && (
+                                            <Button
+                                                icon="share"
+                                                textColor='#352472'
+                                                mode="elevated"
+                                                style={styles.shareButton}
+                                                onPress={() => shareAchievement(item.value)}>
+                                                Share
+                                            </Button>
+                                        )}
+                                    </Card.Content>
                                 </Card>
                             ))
                         )}
                     </ScrollView>
                 </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}>
+                    <View style={styles.centeredView}>
+                        <ImageBackground source={require('../../../assets/confetti.png')} style={styles.backgroundImage}>
+                            <View style={styles.modalView}>
+                                <ViewShot ref={ref} style={{ alignItems: 'center', padding: 20, backgroundColor: 'white' }}>
+                                    <Image
+                                        style={styles.generatedImage}
+                                        source={require('../../../assets/trophy.png')}
+                                    />
+                                    <Text variant='headlineLarge' style={{fontWeight:'bold',color:'#2D4356'}}>ACHIEVED</Text>
+                                    <Text variant='headlineSmall' style={{fontWeight:'bold',color:'#1D267D',textAlign:'center'}}>{"I worked out for "+shareGoal+" minutes"}</Text>
+                                </ViewShot>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <FAB
+                                        icon="share"
+                                        style={styles.fab}
+                                        onPress={shareImage}
+                                        size='large'
+                                    />
+                                    <FAB
+                                        icon="close"
+                                        style={styles.fab}
+                                        onPress={() => setModalVisible(!modalVisible)}
+                                        size='large'
+                                    />
+                                </View>
+                            </View>
+                        </ImageBackground>
+                    </View>
+                </Modal>
             </SafeAreaView>
         </>
     );

@@ -5,6 +5,8 @@ import { Pedometer } from 'expo-sensors';
 import { useNavigation } from '@react-navigation/native';
 import { Badge, Text, Appbar } from 'react-native-paper';
 import styles from './styles';
+import { AuthContext } from '../../contexts/AuthContext';
+import { database } from '../../database/config';
 
 export default function App() {
   const [pedometerAvailability, setPedometerAvailability] = useState('');
