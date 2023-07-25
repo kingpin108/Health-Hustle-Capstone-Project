@@ -117,10 +117,10 @@ const Workout_details = ({ route }) => {
           const newPercent = ((currentDuration / value.goal) * 100).toFixed(0);
           console.log("(Developers)New Percent %: ", newPercent)
           console.log(value.isActive)
-          if (updatedPercent >= 100 && value.isActive) {
-            sendLocalNotification(`Goal "${key}" Achieved`, 'Congratulations! You have achieved your goal.')
-            goalRef.update({ isActive: false }); // Set isActive to false 
-          }
+          // if (updatedPercent >= 100 && value.isActive) {
+          //   sendLocalNotification(`Goal "${key}" Achieved`, 'Congratulations! You have achieved your goal.')
+          //   goalRef.update({ isActive: false }); // Set isActive to false 
+          // }
 
         });
       }
@@ -168,23 +168,23 @@ const Workout_details = ({ route }) => {
   };
 
 
-  const sendLocalNotification = async (title, body) => {
-    const handler = async () => {
-      return { shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: true };
-    };
+  // const sendLocalNotification = async (title, body) => {
+  //   const handler = async () => {
+  //     return { shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: true };
+  //   };
 
-    Notifications.setNotificationHandler(handler);
+  //   Notifications.setNotificationHandler(handler);
 
-    await Notifications.presentNotificationAsync({
-      title,
-      body,
-      ios: {
-        _displayInForeground: true,
-      },
-    });
+  //   await Notifications.presentNotificationAsync({
+  //     title,
+  //     body,
+  //     ios: {
+  //       _displayInForeground: true,
+  //     },
+  //   });
 
-    console.log('Notification sent:', title, body);
-  };
+  //   console.log('Notification sent:', title, body);
+  // };
 
   return (
     <>

@@ -10,6 +10,8 @@ import * as Notifications from 'expo-notifications'
 import { database } from '../../database/config';
 
 //[#4] Users get daily health tip notifications
+//[#12]Notify users about the hydration check.
+
 
 export default function HealthTipNotification() {
     const navigation = useNavigation();
