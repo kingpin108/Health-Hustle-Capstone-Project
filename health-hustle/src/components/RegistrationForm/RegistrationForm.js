@@ -129,6 +129,7 @@ const RegistrationForm = () => {
     const handleGenderChange = (selectedGender) => {
         if (gender !== selectedGender) {
             setGender(selectedGender);
+            setBodyType('E');
         }
         setStep((prevStep) => prevStep + 1);
     }
