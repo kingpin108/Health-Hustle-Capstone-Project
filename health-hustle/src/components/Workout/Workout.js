@@ -159,7 +159,7 @@ const Workout = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#150359", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('WorkoutGoal')}>
-                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Set Workout Goals</Text>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Workout Goals</Text>
                     </TouchableOpacity>
 
                     {/* <Text style={styles.header}>Body Focus</Text>
