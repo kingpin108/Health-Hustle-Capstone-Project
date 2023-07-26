@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginRegister from './src/components/LoginRegister/LoginRegister';
@@ -18,6 +18,7 @@ import StepCount from './src/components/StepCount/StepCount';
 import SocialShare from './src/components/SocialShare/SocialShare';
 import HealthTipNotification from './src/components/HealthTipNotification/HealthTipNotification';
 import * as Notifications from 'expo-notifications'
+
 
 const Stack = createStackNavigator();
 
@@ -39,7 +40,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AppNavigator />
-    </AuthProvider>
+    </AuthProvider>   
   );
 }
 

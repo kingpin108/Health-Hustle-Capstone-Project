@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable } from 'react-native';
-import { Button, Text, IconButton, Appbar, useTheme, Drawer, Divider, TouchableRipple } from 'react-native-paper';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, Appearance } from 'react-native';
+import { Button, Text, IconButton, Appbar, useTheme, Drawer, Divider, TouchableRipple, Switch } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { AuthContext } from '../../contexts/AuthContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
 
@@ -16,6 +17,7 @@ const Settings = () => {
     };
 
     const [activeItem, setActiveItem] = React.useState('home');
+    const [hydration, setHydration] = useState(false);
 
     const handleItemPress = (item) => {
         setActiveItem(item);
@@ -23,6 +25,10 @@ const Settings = () => {
     };
 
     const { logout } = useContext(AuthContext);
+
+    const handleHydrationPress = async () => {
+        setHydration(!hydration)
+    }
 
     const handleLogout = async () => {
         try {
@@ -61,25 +67,16 @@ const Settings = () => {
                             onPress={() => handleItemPress('HealthTipNotification')}
                         />
                     </Drawer.Section>
-                    {/* <Drawer.Section>
+                    <Drawer.Section>
                         <Drawer.Item
-                            label="Theme"
-                            icon="theme-light-dark"
+                            label="Change Theme"
+                            icon={({ color, size }) => <MaterialCommunityIcons name="theme-light-dark" size={size} color={color} />}
                             active={activeItem === 'theme'}
-                            onPress={() => handleItemPress('theme')}
                             right={() => (
-                                <Text>Light</Text>
+                                <Switch value={hydration} onValueChange={handleHydrationPress} />
                             )}
                         />
-                    </Drawer.Section> */}
-                    {/* <Drawer.Section>
-                        <Drawer.Item
-                            label="About"
-                            icon="information"
-                            active={activeItem === 'about'}
-                            onPress={() => handleItemPress('about')}
-                        />
-                    </Drawer.Section> */}
+                    </Drawer.Section>
                     <Button icon="logout" mode="contained" onPress={handleLogout} style={{ margin: 16 }}>
                         Logout
                     </Button>
