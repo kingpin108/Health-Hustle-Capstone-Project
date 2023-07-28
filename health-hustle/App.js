@@ -15,7 +15,7 @@ import WorkoutProfile from './src/components/WorkoutProfile/WorkoutProfile';
 import DietPlan from './src/components/DietPlans/DietPlan';
 import FitnessBlogs from './src/components/FitnessBlogs/FitnessBlogs';
 import StepCount from './src/components/StepCount/StepCount';
-import SocialShare from './src/components/SocialShare/SocialShare';
+import Feedback from './src/components/FeedbackHandler/Feedback';
 import HealthTipNotification from './src/components/HealthTipNotification/HealthTipNotification';
 import * as Notifications from 'expo-notifications'
 
@@ -65,6 +65,7 @@ const AppNavigator = () => {
             <Stack.Screen name="FitnessBlogs" component={FitnessBlogs} options={{ headerShown: false }} />
             <Stack.Screen name="StepCount" component={StepCount} options={{ headerShown: false }} />
             <Stack.Screen name="HealthTipNotification" component={HealthTipNotification} options={{ headerShown: false }} />
+            <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
           </>
         ) : (
           <>

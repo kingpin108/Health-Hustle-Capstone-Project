@@ -61,6 +61,14 @@ const Settings = () => {
                     </Drawer.Section>
                     <Drawer.Section>
                         <Drawer.Item
+                            label="Provide Feedback"
+                            icon="message-reply-text-outline"
+                            active={activeItem === 'feedback'}
+                            onPress={() => handleItemPress('Feedback')}
+                        />
+                    </Drawer.Section>
+                    <Drawer.Section>
+                        <Drawer.Item
                             label="Notifications"
                             icon="bell"
                             active={activeItem === 'settings'}
