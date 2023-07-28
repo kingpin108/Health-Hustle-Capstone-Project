@@ -14,8 +14,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   genderButton: {
-    borderWidth: 1,
-    borderColor: '#fff',
     padding: 5,
   },
   activeButton: {
@@ -38,7 +36,6 @@ const styles = StyleSheet.create({
   appHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: 'white',
     elevation: 4,
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
@@ -53,7 +50,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white'
   },
   questionText: {
     marginTop: 20,
@@ -61,7 +57,6 @@ const styles = StyleSheet.create({
     top: 0,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#0B022C',
   },
   genderImage: {
     resizeMode: 'contain',
@@ -70,10 +65,8 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   checkBox: {
-    backgroundColor: 'white',
     borderRadius: 20,
     marginBottom: 10,
-    shadowColor: 'black',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 2,

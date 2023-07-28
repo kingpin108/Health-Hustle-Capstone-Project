@@ -56,6 +56,8 @@ const RegistrationForm = () => {
     const weightInRange = parseFloat(weight) >= 40 && parseFloat(weight) <= 450;
     const weightDecimalCount = (weight.split('.')[1] || '').length;
     console.log("DecimalCount" + weightDecimalCount)
+    const [isDarkActive, setIsDarkActive] = useState(false);
+
 
 
     const handleNext = () => {
@@ -222,7 +224,8 @@ const RegistrationForm = () => {
             workoutList,
             workoutDuration,
             workoutDays,
-            totalSteps
+            totalSteps, 
+            isDarkActive
         };
 
         console.log(formData);
@@ -465,7 +468,7 @@ const RegistrationForm = () => {
                         <Text>{'\n'}</Text>
                         <View>
                             <Image
-                                source={require('../../../assets/human_body.jpeg')}
+                                source={require('../../../assets/human_body.png')}
                                 style={styles.focusAreaImage}
                             />
                             {focusArea.map((checkbox, index) => (

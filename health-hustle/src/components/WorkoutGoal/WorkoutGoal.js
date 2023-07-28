@@ -26,7 +26,7 @@ const WorkoutGoal = () => {
     const [duration, setDuration] = useState('');
     const [count, setCount] = useState('');
     const [cardData, setCardData] = useState([]);
-    const [percent, setPercent] = useState(1);
+    const [percent, setPercent] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchGoals = async () => {
@@ -207,7 +207,14 @@ const WorkoutGoal = () => {
                 const snapshot = await formDataRef.once('value');
 
                 const formData = snapshot.val();
-                setPercent(formData.workoutDuration)
+                if (formData && formData.workoutDuration) {
+                    setPercent(formData.workoutDuration);
+                    console.log("If Percent: ", percent)
+                } else {
+                    setPercent(0); // Set percent to 0 when workoutDuration is not available
+                    console.log("Else Percent: ", percent)
+
+                }
             } catch (error) {
                 console.error('Error fetching formData:', error);
             }

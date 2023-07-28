@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, Appbar, Button, Checkbox, Provider, Portal, Dialog } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,6 +8,8 @@ import axios from "axios";
 import { database } from '../../database/config';
 import { auth } from '../../database/config';
 import { AuthContext } from "../../contexts/AuthContext";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 //Issue #5
 const ListItem = ({ item }) => {
@@ -16,6 +18,7 @@ const ListItem = ({ item }) => {
   const handleRecipeModalToggle = () => {
     setShowRecipeModal(!showRecipeModal);
   };
+
 
   return (
     <TouchableOpacity
@@ -33,19 +36,23 @@ const ListItem = ({ item }) => {
 
       {showRecipeModal && (
         <Portal>
-          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle} style={{height: 600}}>
+          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle} style={{ height: 600 }}>
+            <Dialog.Actions>
+              <TouchableOpacity onPress={handleRecipeModalToggle} style={styles.closeIcon}>
+                <Icon name="times" size={30} color="#000" />
+              </TouchableOpacity>
+            </Dialog.Actions>
             <Dialog.Title style={styles.modalTitle}>{item.recipe.mealName}</Dialog.Title>
             <Dialog.Content>
               <Image source={{ uri: item.image }} style={styles.recipeImage} />
               <ScrollView showsVerticalScrollIndicator={true} style={styles.recipeScrollView}>
-              <Text variant="headlineSmall">Ingredients</Text>
+                <Text variant="headlineSmall">Ingredients</Text>
                 {item.recipe.ingredients.map((step, index) => (
                   <Text key={index} style={styles.recipeStep}>
                     {'\u2022'} {step}
                   </Text>
                 ))}
-
-              <Text variant="headlineSmall">Recipe</Text>
+                <Text variant="headlineSmall">Recipe</Text>
                 {item.recipe.instructions.map((step, index) => (
                   <Text key={index} style={styles.recipeStep}>
                     {'\u2022'} {step}
@@ -53,11 +60,6 @@ const ListItem = ({ item }) => {
                 ))}
               </ScrollView>
             </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={handleRecipeModalToggle} style={{marginTop:-20}}>
-                Close Recipe
-              </Button>
-            </Dialog.Actions>
           </Dialog>
         </Portal>
       )}
@@ -76,6 +78,7 @@ const DietPlan = () => {
   const [lactoseFreeChecked, setLactoseFreeChecked] = useState(false);
   const [filteredWorkoutData, setFilteredWorkoutData] = useState(false);
   const [bodyGoal, setBodyGoal] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
 
   let workoutSet = 'default';
@@ -124,15 +127,21 @@ const DietPlan = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
+
     axios.get(`https://health-hustle-88599-default-rtdb.firebaseio.com/DietPlan/diet.json`)
       .then(response => {
         const jsonData = response.data;
         const workoutArray = Object.values(jsonData);
         setWorkoutData(workoutArray);
         setFilteredWorkoutData(workoutArray);
+        setIsLoading(false); 
+
       })
       .catch(error => {
         console.error('Error fetching API data:', error);
+        setIsLoading(false); 
+
       });
   }, []);
 
@@ -170,6 +179,11 @@ const DietPlan = () => {
         <Appbar.Content title="Diet Plans" titleStyle={styles.appHeaderTitle} />
       </Appbar.Header>
       <SafeAreaView style={styles.container}>
+      {isLoading ? (
+         <View style={styles.loaderContainer}>
+         <ActivityIndicator size="large" color="#0000ff" />
+       </View>
+       ) : (
         <FlatList
           data={filteredWorkoutData}
           keyExtractor={(item) => item.recipe.mealName}
@@ -191,6 +205,7 @@ const DietPlan = () => {
           renderItem={({ item }) => <ListItem item={item} />}
           showsVerticalScrollIndicator={false}
         />
+       )}
         <Portal>
           <Dialog visible={showModal} onDismiss={handleModalToggle}>
             <Dialog.Title style={styles.modalTitle}>Select Filters:</Dialog.Title>

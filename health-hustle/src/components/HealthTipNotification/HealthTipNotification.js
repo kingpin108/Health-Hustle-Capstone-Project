@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, Platform } from 'react-native';
-import { Button, Text, IconButton, Appbar, useTheme, Drawer, Divider, TouchableRipple, Switch } from 'react-native-paper';
+import { StyleSheet, View, Platform, Alert } from 'react-native';
+import { Provider as PaperProvider, Button, Appbar, Drawer, Switch, List, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,8 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications'
 import { database } from '../../database/config';
+import { TextInput } from 'react-native-gesture-handler';
+
 
 //[#4] Users get daily health tip notifications
 //[#12]Notify users about the hydration check.
@@ -16,8 +18,8 @@ import { database } from '../../database/config';
 export default function HealthTipNotification() {
     const navigation = useNavigation();
 
-    const handleHomePress = () => {
-        navigation.navigate('Home');
+    const handleBack = () => {
+        navigation.goBack();
     };
 
     const [activeItem, setActiveItem] = React.useState('home');
@@ -26,6 +28,19 @@ export default function HealthTipNotification() {
     const [reminder, setReminder] = useState(false);
     const [hydration, setHydration] = useState(false);
     const [schedule, setSchedule] = useState([]);
+    const [theme, setTheme] = useState(false);
+    const [timeValue, setTimeValue] = useState('');
+    const [timeHydration, setTimeHydration] = useState('');
+    const { uid } = useContext(AuthContext);
+
+
+    const handleTimeInputChange = (text) => {
+        setTimeValue(text);
+    };
+
+    const handleHydrationInputChange = (text) => {
+        setTimeHydration(text);
+    };
 
     const handleReminderPress = async () => {
         setReminder(!reminder)
@@ -48,7 +63,6 @@ export default function HealthTipNotification() {
         setHydration(!hydration)
     }
 
-    //Load scheduled reminders
     useEffect(() => {
         (async () => {
             const previouslyScheduled = await getSchedule();
@@ -63,22 +77,51 @@ export default function HealthTipNotification() {
     }, []);
 
     const handleSave = async () => {
-        // Save the toggle state or any other data
-        // Here you can perform actions like storing the state in AsyncStorage or sending it to a server
+        const timeValueInt = parseInt(timeValue);
+        const timeHydrationInt = parseInt(timeHydration);
+
+        if (reminder && timeValue.trim() === '') {
+            Alert.alert('Invalid Reminder Time', 'Please enter a valid reminder time between 1 and 60.');
+            return;
+        }
+
+        if (hydration && timeHydration.trim() === '') {
+            Alert.alert('Invalid Hydration Time', 'Please enter a valid hydration time between 1 and 60.');
+            return;
+        }
+
+        setTimeValue(validateTime(timeValueInt));
+        setTimeHydration(validateTime(timeHydrationInt));
+
         console.log('Toggle state saved:', reminder);
 
-        // Update the schedule if the reminder is enabled
         if (reminder) {
-            await scheduleReminder();
+            if (isNaN(timeValueInt) || timeValueInt < 1 || timeValueInt > 60) {
+                Alert.alert('Invalid Reminder Time', 'Please enter a valid reminder time between 1 and 60.');
+                return;
+            }
+            await scheduleReminder(timeValueInt);
+
         } else {
             await cancelReminder();
         }
 
         if (hydration) {
-            await scheduleHydrationReminder();
+            if (isNaN(timeHydrationInt) || timeHydrationInt < 1 || timeHydrationInt > 60) {
+                Alert.alert('Invalid Hydration Time', 'Please enter a valid hydration time between 1 and 60.');
+                return;
+            }
+            await scheduleHydrationReminder(timeHydrationInt);
         } else {
             await cancelHydrationReminder();
         }
+
+        Alert.alert('Settings Saved', 'Your settings have been saved successfully.');
+    };
+
+    const validateTime = (time) => {
+        const parsedTime = parseInt(time);
+        return isNaN(parsedTime) ? '' : parsedTime.toString();
     };
 
     // const fetchHealthTips = async () => {
@@ -89,7 +132,7 @@ export default function HealthTipNotification() {
     //       const healthTipsArray = Object.values(healthTipsData);
     //     //   console.log("Health Array: ", healthTipsArray);
     //       setHealthTips(healthTipsArray);
-      
+
     //       if (healthTipsArray.length > 0) {
     //         const randomIndex = Math.floor(Math.random() * healthTipsArray.length);
     //         const tip = healthTipsArray[randomIndex];
@@ -100,50 +143,94 @@ export default function HealthTipNotification() {
     //       console.log('Error fetching health tips:', error);
     //     }
     //   };
-      
+
     //   useEffect(() => {
     //     fetchHealthTips();
     //   }, []);
 
     //Load scheduled reminders
+
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData`);
     
+        userRef
+          .once('value')
+          .then((snapshot) => {
+            const formData = snapshot.val();
+            if (formData && formData.isDarkActive !== undefined) {
+              setTheme(formData.isDarkActive); 
+              console.log(formData.isDarkActive)
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching isDarkActive from Firebase:', error);
+          });
+      }, [uid]);
+
+    const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+
+    const paperTheme =
+        theme
+            ? { ...MD3DarkTheme }
+            : { ...MD3LightTheme };
+
     return (
-        <>
-            <StatusBar bar-style='dark-content' />
+
+        <PaperProvider theme={paperTheme}>
+            {theme ? <></> : <StatusBar bar-style={'light-content'} />}            
             <Appbar.Header style={styles.appHeaderContainer}>
+                <Appbar.BackAction onPress={handleBack} />
                 <Appbar.Content
                     title="Notification"
                     titleStyle={styles.appHeaderTitle}
                 />
-                <Appbar.Action icon="home" onPress={handleHomePress} />
             </Appbar.Header>
             <>
-                <View style={{ flex: 1, paddingTop: 30, backgroundColor: 'white' }}>
+                <View style={[themeStyles.container]}>
                     <Drawer.Section>
-                        <Drawer.Item
-                            label="Daily Health Tips"
-                            icon={({ color, size }) => <MaterialCommunityIcons name="tooltip-plus" size={size} color={color} />}
-                            active={activeItem === 'DailyHealthTip'}
+                        <List.Item
+                            title="Daily Health Tips"
+                            left={(props) => <MaterialCommunityIcons name="tooltip-plus" size={24} {...props} />}
                             right={() => (
                                 <Switch
-                                    value={reminder} // Replace with your toggle value state
-                                    onValueChange={handleReminderPress} // Replace with your toggle value change handler
+                                    value={reminder}
+                                    onValueChange={handleReminderPress}
                                 />
                             )}
                         />
+                        {reminder && (
+                            <TextInput
+                                label="Enter time"
+                                placeholder="Enter time (mins)"
+                                value={timeValue}
+                                onChangeText={handleTimeInputChange}
+                                style={styles.textInput}
+                                keyboardType="numeric"
+                            />
+                        )}
                     </Drawer.Section>
                     <Drawer.Section>
-                        <Drawer.Item
-                            label="Hydration Check"
-                            icon={({ color, size }) => <MaterialCommunityIcons name="cup" size={size} color={color} />}
-                            active={activeItem === 'hydrationCheck'}
+                        <List.Item
+                            title="Hydration Check"
+                            left={(props) => <MaterialCommunityIcons name="cup" size={24} {...props} />}
                             right={() => (
                                 <Switch
-                                    value={hydration} // Replace with your toggle value state
-                                    onValueChange={handleHydrationPress} // Replace with your toggle value change handler
+                                    value={hydration}
+                                    onValueChange={handleHydrationPress}
                                 />
                             )}
                         />
+                        {hydration && (
+                            <TextInput
+                                label="Enter time"
+                                placeholder="Enter time (mins)"
+                                value={timeHydration}
+                                onChangeText={handleHydrationInputChange}
+                                style={styles.textInput}
+                                keyboardType="numeric"
+                            />
+                        )}
                     </Drawer.Section>
                     <Button icon={({ color, size }) => <MaterialCommunityIcons name="content-save" size={size} color={color} />}
                         mode="contained"
@@ -153,11 +240,12 @@ export default function HealthTipNotification() {
                     </Button>
                 </View>
             </>
-        </>
+            </PaperProvider>
+
     );
 };
 
-async function scheduleReminder() {
+async function scheduleReminder(notificationTime) {
     console.log('Schedule for', Platform.OS);
 
     try {
@@ -177,7 +265,6 @@ async function scheduleReminder() {
             }
         }
 
-        //Schedule a Notification
         const id = await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Daily Health Tip',
@@ -194,7 +281,7 @@ async function scheduleReminder() {
                 }
             },
             trigger: {
-                seconds: 5,
+                seconds: notificationTime * 60,
                 repeats: true
             }
         });
@@ -243,7 +330,7 @@ async function getSchedule() {
 }
 
 
-async function scheduleHydrationReminder() {
+async function scheduleHydrationReminder(notificationTime) {
     console.log('Schedule for', Platform.OS);
 
     try {
@@ -263,7 +350,6 @@ async function scheduleHydrationReminder() {
             }
         }
 
-        //Schedule a Notification
         const id = await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Hydration Check',
@@ -280,8 +366,8 @@ async function scheduleHydrationReminder() {
                 },
             },
             trigger: {
-                seconds: 8,
-                // repeats: true
+                seconds: notificationTime * 60,
+                repeats: true
             }
         });
         console.log('Schedule Id: ', id);
@@ -313,4 +399,20 @@ async function cancelHydrationReminder() {
     console.log('Was cancelled:', cancelled);
     return cancelled;
 }
+
+const lightThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 30,
+        backgroundColor: 'white',
+    },
+});
+
+const darkThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 30,
+        backgroundColor: '#444444',
+    },
+});
 

@@ -1,12 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, TouchableOpacity, Keyboard, KeyboardAvoidingView } from 'react-native';
-import { Drawer, Appbar, Divider, Text, Button, Checkbox, TextInput, Switch, RadioButton, Snackbar } from 'react-native-paper';
+import { StyleSheet, View, SafeAreaView, Image, TouchableOpacity, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Drawer, Appbar, Text, Button, Checkbox, TextInput, Switch, RadioButton, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import { AuthContext } from '../../contexts/AuthContext';
 import Popover from 'react-native-popover-view';
 import { database } from '../../database/config';
+import { colors } from 'react-native-elements';
 
 //Issue 15
 const WorkoutProfile = () => {
@@ -22,6 +23,8 @@ const WorkoutProfile = () => {
     ]);
     const allBodyGoals = bodyGoals.every(goal => !goal.checked);
     const [bodyType, setBodyType] = useState('A');
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const [focusArea, setFocusArea] = useState([
         { label: 'Upper Body', checked: true },
@@ -85,8 +88,6 @@ const WorkoutProfile = () => {
         return () => formDataRef.off();
     }, [uid]);
 
-    // console.log(formData);
-
     const handleGenderChange = (selectedGender) => {
         if (gender !== selectedGender) {
             setGender(selectedGender);
@@ -119,10 +120,8 @@ const WorkoutProfile = () => {
 
     const convertWeight = () => {
         if (isKg) {
-            // Convert weight from kg to lbs
             return Math.round(weight * 2.20462);
         } else {
-            // Convert weight from lbs to kg
             return Math.round(weight / 2.20462);
         }
     };
@@ -169,10 +168,6 @@ const WorkoutProfile = () => {
     };
 
     const [activeItem, setActiveItem] = useState('home');
-
-    const handleItemPress = (item) => {
-        setActiveItem(item);
-    };
 
     const handleBack = () => {
         navigation.goBack();
@@ -251,16 +246,46 @@ const WorkoutProfile = () => {
         }
     };
 
+    const [theme, setTheme] = useState(false);
+
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData`);
+
+        userRef
+            .once('value')
+            .then((snapshot) => {
+                const formData = snapshot.val();
+                if (formData && formData.isDarkActive !== undefined) {
+                    setTheme(formData.isDarkActive);
+                    setIsLoading(false); // Theme fetched, stop showing the loader
+
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching isDarkActive from Firebase:', error);
+                setIsLoading(false); // Error occurred, stop showing the loader
+
+            });
+    }, [uid]);
+
+    const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+    const paperTheme =
+        theme
+            ? { ...MD3DarkTheme }
+            : { ...MD3LightTheme };
+
+
     const renderContent = () => {
         if (active === 'gender') {
             return (
-                <View style={styles.contentContainer}>
+                <View style={[themeStyles.container]}>
                     <Text style={styles.questionText}>Select your gender:</Text>
                     <Text>{'\n'}</Text>
                     <TouchableOpacity onPress={() => handleGenderChange('male')}
                         style={[
                             styles.genderButton,
-                            gender === 'male' && styles.activeButton,
+                            gender === 'male' && { borderColor: theme ? 'white' : 'black', borderWidth: theme ? 1 : 1 },
                         ]}>
                         <Image
                             source={require('../../../assets/male.png')}
@@ -270,7 +295,7 @@ const WorkoutProfile = () => {
                     <TouchableOpacity onPress={() => handleGenderChange('female')}
                         style={[
                             styles.genderButton,
-                            gender === 'female' && styles.activeButton,
+                            gender === 'female' && { borderColor: theme ? 'white' : 'black', borderWidth: theme ? 1 : 1 },
                         ]}>
                         <Image
                             source={require('../../../assets/female.png')}
@@ -281,7 +306,7 @@ const WorkoutProfile = () => {
             );
         } else if (active === 'goals') {
             return (
-                <View style={styles.contentContainer}>
+                <View style={[themeStyles.container]}>
                     <Text style={styles.questionText}>Select your body goals:</Text>
                     <View>
                         <Image
@@ -294,7 +319,13 @@ const WorkoutProfile = () => {
                                 label={checkbox.label}
                                 status={checkbox.checked ? 'checked' : 'unchecked'}
                                 onPress={() => handleBodyGoals(index)}
-                                style={styles.checkBox}
+                                style={[
+                                    styles.checkBox,
+                                    {
+                                        backgroundColor: theme ? '#262626' : 'white',
+                                        shadowColor: theme ? 'white' : 'black'
+                                    },
+                                ]}
                             />
                         ))}
                     </View>
@@ -302,7 +333,7 @@ const WorkoutProfile = () => {
             )
         } else if (active === 'type') {
             return (
-                <View style={styles.contentContainer}>
+                <View style={[themeStyles.container]}>
                     <Text style={styles.questionText}>Select body type:</Text>
                     <Text>{'\n'}</Text>
 
@@ -459,12 +490,12 @@ const WorkoutProfile = () => {
                 </View>
             )
         } else if (active === 'focus') {
-            return (<View style={styles.contentContainer}>
+            return (<View style={[themeStyles.container]}>
                 <Text style={styles.questionText}>Select focus area:</Text>
                 <Text>{'\n'}</Text>
                 <View>
                     <Image
-                        source={require('../../../assets/human_body.jpeg')}
+                        source={require('../../../assets/human_body.png')}
                         style={styles.focusAreaImage}
                     />
                     {focusArea.map((checkbox, index) => (
@@ -473,14 +504,20 @@ const WorkoutProfile = () => {
                             label={checkbox.label}
                             status={checkbox.checked ? 'checked' : 'unchecked'}
                             onPress={() => handleFocusArea(index)}
-                            style={styles.checkBox}
+                            style={[
+                                styles.checkBox,
+                                {
+                                    backgroundColor: theme ? '#262626' : 'white',
+                                    shadowColor: theme ? 'white' : 'black'
+                                },
+                            ]}
                         />
                     ))}
                 </View>
             </View>)
         } else if (active === 'weight') {
             return (
-                <KeyboardAvoidingView style={styles.contentContainer} behavior="padding">
+                <KeyboardAvoidingView style={[themeStyles.container]} behavior="padding">
                     <Text style={styles.questionText}>Enter weight:</Text>
                     <View style={styles.sectionBottomMargin}>
                         <Image
@@ -509,7 +546,7 @@ const WorkoutProfile = () => {
             )
         } else if (active === 'height') {
             return (
-                <KeyboardAvoidingView style={styles.contentContainer} behavior="padding">
+                <KeyboardAvoidingView style={[themeStyles.container]} behavior="padding">
                     <Text style={styles.questionText}>Enter height in feet:</Text>
                     <View>
                         <Image
@@ -530,7 +567,7 @@ const WorkoutProfile = () => {
                 </KeyboardAvoidingView>
             )
         } else if (active === 'age') {
-            return (<KeyboardAvoidingView style={styles.contentContainer} behavior="padding">
+            return (<KeyboardAvoidingView style={[themeStyles.container]} behavior="padding">
                 <Text style={styles.questionText}>Enter your age:</Text>
                 <View>
                     <Image
@@ -551,7 +588,7 @@ const WorkoutProfile = () => {
             </KeyboardAvoidingView>)
         } else if (active === 'workout') {
             return (
-                <View style={styles.contentContainer}>
+                <View style={[themeStyles.container]}>
                     <Text style={styles.questionText}>Preferred workout?</Text>
                     <View>
                         <Image
@@ -560,9 +597,27 @@ const WorkoutProfile = () => {
                         />
                         <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
                             <View>
-                                <RadioButton.Item label="With equipment" value="true" style={styles.checkBox} />
-                                <RadioButton.Item label="Without Equipment" value="false" style={styles.checkBox} />
-                                <RadioButton.Item label="Both" value="neutral" style={styles.checkBox} />
+                                <RadioButton.Item label="With equipment" value="true" style={[
+                                    styles.checkBox,
+                                    {
+                                        backgroundColor: theme ? '#262626' : 'white',
+                                        shadowColor: theme ? 'white' : 'black'
+                                    },
+                                ]} />
+                                <RadioButton.Item label="Without Equipment" value="false" style={[
+                                    styles.checkBox,
+                                    {
+                                        backgroundColor: theme ? '#262626' : 'white',
+                                        shadowColor: theme ? 'white' : 'black'
+                                    },
+                                ]} />
+                                <RadioButton.Item label="Both" value="neutral" style={[
+                                    styles.checkBox,
+                                    {
+                                        backgroundColor: theme ? '#262626' : 'white',
+                                        shadowColor: theme ? 'white' : 'black'
+                                    },
+                                ]} />
                             </View>
                         </RadioButton.Group>
                     </View>
@@ -572,100 +627,153 @@ const WorkoutProfile = () => {
         return null;
     };
 
-    return (
-        <>
-            <StatusBar bar-style='dark-content' />
-            <Appbar.Header style={styles.appHeaderContainer}>
-                <Appbar.BackAction onPress={handleBack} />
-                <Appbar.Content
-                    title="Update Details"
-                    titleStyle={styles.appHeaderTitle}
-                />
-                <Appbar.Action icon="home" onPress={handleHomePress} />
-            </Appbar.Header>
-            <SafeAreaView style={styles.safeAreaContainer}>
-                <View style={styles.container}>
-                    <View style={styles.sideBar}>
-                        <Drawer.CollapsedItem
-                            focusedIcon="gender-male-female"
-                            unfocusedIcon="gender-male-female"
-                            label="Gender"
-                            active={active === 'gender'}
-                            onPress={() => setActive('gender')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="adjust"
-                            unfocusedIcon="adjust"
-                            label="Body Goals"
-                            active={active === 'goals'}
-                            onPress={() => setActive('goals')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="bulletin-board"
-                            unfocusedIcon="bulletin-board"
-                            label="Body Type"
-                            active={active === 'type'}
-                            onPress={() => setActive('type')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="target"
-                            unfocusedIcon="target"
-                            label="Focus Area"
-                            active={active === 'focus'}
-                            onPress={() => setActive('focus')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="weight"
-                            unfocusedIcon="weight"
-                            label="Weight"
-                            active={active === 'weight'}
-                            onPress={() => setActive('weight')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="human-male-height"
-                            unfocusedIcon="human-male-height"
-                            label="Height"
-                            active={active === 'height'}
-                            onPress={() => setActive('height')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="account-settings"
-                            unfocusedIcon="account-settings"
-                            label="Age"
-                            active={active === 'age'}
-                            onPress={() => setActive('age')}
-                        />
-                        <Drawer.CollapsedItem
-                            focusedIcon="weight-lifter"
-                            unfocusedIcon="weight-lifter"
-                            label="Workout"
-                            active={active === 'workout'}
-                            onPress={() => setActive('workout')}
-                        />
+    if (isLoading) {
+        return (
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#1e0578" />
+            </View>
+        );
+    } else {
+        return (
+
+            <PaperProvider theme={paperTheme}>
+                {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+                <Appbar.Header style={styles.appHeaderContainer}>
+                    <Appbar.BackAction onPress={handleBack} />
+                    <Appbar.Content
+                        title="Update Details"
+                        titleStyle={styles.appHeaderTitle}
+                    />
+                    <Appbar.Action icon="home" onPress={handleHomePress} />
+                </Appbar.Header>
+                <SafeAreaView style={styles.safeAreaContainer}>
+                    <View style={styles.container}>
+                        <View style={[themeStyles.sideBar]}>
+                            <Drawer.CollapsedItem
+                                focusedIcon="gender-male-female"
+                                unfocusedIcon="gender-male-female"
+                                label="Gender"
+                                active={active === 'gender'}
+                                onPress={() => setActive('gender')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="adjust"
+                                unfocusedIcon="adjust"
+                                label="Body Goals"
+                                active={active === 'goals'}
+                                onPress={() => setActive('goals')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="bulletin-board"
+                                unfocusedIcon="bulletin-board"
+                                label="Body Type"
+                                active={active === 'type'}
+                                onPress={() => setActive('type')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="target"
+                                unfocusedIcon="target"
+                                label="Focus Area"
+                                active={active === 'focus'}
+                                onPress={() => setActive('focus')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="weight"
+                                unfocusedIcon="weight"
+                                label="Weight"
+                                active={active === 'weight'}
+                                onPress={() => setActive('weight')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="human-male-height"
+                                unfocusedIcon="human-male-height"
+                                label="Height"
+                                active={active === 'height'}
+                                onPress={() => setActive('height')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="account-settings"
+                                unfocusedIcon="account-settings"
+                                label="Age"
+                                active={active === 'age'}
+                                onPress={() => setActive('age')}
+                            />
+                            <Drawer.CollapsedItem
+                                focusedIcon="weight-lifter"
+                                unfocusedIcon="weight-lifter"
+                                label="Workout"
+                                active={active === 'workout'}
+                                onPress={() => setActive('workout')}
+                            />
+                        </View>
+                        <View style={styles.mainContent}>
+                            {renderContent()}
+                            <Button
+                                icon="check-bold"
+                                mode="contained"
+                                onPress={handleSubmit}
+                                style={{ borderRadius: 0 }}>
+                                Save Changes
+                            </Button>
+                            <Snackbar
+                                visible={showSnackbar}
+                                onDismiss={handleSnackbarDismiss}
+                                duration={3000}
+                                style={styles.snackbar}
+                            >
+                                <Text style={{ color: 'white', textAlign: 'center' }}>{alertMessage}</Text>
+                            </Snackbar>
+                        </View>
                     </View>
-                    <View style={styles.mainContent}>
-                        {renderContent()}
-                        <Button icon="check-bold" mode="elevated" dark={true} buttonColor='#150359' onPress={handleSubmit} style={{ borderRadius: 0 }}>
-                            Save Changes
-                        </Button>
-                        <Snackbar
-                            visible={showSnackbar}
-                            onDismiss={handleSnackbarDismiss}
-                            duration={3000}
-                            style={styles.snackbar}
-                        >
-                            <Text style={{ color: 'white', textAlign: 'center' }}>{alertMessage}</Text>
-                        </Snackbar>
-                    </View>
-                </View>
-            </SafeAreaView>
-            {showPopover && (
-                <Popover isVisible={showPopover}>
-                    <Text variant="titleLarge" style={{ padding: 20 }}>Data Updated</Text>
-                </Popover>
-            )}
-        </>
-    );
+                </SafeAreaView>
+                {showPopover && (
+                    <Popover isVisible={showPopover}>
+                        <Text variant="titleLarge" style={{ padding: 20 }}>Data Updated</Text>
+                    </Popover>
+                )}
+            </PaperProvider>
+        );
+    }
 };
 
 export default WorkoutProfile;
+
+const lightThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 30,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sideBar: {
+        flex: 1,
+        backgroundColor: 'white',
+        elevation: 4,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 2,
+        zIndex: 1,
+        paddingTop: 10
+    },
+});
+
+const darkThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 30,
+        backgroundColor: '#444444',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sideBar: {
+        flex: 1,
+        backgroundColor: '#262626',
+        elevation: 4,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 2,
+        zIndex: 1,
+        paddingTop: 10
+    },
+});

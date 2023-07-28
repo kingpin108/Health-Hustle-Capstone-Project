@@ -96,9 +96,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   recipeScrollView: {
-    height: 240,
+    height: 250,
     marginTop: 10
-  }
+  },
+  closeIcon: {
+    position: 'absolute',
+    right: 20,
+    top: -10,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
 });
 
 export default styles;
