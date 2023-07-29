@@ -7,7 +7,6 @@ import { StatusBar } from 'expo-status-bar';
 import { AuthContext } from '../../contexts/AuthContext';
 import Popover from 'react-native-popover-view';
 import { database } from '../../database/config';
-import { colors } from 'react-native-elements';
 
 //Issue 15
 const WorkoutProfile = () => {
@@ -24,7 +23,6 @@ const WorkoutProfile = () => {
     const allBodyGoals = bodyGoals.every(goal => !goal.checked);
     const [bodyType, setBodyType] = useState('A');
     const [isLoading, setIsLoading] = useState(true);
-
 
     const [focusArea, setFocusArea] = useState([
         { label: 'Upper Body', checked: true },
@@ -635,7 +633,6 @@ const WorkoutProfile = () => {
         );
     } else {
         return (
-
             <PaperProvider theme={paperTheme}>
                 {theme ? <></> : <StatusBar bar-style={'light-content'} />}
                 <Appbar.Header style={styles.appHeaderContainer}>

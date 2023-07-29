@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, View, Platform, Alert } from 'react-native';
+import { StyleSheet, View, Platform, Alert, ActivityIndicator } from 'react-native';
 import { Provider as PaperProvider, Button, Appbar, Drawer, Switch, List, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
@@ -32,6 +32,8 @@ export default function HealthTipNotification() {
     const [timeValue, setTimeValue] = useState('');
     const [timeHydration, setTimeHydration] = useState('');
     const { uid } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(true);
+
 
 
     const handleTimeInputChange = (text) => {
@@ -159,11 +161,13 @@ export default function HealthTipNotification() {
             const formData = snapshot.val();
             if (formData && formData.isDarkActive !== undefined) {
               setTheme(formData.isDarkActive); 
-              console.log(formData.isDarkActive)
+              setIsLoading(false);
             }
           })
           .catch((error) => {
             console.error('Error fetching isDarkActive from Firebase:', error);
+            setIsLoading(false);
+
           });
       }, [uid]);
 
@@ -175,7 +179,15 @@ export default function HealthTipNotification() {
             ? { ...MD3DarkTheme }
             : { ...MD3LightTheme };
 
-    return (
+    
+        if (isLoading) {
+            return (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#1e0578" />
+                </View>
+            );
+        } else {
+            return (
 
         <PaperProvider theme={paperTheme}>
             {theme ? <></> : <StatusBar bar-style={'light-content'} />}            
@@ -241,8 +253,9 @@ export default function HealthTipNotification() {
                 </View>
             </>
             </PaperProvider>
+    )};
 
-    );
+    
 };
 
 async function scheduleReminder(notificationTime) {
