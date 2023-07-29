@@ -46,7 +46,6 @@ const Home = () => {
             </View>
         );
     } else {
-
         return (
             <View style={styles.container}>
                 <ImageBackground source={theme ? require('../../../assets/invertedBackPattern.png') : require('../../../assets/backPattern.png')} style={styles.backgroundImage}>

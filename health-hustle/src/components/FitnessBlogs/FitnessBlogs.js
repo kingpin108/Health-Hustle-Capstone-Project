@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
-import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, Appbar, Button, Portal, Dialog } from 'react-native-paper';
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import axios from "axios";

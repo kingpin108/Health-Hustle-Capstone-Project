@@ -16,7 +16,6 @@ const ListItem = ({ item }) => {
 
   const handleRecipeModalToggle = () => {
     setShowRecipeModal(!showRecipeModal);
-
   };
 
   const { uid } = useContext(AuthContext);
@@ -112,48 +111,20 @@ const DietPlan = () => {
     setShowModal(!showModal);
   };
 
-  // const fetchFormData = (uid) => {
-  //   try {
-  //     const usersRef = database.ref('users');
-  //     const formDataRef = usersRef.child(uid).child('formData').child('bodyGoals');
-  //     formDataRef.on('value', (snapshot) => {
-  //       const bodyGoals = snapshot.val();
-
-  //       const selectedGoal = Object.keys(bodyGoals).find((key) => bodyGoals[key].checked === true);
-
-  //       if (selectedGoal) {
-  //         setBodyGoal(bodyGoals[selectedGoal].label);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.log('Error fetching form data:', error);
-  //     throw error;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchFormData(uid);
-  // }, []);
-
-
   const fetchFormData = async (uid) => {
     try {
       const usersRef = database.ref('users');
       const formDataRef = usersRef.child(uid).child('formData');
 
-      // Fetch isDarkActive
       const isDarkActiveSnapshot = await formDataRef.child('isDarkActive').once('value');
       const isDarkActive = isDarkActiveSnapshot.val();
       setTheme(isDarkActive);
 
-      // Fetch bodyGoals
       const bodyGoalsSnapshot = await formDataRef.child('bodyGoals').once('value');
       const bodyGoals = bodyGoalsSnapshot.val();
 
-      // Find the selected body goal
       const selectedGoal = Object.keys(bodyGoals).find((key) => bodyGoals[key].checked === true);
 
-      // Set the selected body goal to state
       if (selectedGoal) {
         setBodyGoal(bodyGoals[selectedGoal].label);
       }
