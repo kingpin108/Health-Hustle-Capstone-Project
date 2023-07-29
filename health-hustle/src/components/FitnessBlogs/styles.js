@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginLeft: 20,
         fontWeight: 'bold',
+        fontSize:18
       },
       textInstruction:{
         marginLeft: 20,
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
         flex: 1,
       },
       title: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         marginBottom: 5,
       },

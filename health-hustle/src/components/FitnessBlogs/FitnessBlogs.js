@@ -17,6 +17,13 @@ const ListItem = ({ item }) => {
   };
 
   const navigation = useNavigation();
+  const handleNavigateToBlogs = () => {
+    navigation.navigate('Blogs', {
+      title: item.title,
+      image: item.image,
+      blog: item.blog,
+    });
+  };
   const { uid } = useContext(AuthContext);
 
   const [theme, setTheme] = useState(false);
@@ -47,35 +54,14 @@ const ListItem = ({ item }) => {
   return (
     <TouchableOpacity
       style={[themeStyles.itemContainer]}
-      onPress={handleRecipeModalToggle}
+      onPress={handleNavigateToBlogs}
     >
       <View style={styles.listItem}>
         <Image source={{ uri: item.image }} style={styles.image} />
         <View style={styles.textContainer}>
           <Text style={styles.title}>{item.title}</Text>
-          {/* <Text style={styles.duration}>{item.image}</Text> */}
-          {/* <Text style={styles.duration}>{item.blog}</Text> */}
         </View>
       </View>
-
-      {showRecipeModal && (
-        <Portal>
-          <Dialog visible={showRecipeModal} onDismiss={handleRecipeModalToggle} style={{ height: 600 }}>
-            <Dialog.Title style={styles.modalTitle}>{item.title}</Dialog.Title>
-            <Dialog.Content>
-              <Image source={{ uri: item.image }} style={styles.recipeImage} />
-              <ScrollView showsVerticalScrollIndicator={true} style={styles.recipeScrollView}>
-                <Text style={styles.recipeStep}>{item.blog}</Text>
-              </ScrollView>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={handleRecipeModalToggle} style={{ marginTop: -20 }}>
-                Close Recipe
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      )}
     </TouchableOpacity>
   );
 };
@@ -88,10 +74,8 @@ const FitnessBlogs = () => {
   const [filteredWorkoutData, setFilteredWorkoutData] = useState(false);
   const [bodyGoal, setBodyGoal] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
   let workoutSet = 'default';
   const { uid } = useContext(AuthContext);
-
   const [theme, setTheme] = useState(false);
 
 
