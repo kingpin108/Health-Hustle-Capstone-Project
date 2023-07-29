@@ -21,7 +21,7 @@ const Workout = () => {
     const [completedExercises, setCompletedExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    
+
 
     const handleOpenWorkoutList = () => {
         navigation.navigate('WorkoutList', { completedExercises, workoutDay });
@@ -66,15 +66,7 @@ const Workout = () => {
         };
     }, [uid, workoutDay]);
 
-    const BodyFocusCardView = ({ imageSource, onPress }) => {
-        return (
-            <View>
-                <TouchableOpacity onPress={onPress}>
-                    <Image source={imageSource} style={styles.imgBodyFocus} />
-                </TouchableOpacity>
-            </View>
-        );
-    };
+
 
     const loadCompletedExercises = async () => {
         try {
@@ -93,18 +85,18 @@ const Workout = () => {
 
     useEffect(() => {
         const checkInternetConnection = async () => {
-          const isConnected = await NetInfo.fetch().then(state => state.isConnected);
-          if (!isConnected) {
-            Alert.alert(
-              'No Internet Connection',
-              'Please check your internet connection and try again.',
-            );
-          }
+            const isConnected = await NetInfo.fetch().then(state => state.isConnected);
+            if (!isConnected) {
+                Alert.alert(
+                    'No Internet Connection',
+                    'Please check your internet connection and try again.',
+                );
+            }
         };
-    
+
         checkInternetConnection();
-      }, []);
-      
+    }, []);
+
 
     return (
         <>
@@ -119,51 +111,49 @@ const Workout = () => {
             <></>
 
             {loading ? (
-            // Display activity loader while loading
-            <View style={styles.loaderContainer}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
-            </View>
-        ) : error ? (
-            // Display error alert if an error occurred
-            <View style={styles.loaderContainer}>
-                <Alert
-                    title="Error"
-                    message="Failed to fetch workout data. Please check your internet connection and try again."
-                    buttonTitle="OK"
-                    onPress={() => setError(false)}
-                />
-            </View>
-        ) : (
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.container}>
-                    <View style={styles.imageContainer}>
-                        <ImageBackground
-                            source={require('../../../assets/workout.png')}
-                            style={styles.backgroundImage}
-                        >
-                            <View style={styles.content}>
-                                <Text style={styles.text}>Weekly Workout Plan</Text>
-                                <Button
-                                    mode="contained"
-                                    style={styles.button}
-                                    labelStyle={styles.buttonLabel}
-                                    onPress={handleOpenWorkoutList}
-                                >
-                                    {`Day ${route.params?.workoutDay || workoutDay}`}
-                                </Button>
-                            </View>
-                        </ImageBackground>
-                    </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" />
+                </View>
+            ) : error ? (
+                <View style={styles.loaderContainer}>
+                    <Alert
+                        title="Error"
+                        message="Failed to fetch workout data. Please check your internet connection and try again."
+                        buttonTitle="OK"
+                        onPress={() => setError(false)}
+                    />
+                </View>
+            ) : (
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.container}>
+                        <View style={styles.imageContainer}>
+                            <ImageBackground
+                                source={require('../../../assets/workout.png')}
+                                style={styles.backgroundImage}
+                            >
+                                <View style={styles.content}>
+                                    <Text style={styles.text}>Weekly Workout Plan</Text>
+                                    <Button
+                                        mode="contained"
+                                        style={styles.button}
+                                        labelStyle={styles.buttonLabel}
+                                        onPress={handleOpenWorkoutList}
+                                    >
+                                        {`Day ${route.params?.workoutDay || workoutDay}`}
+                                    </Button>
+                                </View>
+                            </ImageBackground>
+                        </View>
 
-                    <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#EE7CDC", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('DietPlan')}>
-                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Diet Plans</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#EE7CDC", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('DietPlan')}>
+                            <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Diet Plans</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#150359", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('WorkoutGoal')}>
-                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Workout Goals</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#150359", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('WorkoutGoal')}>
+                            <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Workout Goals</Text>
+                        </TouchableOpacity>
 
-                    {/* <Text style={styles.header}>Body Focus</Text>
+                        {/* <Text style={styles.header}>Body Focus</Text>
                     <View style={styles.imageRow}>
                         <BodyFocusCardView
                             imageSource={require('../../../assets/workout.png')}
@@ -184,9 +174,9 @@ const Workout = () => {
                             onPress={handleOpenWorkoutList}
                         />
                     </View> */}
-                </View>
-            </ScrollView>
-        )}
+                    </View>
+                </ScrollView>
+            )}
         </>
     );
 };

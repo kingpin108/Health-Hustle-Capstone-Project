@@ -33,8 +33,6 @@ const Settings = () => {
 
     const { logout } = useContext(AuthContext);
 
-
-
     const handleLogout = async () => {
         try {
             await logout();

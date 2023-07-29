@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { Text, Appbar, Button, Checkbox, Provider, Portal, Dialog } from 'react-native-paper';
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, Appbar, Button, Checkbox, Portal, Dialog } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { AntDesign } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 import styles from './styles';
 import axios from "axios";
 import { database } from '../../database/config';
-import { auth } from '../../database/config';
 import { AuthContext } from "../../contexts/AuthContext";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -17,12 +16,37 @@ const ListItem = ({ item }) => {
 
   const handleRecipeModalToggle = () => {
     setShowRecipeModal(!showRecipeModal);
+
   };
 
+  const { uid } = useContext(AuthContext);
+  const [theme, setTheme] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const userRef = database.ref(`users/${uid}/formData`);
+
+    userRef
+      .once('value')
+      .then((snapshot) => {
+        const formData = snapshot.val();
+        if (formData && formData.isDarkActive !== undefined) {
+          setTheme(formData.isDarkActive);
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching isDarkActive from Firebase:', error);
+        setIsLoading(false);
+
+      });
+  }, [uid]);
+
+  const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
 
   return (
     <TouchableOpacity
-      style={styles.itemContainer}
+      style={[themeStyles.itemContainer]}
       onPress={handleRecipeModalToggle}
     >
       <View style={styles.listItem}>
@@ -79,7 +103,7 @@ const DietPlan = () => {
   const [filteredWorkoutData, setFilteredWorkoutData] = useState(false);
   const [bodyGoal, setBodyGoal] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
+  const [theme, setTheme] = useState(false);
 
   let workoutSet = 'default';
   const { uid } = useContext(AuthContext);
@@ -88,21 +112,51 @@ const DietPlan = () => {
     setShowModal(!showModal);
   };
 
-  const fetchFormData = (uid) => {
+  // const fetchFormData = (uid) => {
+  //   try {
+  //     const usersRef = database.ref('users');
+  //     const formDataRef = usersRef.child(uid).child('formData').child('bodyGoals');
+  //     formDataRef.on('value', (snapshot) => {
+  //       const bodyGoals = snapshot.val();
+
+  //       const selectedGoal = Object.keys(bodyGoals).find((key) => bodyGoals[key].checked === true);
+
+  //       if (selectedGoal) {
+  //         setBodyGoal(bodyGoals[selectedGoal].label);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log('Error fetching form data:', error);
+  //     throw error;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchFormData(uid);
+  // }, []);
+
+
+  const fetchFormData = async (uid) => {
     try {
       const usersRef = database.ref('users');
-      const formDataRef = usersRef.child(uid).child('formData').child('bodyGoals');
-      formDataRef.on('value', (snapshot) => {
-        const bodyGoals = snapshot.val();
+      const formDataRef = usersRef.child(uid).child('formData');
 
-        // Find the selected body goal
-        const selectedGoal = Object.keys(bodyGoals).find((key) => bodyGoals[key].checked === true);
+      // Fetch isDarkActive
+      const isDarkActiveSnapshot = await formDataRef.child('isDarkActive').once('value');
+      const isDarkActive = isDarkActiveSnapshot.val();
+      setTheme(isDarkActive);
 
-        // Set the selected body goal to state
-        if (selectedGoal) {
-          setBodyGoal(bodyGoals[selectedGoal].label);
-        }
-      });
+      // Fetch bodyGoals
+      const bodyGoalsSnapshot = await formDataRef.child('bodyGoals').once('value');
+      const bodyGoals = bodyGoalsSnapshot.val();
+
+      // Find the selected body goal
+      const selectedGoal = Object.keys(bodyGoals).find((key) => bodyGoals[key].checked === true);
+
+      // Set the selected body goal to state
+      if (selectedGoal) {
+        setBodyGoal(bodyGoals[selectedGoal].label);
+      }
     } catch (error) {
       console.log('Error fetching form data:', error);
       throw error;
@@ -110,8 +164,18 @@ const DietPlan = () => {
   };
 
   useEffect(() => {
-    fetchFormData(uid);
-  }, []);
+    fetchFormData(uid).catch((error) => {
+      setIsLoading(false);
+      console.log('Error fetching data:', error);
+    });
+  }, [uid]);
+
+  const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+  const paperTheme =
+    theme
+      ? { ...MD3DarkTheme }
+      : { ...MD3LightTheme };
 
   const handleFilterApply = () => {
     const filteredData = workoutData.filter(item => {
@@ -135,12 +199,12 @@ const DietPlan = () => {
         const workoutArray = Object.values(jsonData);
         setWorkoutData(workoutArray);
         setFilteredWorkoutData(workoutArray);
-        setIsLoading(false); 
+        setIsLoading(false);
 
       })
       .catch(error => {
         console.error('Error fetching API data:', error);
-        setIsLoading(false); 
+        setIsLoading(false);
 
       });
   }, []);
@@ -164,7 +228,6 @@ const DietPlan = () => {
       }
 
       const data = await response.json();
-      // console.log(data);
     } catch (error) {
       console.log('Error fetching data:', error);
     }
@@ -172,85 +235,128 @@ const DietPlan = () => {
 
   fetchData();
 
-  return (
-    <Provider>
-      <Appbar.Header style={styles.appHeaderContainer}>
-        <Appbar.BackAction onPress={handleBack} />
-        <Appbar.Content title="Diet Plans" titleStyle={styles.appHeaderTitle} />
-      </Appbar.Header>
-      <SafeAreaView style={styles.container}>
-      {isLoading ? (
-         <View style={styles.loaderContainer}>
-         <ActivityIndicator size="large" color="#0000ff" />
-       </View>
-       ) : (
-        <FlatList
-          data={filteredWorkoutData}
-          keyExtractor={(item) => item.recipe.mealName}
-          ListHeaderComponent={
-            <>
-              <Button
-                icon="filter"
-                mode="contained"
-                style={{ margin: '5%', backgroundColor: '#EE7CDC' }}
-                onPress={handleModalToggle}
-              >
-                Filter
-              </Button>
-              <Text style={styles.titleInstruction} variant="headlineSmall">
-                Recipes for {bodyGoal}
-              </Text>
-            </>
-          }
-          renderItem={({ item }) => <ListItem item={item} />}
-          showsVerticalScrollIndicator={false}
-        />
-       )}
-        <Portal>
-          <Dialog visible={showModal} onDismiss={handleModalToggle}>
-            <Dialog.Title style={styles.modalTitle}>Select Filters:</Dialog.Title>
-            <Dialog.Content>
-              <View style={styles.checkboxContainer}>
-                <Checkbox.Item
-                  label="Vegetarian"
-                  status={vegChecked ? 'checked' : 'unchecked'}
-                  onPress={() => setVegChecked(!vegChecked)}
-                  color="#EE7CDC"
-                />
-                <Checkbox.Item
-                  label="Non-Vegetarian"
-                  status={nonVegChecked ? 'checked' : 'unchecked'}
-                  onPress={() => setNonVegChecked(!nonVegChecked)}
-                  color="#EE7CDC"
-                />
-                <Checkbox.Item
-                  label="Gluten-Free"
-                  status={glutenFreeChecked ? 'checked' : 'unchecked'}
-                  onPress={() => setGlutenFreeChecked(!glutenFreeChecked)}
-                  color="#EE7CDC"
-                />
-                <Checkbox.Item
-                  label="Lactose-Free"
-                  status={lactoseFreeChecked ? 'checked' : 'unchecked'}
-                  onPress={() => setLactoseFreeChecked(!lactoseFreeChecked)}
-                  color="#EE7CDC"
-                />
-              </View>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button
-                mode="contained"
-                onPress={handleFilterApply}
-                style={{ backgroundColor: "#EE7CDC" }}
-              >
-                Apply Filters
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </SafeAreaView>
-    </Provider>
-  );
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+  else {
+    return (
+      <PaperProvider theme={paperTheme}>
+        {theme ? <></>: <StatusBar bar-style={'light-content'} />}  
+        <Appbar.Header style={styles.appHeaderContainer}>
+          <Appbar.BackAction onPress={handleBack} />
+          <Appbar.Content title="Diet Plans" titleStyle={styles.appHeaderTitle} />
+        </Appbar.Header>
+        <SafeAreaView style={[themeStyles.container]}>
+          <FlatList
+            data={filteredWorkoutData}
+            keyExtractor={(item) => item.recipe.mealName}
+            ListHeaderComponent={
+              <>
+                <Button
+                  icon="filter"
+                  mode="contained"
+                  style={{ margin: '5%', backgroundColor: '#EE7CDC' }}
+                  onPress={handleModalToggle}
+                >
+                  Filter
+                </Button>
+                <Text style={styles.titleInstruction} variant="headlineSmall">
+                  Recipes for {bodyGoal}
+                </Text>
+              </>
+            }
+            renderItem={({ item }) => <ListItem item={item} />}
+            showsVerticalScrollIndicator={false}
+          />
+
+          <Portal>
+            <Dialog visible={showModal} onDismiss={handleModalToggle}>
+              <Dialog.Title style={styles.modalTitle}>Select Filters:</Dialog.Title>
+              <Dialog.Content>
+                <View style={styles.checkboxContainer}>
+                  <Checkbox.Item
+                    label="Vegetarian"
+                    status={vegChecked ? 'checked' : 'unchecked'}
+                    onPress={() => setVegChecked(!vegChecked)}
+                    color="#EE7CDC"
+                  />
+                  <Checkbox.Item
+                    label="Non-Vegetarian"
+                    status={nonVegChecked ? 'checked' : 'unchecked'}
+                    onPress={() => setNonVegChecked(!nonVegChecked)}
+                    color="#EE7CDC"
+                  />
+                  <Checkbox.Item
+                    label="Gluten-Free"
+                    status={glutenFreeChecked ? 'checked' : 'unchecked'}
+                    onPress={() => setGlutenFreeChecked(!glutenFreeChecked)}
+                    color="#EE7CDC"
+                  />
+                  <Checkbox.Item
+                    label="Lactose-Free"
+                    status={lactoseFreeChecked ? 'checked' : 'unchecked'}
+                    onPress={() => setLactoseFreeChecked(!lactoseFreeChecked)}
+                    color="#EE7CDC"
+                  />
+                </View>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button
+                  mode="contained"
+                  onPress={handleFilterApply}
+                  style={{ backgroundColor: "#EE7CDC" }}
+                >
+                  Apply Filters
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        </SafeAreaView>
+      </PaperProvider>
+    )
+  }
 };
 
 export default DietPlan;
+
+const lightThemeStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 30,
+    backgroundColor: 'white',
+  },
+  itemContainer: {
+    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 2,
+    marginHorizontal: 20,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: 'black'
+  },
+});
+
+const darkThemeStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 30,
+    backgroundColor: '#444444',
+  },
+  itemContainer: {
+    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 2,
+    marginHorizontal: 20,
+    marginVertical: 5,
+    backgroundColor: '#262626',
+    borderRadius: 10,
+    shadowColor: 'white'
+  },
+});

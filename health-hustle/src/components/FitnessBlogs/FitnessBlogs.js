@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
-import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, Appbar, Button, Provider, Portal, Dialog } from 'react-native-paper';
+import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, Appbar, Button, Portal, Dialog } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import axios from "axios";
@@ -37,7 +37,7 @@ const ListItem = ({ item }) => {
       .then((snapshot) => {
         const formData = snapshot.val();
         if (formData && formData.isDarkActive !== undefined) {
-          setTheme(formData.isDarkActive); 
+          setTheme(formData.isDarkActive);
           setIsLoading(false);
         }
       })
@@ -138,7 +138,6 @@ const FitnessBlogs = () => {
 
   const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
 
-
   const paperTheme =
     theme
       ? { ...MD3DarkTheme }
@@ -147,33 +146,33 @@ const FitnessBlogs = () => {
 
   if (isLoading) {
     return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#1e0578" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
       </View>
     );
   } else {
     return (
       <PaperProvider theme={paperTheme}>
-            {theme ? <></> : <StatusBar bar-style={'light-content'} />} 
-            <Appbar.Header style={styles.appHeaderContainer}>
-              <Appbar.BackAction onPress={handleBack} />
-              <Appbar.Content title="Fitness blogs" titleStyle={styles.appHeaderTitle} />
-            </Appbar.Header>
-            <SafeAreaView style={[themeStyles.container]}>
-              <FlatList
-                data={filteredWorkoutData}
-                keyExtractor={(item) => item.title}
-                ListHeaderComponent={
-                  <>
-                    <Text style={styles.titleInstruction} variant="headlineSmall">
-                      List of blogs for {bodyGoal}
-                    </Text>
-                  </>
-                }
-                renderItem={({ item }) => <ListItem item={item} />}
-                showsVerticalScrollIndicator={false}
-              />
-            </SafeAreaView>
+        {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+        <Appbar.Header style={styles.appHeaderContainer}>
+          <Appbar.BackAction onPress={handleBack} />
+          <Appbar.Content title="Fitness blogs" titleStyle={styles.appHeaderTitle} />
+        </Appbar.Header>
+        <SafeAreaView style={[themeStyles.container]}>
+          <FlatList
+            data={filteredWorkoutData}
+            keyExtractor={(item) => item.title}
+            ListHeaderComponent={
+              <>
+                <Text style={styles.titleInstruction} variant="headlineSmall">
+                  List of blogs for {bodyGoal}
+                </Text>
+              </>
+            }
+            renderItem={({ item }) => <ListItem item={item} />}
+            showsVerticalScrollIndicator={false}
+          />
+        </SafeAreaView>
       </PaperProvider>
     );
   }
@@ -187,14 +186,15 @@ const lightThemeStyles = StyleSheet.create({
     backgroundColor: 'white',
   },
   itemContainer: {
-    elevation: 4, 
-    shadowOpacity: 0.3, 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowRadius: 2, 
+    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 2,
     marginHorizontal: 20,
     marginVertical: 5,
     backgroundColor: 'white',
     borderRadius: 10,
+    shadowColor:'black'
   },
 });
 
@@ -205,14 +205,15 @@ const darkThemeStyles = StyleSheet.create({
     backgroundColor: '#444444',
   },
   itemContainer: {
-    elevation: 4, 
-    shadowOpacity: 0.3, 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowRadius: 2, 
+    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 2,
     marginHorizontal: 20,
     marginVertical: 5,
     backgroundColor: '#262626',
     borderRadius: 10,
+    shadowColor: 'white'
   },
 });
 

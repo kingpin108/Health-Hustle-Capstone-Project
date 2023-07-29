@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 }, 
         shadowRadius: 2, 
         zIndex: 1
-
       },
       appHeaderTitle: {
         alignSelf: 'stretch',
@@ -41,16 +40,7 @@ const styles = StyleSheet.create({
       textInstruction:{
         marginLeft: 20,
       },
-      itemContainer: {
-        elevation: 4, 
-        shadowOpacity: 0.3, 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowRadius: 2, 
-        marginHorizontal: 20,
-        marginVertical: 5,
-        backgroundColor: 'white',
-        borderRadius: 10,
-      },
+  
       listItem: {
         flexDirection: 'row',
         alignItems: 'center',
