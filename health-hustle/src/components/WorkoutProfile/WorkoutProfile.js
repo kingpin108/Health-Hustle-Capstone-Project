@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View, SafeAreaView, Image, TouchableOpacity, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Image, TouchableOpacity, Keyboard, KeyboardAvoidingView, ActivityIndicator, Dimensions } from 'react-native';
 import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Drawer, Appbar, Text, Button, Checkbox, TextInput, Switch, RadioButton, Snackbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
@@ -50,6 +50,21 @@ const WorkoutProfile = () => {
     const heightInRange = parseFloat(height) >= 3 && parseFloat(height) <= 9;
     const weightNumeric = !isNaN(weight) && Number.isFinite(parseFloat(weight));
     const weightInRange = parseFloat(weight) >= 40 && parseFloat(weight) <= 450;
+
+    const [imageWidth, setImageWidth] = useState(0);
+    const [imageHeight, setImageHeight] = useState(0);
+
+    useEffect(() => {
+        const screenWidth = Dimensions.get('window').width;
+        const screenHeight = Dimensions.get('window').height;
+
+        const imageRatio = 0.6;
+        const calculatedWidth = screenWidth * imageRatio;
+        const calculatedHeight = calculatedWidth;
+
+        setImageWidth(calculatedWidth);
+        setImageHeight(calculatedHeight);
+    }, []);
 
     const handleSnackbarDismiss = () => {
         setShowSnackbar(false);
@@ -255,13 +270,13 @@ const WorkoutProfile = () => {
                 const formData = snapshot.val();
                 if (formData && formData.isDarkActive !== undefined) {
                     setTheme(formData.isDarkActive);
-                    setIsLoading(false); // Theme fetched, stop showing the loader
+                    setIsLoading(false);
 
                 }
             })
             .catch((error) => {
                 console.error('Error fetching isDarkActive from Firebase:', error);
-                setIsLoading(false); // Error occurred, stop showing the loader
+                setIsLoading(false);
 
             });
     }, [uid]);
@@ -309,7 +324,7 @@ const WorkoutProfile = () => {
                     <View>
                         <Image
                             source={require('../../../assets/bodygoals.png')}
-                            style={styles.genderImage}
+                            style={{ ...styles.genderImage, width: imageWidth, height: imageHeight, }}
                         />
                         {bodyGoals.map((checkbox, index) => (
                             <Checkbox.Item
@@ -494,7 +509,7 @@ const WorkoutProfile = () => {
                 <View>
                     <Image
                         source={require('../../../assets/human_body.png')}
-                        style={styles.focusAreaImage}
+                        style={{ ...styles.focusAreaImage, width: imageWidth, height: imageHeight, }}
                     />
                     {focusArea.map((checkbox, index) => (
                         <Checkbox.Item
@@ -520,7 +535,7 @@ const WorkoutProfile = () => {
                     <View style={styles.sectionBottomMargin}>
                         <Image
                             source={require('../../../assets/weight_scale.png')}
-                            style={styles.formImage}
+                            style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                         />
                         <TextInput
                             label="Enter weight"
@@ -549,7 +564,7 @@ const WorkoutProfile = () => {
                     <View>
                         <Image
                             source={require('../../../assets/measure_height.png')}
-                            style={styles.formImage}
+                            style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                         />
                         <TextInput
                             label="Enter height(ft.)"
@@ -570,7 +585,7 @@ const WorkoutProfile = () => {
                 <View>
                     <Image
                         source={require('../../../assets/ageing.png')}
-                        style={styles.formImage}
+                        style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                     />
                     <TextInput
                         label="Enter age (16-70)"
@@ -591,26 +606,30 @@ const WorkoutProfile = () => {
                     <View>
                         <Image
                             source={require('../../../assets/workout_type.jpg')}
-                            style={styles.formImage}
+                            style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                         />
                         <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
-                            <View>
+                            <View style={{marginBottom:10}}>
                                 <RadioButton.Item label="With equipment" value="true" style={[
-                                    styles.checkBox,
+                                    styles.radio,
                                     {
                                         backgroundColor: theme ? '#262626' : 'white',
                                         shadowColor: theme ? 'white' : 'black'
                                     },
                                 ]} />
+                            </View>
+                            <View style={{marginBottom:10}}>
                                 <RadioButton.Item label="Without Equipment" value="false" style={[
-                                    styles.checkBox,
+                                    styles.radio,
                                     {
                                         backgroundColor: theme ? '#262626' : 'white',
                                         shadowColor: theme ? 'white' : 'black'
                                     },
                                 ]} />
+                            </View>
+                            <View style={{marginBottom:10}}>
                                 <RadioButton.Item label="Both" value="neutral" style={[
-                                    styles.checkBox,
+                                    styles.radio,
                                     {
                                         backgroundColor: theme ? '#262626' : 'white',
                                         shadowColor: theme ? 'white' : 'black'

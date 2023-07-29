@@ -19,15 +19,24 @@ const styles = StyleSheet.create({
         color: '#0B022C',
     },
     genderImage: {
+        alignSelf: 'center',
         resizeMode: 'contain',
         width: 200,
         height: 250,
-        marginVertical: 10
+        marginVertical: 10,
     },
     checkBox: {
         backgroundColor: 'white',
         borderRadius: 20,
         marginBottom: 10,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    radio: {
+        backgroundColor: 'white',
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,

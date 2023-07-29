@@ -135,6 +135,14 @@ const styles = StyleSheet.create({
   sectionBottomMargin: {
     marginBottom: 20
   },
+  radio: {
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+},
 });
 
 export default styles;

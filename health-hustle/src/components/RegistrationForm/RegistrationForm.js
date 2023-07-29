@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { View, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Keyboard } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Image, TouchableOpacity, SafeAreaView, Keyboard, Dimensions } from 'react-native';
 import { ProgressBar, Button, RadioButton, Provider as PaperProvider, Text, Checkbox, TextInput, Switch, Snackbar, TouchableRipple } from 'react-native-paper';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 import Popover from 'react-native-popover-view';
 import { AuthContext } from '../../contexts/AuthContext';
 import { database } from '../../database/config';
+import { StatusBar } from 'expo-status-bar';
 
 const RegistrationForm = () => {
     const theme = {
@@ -15,6 +16,21 @@ const RegistrationForm = () => {
             background: '#FFFFFF',
         },
     };
+
+    const [imageWidth, setImageWidth] = useState(0);
+    const [imageHeight, setImageHeight] = useState(0);
+
+    useEffect(() => {
+        const screenWidth = Dimensions.get('window').width;
+        const screenHeight = Dimensions.get('window').height;
+
+        const imageRatio = 0.6;
+        const calculatedWidth = screenWidth * imageRatio;
+        const calculatedHeight = calculatedWidth;
+
+        setImageWidth(calculatedWidth);
+        setImageHeight(calculatedHeight);
+    }, []);
 
     const [showSnackbar, setShowSnackbar] = useState(false);
 
@@ -224,7 +240,7 @@ const RegistrationForm = () => {
             workoutList,
             workoutDuration,
             workoutDays,
-            totalSteps, 
+            totalSteps,
             isDarkActive
         };
 
@@ -273,7 +289,7 @@ const RegistrationForm = () => {
                         <View>
                             <Image
                                 source={require('../../../assets/bodygoals.png')}
-                                style={styles.genderImage}
+                                style={{ ...styles.genderImage, width: imageWidth, height: imageHeight, }}
                             />
                             {bodyGoals.map((checkbox, index) => (
                                 <TouchableRipple
@@ -469,7 +485,7 @@ const RegistrationForm = () => {
                         <View>
                             <Image
                                 source={require('../../../assets/human_body.png')}
-                                style={styles.focusAreaImage}
+                                style={{...styles.focusAreaImage, width: imageWidth, height: imageHeight}}
                             />
                             {focusArea.map((checkbox, index) => (
                                 <TouchableRipple
@@ -496,7 +512,7 @@ const RegistrationForm = () => {
                         <View style={styles.sectionBottomMargin}>
                             <Image
                                 source={require('../../../assets/weight_scale.png')}
-                                style={styles.formImage}
+                                style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                             />
                             <TextInput
                                 label="Enter weight"
@@ -526,7 +542,7 @@ const RegistrationForm = () => {
                         <View>
                             <Image
                                 source={require('../../../assets/measure_height.png')}
-                                style={styles.formImage}
+                                style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                             />
                             <TextInput
                                 label="Enter height(ft.)"
@@ -549,7 +565,7 @@ const RegistrationForm = () => {
                         <View>
                             <Image
                                 source={require('../../../assets/ageing.png')}
-                                style={styles.formImage}
+                                style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                             />
                             <TextInput
                                 label="Enter age (16-70)"
@@ -572,15 +588,19 @@ const RegistrationForm = () => {
                         <View>
                             <Image
                                 source={require('../../../assets/workout_type.jpg')}
-                                style={styles.formImage}
+                                style={{ ...styles.formImage, width: imageWidth, height: imageHeight, }}
                             />
 
 
                             <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
-                                <View>
-                                    <RadioButton.Item label="With equipment" value="true" style={styles.checkBox} />
-                                    <RadioButton.Item label="Without Equipment" value="false" style={styles.checkBox} />
-                                    <RadioButton.Item label="Both" value="neutral" style={styles.checkBox} />
+                                <View style={{marginBottom:10}}>
+                                    <RadioButton.Item label="With equipment" value="true" style={styles.radio} />
+                                </View>
+                                <View style={{marginBottom:10}}>
+                                    <RadioButton.Item label="Without Equipment" value="false" style={styles.radio} />
+                                </View>
+                                <View style={{marginBottom:10}}>
+                                    <RadioButton.Item label="Both" value="neutral" style={styles.radio} />
                                 </View>
                             </RadioButton.Group>
                         </View>
@@ -594,6 +614,7 @@ const RegistrationForm = () => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
+            <StatusBar bar-style={'light-content'} />
             <PaperProvider theme={theme}>
                 <View style={{ flex: 1, padding: 16, backgroundColor: 'white' }}>
                     <ProgressBar progress={step / 8} color="#FF6F00" style={styles.progressBar} />
@@ -604,7 +625,7 @@ const RegistrationForm = () => {
 
                     <View style={styles.buttonContainer}>
                         {step > 1 && (
-                            <Button mode="outlined" onPress={handlePrev} style={styles.button}>
+                            <Button mode="outlined" onPress={handlePrev} style={{...styles.button, backgroundColor:'white'}}>
                                 Previous
                             </Button>
                         )}
