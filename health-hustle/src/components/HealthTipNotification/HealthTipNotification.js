@@ -255,7 +255,6 @@ export default function HealthTipNotification() {
             </PaperProvider>
     )};
 
-    
 };
 
 async function scheduleReminder(notificationTime) {

@@ -21,6 +21,7 @@ const Workout = () => {
     const [completedExercises, setCompletedExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    
 
     const handleOpenWorkoutList = () => {
         navigation.navigate('WorkoutList', { completedExercises, workoutDay });

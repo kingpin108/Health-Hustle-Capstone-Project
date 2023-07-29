@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: 'bold',
-    // marginTop: 20,
     marginLeft: 16,
     paddingTop: 20,
     
@@ -148,9 +147,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  
-  
-
   
 });
 
