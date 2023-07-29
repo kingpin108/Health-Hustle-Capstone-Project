@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, Appearance, useColorScheme } from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import {
-    Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Button, Text, IconButton, Appbar, useTheme, Drawer, Divider, TouchableRipple, Switch
+    Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Button, Appbar, Drawer, Switch
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
@@ -32,8 +32,6 @@ const Settings = () => {
     };
 
     const { logout } = useContext(AuthContext);
-
-
 
     const handleLogout = async () => {
         try {

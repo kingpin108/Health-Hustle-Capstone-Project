@@ -4,11 +4,11 @@ const styles = StyleSheet.create({
       appHeaderContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        backgroundColor: 'white',
         elevation: 4, 
         shadowOpacity: 0.3, 
         shadowOffset: { width: 0, height: 2 }, 
         shadowRadius: 2, 
+        zIndex: 1
       },
       appHeaderTitle: {
         alignSelf: 'stretch',
@@ -21,15 +21,7 @@ const styles = StyleSheet.create({
       container: {
         flex: 1,
       },
-      appHeaderContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        backgroundColor: 'white',
-        elevation: 4, 
-        shadowOpacity: 0.3, 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowRadius: 2, 
-      },
+      
       appHeaderTitle: {
         alignSelf: 'stretch',
         fontSize: 20,
@@ -43,20 +35,12 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginLeft: 20,
         fontWeight: 'bold',
+        fontSize:18
       },
       textInstruction:{
         marginLeft: 20,
       },
-      itemContainer: {
-        elevation: 4, 
-        shadowOpacity: 0.3, 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowRadius: 2, 
-        marginHorizontal: 20,
-        marginVertical: 5,
-        backgroundColor: 'white',
-        borderRadius: 10,
-      },
+  
       listItem: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -73,7 +57,7 @@ const styles = StyleSheet.create({
         flex: 1,
       },
       title: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         marginBottom: 5,
       },
