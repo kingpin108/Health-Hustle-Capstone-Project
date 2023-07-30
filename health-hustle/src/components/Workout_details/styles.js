@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     appHeaderContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        backgroundColor: 'white',
         elevation: 4, 
         shadowOpacity: 0.3, 
         shadowOffset: { width: 0, height: 2 }, 
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
         width: 10,
         height: 10,
         borderRadius: 5,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: 'red',
         margin: 10,
         marginHorizontal: 6,
       },

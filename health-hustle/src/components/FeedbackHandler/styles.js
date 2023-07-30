@@ -31,12 +31,6 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 20,
   },
-  feedbackItem: {
-    backgroundColor: '#f3e3ff',
-    marginBottom: 10,
-    padding: 5,
-    borderRadius: 10
-  }
 });
 
 export default styles;

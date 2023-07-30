@@ -1,8 +1,9 @@
-import { Text, View, ScrollView, Dimensions, Image, ActivityIndicator, Alert } from 'react-native';
-import { Card, Chip, Appbar } from 'react-native-paper';
+import { View, ScrollView, Dimensions, Image, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { Card, Chip, Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import Carousel from 'react-native-new-snap-carousel/src/carousel/Carousel';
 import Pagination from 'react-native-new-snap-carousel/src/pagination/Pagination';
@@ -11,8 +12,8 @@ import { database } from '../../database/config';
 import { AuthContext } from '../../contexts/AuthContext';
 import * as Notifications from 'expo-notifications';
 
-//#1 Users will be provided audio/video tutorials as a part of their daily workout routine.
 
+//#1 Users will be provided audio/video tutorials as a part of their daily workout routine.
 
 const { width } = Dimensions.get('window');
 
@@ -28,7 +29,7 @@ const Workout_details = ({ route }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true); // Add loading state
   const [goalsData, setGoalsData] = useState(null);
-
+  const [theme, setTheme] = useState(false);
 
   const { uid } = useContext(AuthContext);
 
@@ -49,7 +50,7 @@ const Workout_details = ({ route }) => {
         },
       ];
       setCarouselData(newCarouselData);
-      setLoading(false); // Set loading to false when data is fetched
+      setLoading(false);
 
     }
   }, [jsonData]);
@@ -117,11 +118,6 @@ const Workout_details = ({ route }) => {
           const newPercent = ((currentDuration / value.goal) * 100).toFixed(0);
           console.log("(Developers)New Percent %: ", newPercent)
           console.log(value.isActive)
-          // if (updatedPercent >= 100 && value.isActive) {
-          //   sendLocalNotification(`Goal "${key}" Achieved`, 'Congratulations! You have achieved your goal.')
-          //   goalRef.update({ isActive: false }); // Set isActive to false 
-          // }
-
         });
       }
     }, (error) => {
@@ -186,8 +182,33 @@ const Workout_details = ({ route }) => {
   //   console.log('Notification sent:', title, body);
   // };
 
+  useEffect(() => {
+    const userRef = database.ref(`users/${uid}/formData`);
+
+    userRef
+      .once('value')
+      .then((snapshot) => {
+        const formData = snapshot.val();
+        if (formData && formData.isDarkActive !== undefined) {
+          setTheme(formData.isDarkActive);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching isDarkActive from Firebase:', error);
+
+      });
+  }, [uid]);
+
+  const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+  const paperTheme =
+    theme
+      ? { ...MD3DarkTheme }
+      : { ...MD3LightTheme };
+
   return (
-    <>
+    <PaperProvider theme={paperTheme} >
+      {theme ? <></> : <StatusBar bar-style={'light-content'} />}
       <Appbar.Header style={styles.appHeaderContainer}>
         <Appbar.BackAction onPress={handleBack} />
         <Appbar.Content
@@ -196,79 +217,114 @@ const Workout_details = ({ route }) => {
         />
       </Appbar.Header>
 
-      <Card style={{ marginTop: 10 }}>
-        {jsonData === null || loading ? ( // Display loader if loading state is true
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="#000000" />
-          </View>
-        ) : (
-          <View>
-            <Carousel
-              data={carouselData}
-              renderItem={renderItem}
-              sliderWidth={width}
-              itemWidth={width}
-              onSnapToItem={(index) => setActiveIndex(index)}
-            />
-            <Pagination
-              dotsLength={carouselData.length}
-              activeDotIndex={activeIndex}
-              containerStyle={styles.paginationContainer}
-              dotStyle={styles.dot}
-              inactiveDotOpacity={0.4}
-              inactiveDotScale={0.6}
-            />
-
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontWeight: 'bold' }}>{jsonData.exerciseName}</Text>
+      <View style ={[themeStyles.container]}>
+        <Card style={{ marginTop: 10 }}>
+          {jsonData === null || loading ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="large" />
             </View>
+          ) : (
+            <View>
+              <Carousel
+                data={carouselData}
+                renderItem={renderItem}
+                sliderWidth={width}
+                itemWidth={width}
+                onSnapToItem={(index) => setActiveIndex(index)}
+              />
+              <Pagination
+                dotsLength={carouselData.length}
+                activeDotIndex={activeIndex}
+                containerStyle={styles.paginationContainer}
+                dotStyle={[themeStyles.dot]}
+                inactiveDotOpacity={0.4}
+                inactiveDotScale={0.6}
+              />
 
-            <ScrollView style={{ height: '100%' }} showsVerticalScrollIndicator={false}>
-              <Card.Content>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: '5%' }}>
-                  <View>
-                    <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Level</Text>
-                    <Text variant="bodyMedium">{jsonData.level}</Text>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontWeight: 'bold' }}>{jsonData.exerciseName}</Text>
+              </View>
+
+              <ScrollView style={{ height: '100%' }} showsVerticalScrollIndicator={false}>
+                <Card.Content>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: '5%' }}>
+                    <View>
+                      <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Level</Text>
+                      <Text variant="bodyMedium">{jsonData.level}</Text>
+                    </View>
+                    <View>
+                      <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Time</Text>
+                      <Text variant="titleLarge">{jsonData.estimatedTime} Min</Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Time</Text>
-                    <Text variant="titleLarge">{jsonData.estimatedTime} Min</Text>
-                  </View>
-                </View>
-                <Text variant="bodyMedium">{jsonData.description}</Text>
+                  <Text variant="bodyMedium">{jsonData.description}</Text>
 
-                <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Muscles Affected</Text>
+                  <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Muscles Affected</Text>
 
-                {jsonData.musclesAffected.map((muscle, index) => (
-                  <Chip
-                    key={index}
-                    style={{ marginRight: '60%', marginTop: '4%', marginLeft: '4%' }}
-                    icon="check"
-                    mode="outlined"
-                    onPress={() => console.log('Pressed')}
-                  >
-                    {muscle}
-                  </Chip>
-                ))}
+                  {jsonData.musclesAffected.map((muscle, index) => (
+                    <Chip
+                      key={index}
+                      style={{ marginRight: '60%', marginTop: '4%', marginLeft: '4%' }}
+                      icon="check"
+                      mode="outlined"
+                      onPress={() => console.log('Pressed')}
+                    >
+                      {muscle}
+                    </Chip>
+                  ))}
 
-                <Text style={{ fontWeight: 'bold', margin: '4%' }}>Equipment needed</Text>
+                  <Text style={{ fontWeight: 'bold', margin: '4%' }}>Equipment needed</Text>
 
-                {jsonData.equipmentNeeded.map((equipment, index) => (
-                  <Chip
-                    key={index}
-                    style={{ marginRight: "60%", marginLeft: '4%', marginBottom: '4%', width: "40%", backgroundColor: "#ffffff" }}
-                    onPress={() => console.log('Pressed')}
-                  >
-                    <Ionicons name="barbell" size={24} color="black" />{equipment}
-                  </Chip>
-                ))}
-              </Card.Content>
-            </ScrollView>
-          </View>
-        )}
-      </Card>
-    </>
+                  {jsonData.equipmentNeeded.map((equipment, index) => (
+                    <Chip
+                      key={index}
+                      style={{ marginRight: "60%", marginLeft: '4%', marginBottom: '4%', width: "40%" }}
+                      onPress={() => console.log('Pressed')}
+                    >
+                      <Ionicons name="barbell" size={24} color="black" />{equipment}
+                    </Chip>
+                  ))}
+                </Card.Content>
+              </ScrollView>
+            </View>
+          )}
+        </Card>
+      </View>
+
+    </PaperProvider>
   );
 };
 
 export default Workout_details;
+
+const lightThemeStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'black',
+    margin: 10,
+    marginHorizontal: 6,
+  },
+});
+
+const darkThemeStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#444444',
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    margin: 10,
+    marginHorizontal: 6,
+  },
+  
+});
+

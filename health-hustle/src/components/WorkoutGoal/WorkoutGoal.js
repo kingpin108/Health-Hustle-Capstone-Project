@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, SafeAreaView, ScrollView, ActivityIndicator, Alert, Modal, Image, ImageBackground } from 'react-native';
-import { Appbar, Text, Button, TextInput, SegmentedButtons, Card, Title, Paragraph, FAB } from 'react-native-paper';
+import { View, SafeAreaView, ScrollView, ActivityIndicator, Alert, Modal, Image, ImageBackground, StyleSheet } from 'react-native';
+import { Appbar, Text, Button, TextInput, SegmentedButtons, Card, Title, Paragraph, FAB, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import styles from './styles';
@@ -16,7 +16,9 @@ const WorkoutGoal = () => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
-    const [shareGoal, setShareGoal] = useState('')
+    const [shareGoal, setShareGoal] = useState('');
+    const [theme, setTheme] = useState(false);
+
 
     const handleBack = () => {
         navigation.goBack();
@@ -157,7 +159,7 @@ const WorkoutGoal = () => {
             });
             fetchGoals();
         }
-        setIsLoading(false);
+        // setIsLoading(false);
 
     };
 
@@ -186,9 +188,10 @@ const WorkoutGoal = () => {
                 }
             } catch (error) {
                 console.error('Error fetching goals:', error);
-            } finally {
-                setIsLoading(false);
-            }
+            } 
+            // finally {
+            //     setIsLoading(false);
+            // }
         };
 
         fetchGoals();
@@ -250,164 +253,216 @@ const WorkoutGoal = () => {
             console.log('uri', uri);
             await Sharing.shareAsync(uri);
 
-            // await Share.open({url: uri});
         } catch (e) {
             console.log(e);
         }
     };
 
-    return (
-        <>
-            <StatusBar bar-style='dark-content' />
-            <Appbar.Header style={styles.appHeaderContainer}>
-                <Appbar.BackAction onPress={handleBack} />
-                <Appbar.Content
-                    title="Set Weekly Workout Goal"
-                    titleStyle={styles.appHeaderTitle}
-                />
-            </Appbar.Header>
-            <SafeAreaView style={styles.safeAreaContainer}>
-                <View style={styles.container}>
-                    <SegmentedButtons
-                        value={value}
-                        onValueChange={setValue}
-                        buttons={[
-                            {
-                                value: 'A',
-                                label: 'Workout Duration',
-                            },
-                            {
-                                value: 'B',
-                                label: 'Step Count',
-                                disabled: true
-                            },
-                        ]}
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData`);
+
+        userRef
+            .once('value')
+            .then((snapshot) => {
+                const formData = snapshot.val();
+                if (formData && formData.isDarkActive !== undefined) {
+                    setTheme(formData.isDarkActive);
+                    setIsLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching isDarkActive from Firebase:', error);
+                setIsLoading(false);
+
+
+            });
+    }, [uid]);
+
+    const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+    const paperTheme =
+        theme
+            ? { ...MD3DarkTheme }
+            : { ...MD3LightTheme };
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    } else {
+        return (
+            <PaperProvider theme={paperTheme} >
+                {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+                <Appbar.Header style={styles.appHeaderContainer}>
+                    <Appbar.BackAction onPress={handleBack} />
+                    <Appbar.Content
+                        title="Set Weekly Workout Goal"
+                        titleStyle={styles.appHeaderTitle}
                     />
+                </Appbar.Header>
+                <SafeAreaView style={styles.safeAreaContainer}>
+                    <View style={[themeStyles.container]}>
+                        <SegmentedButtons
+                            value={value}
+                            onValueChange={setValue}
+                            buttons={[
+                                {
+                                    value: 'A',
+                                    label: 'Workout Duration',
+                                },
+                                {
+                                    value: 'B',
+                                    label: 'Step Count',
+                                    disabled: true
+                                },
+                            ]}
+                        />
 
-                    {value === 'A' && (
-                        <View style={{ borderBottomColor: 'grey', borderBottomWidth: 2, alignItems: 'center', width: 350 }}>
-                            <Text variant='titleLarge' style={{ paddingVertical: 10 }}>Enter target time in minutes</Text>
-                            <TextInput
-                                label="Enter Duration"
-                                value={duration}
-                                onChangeText={text => setDuration(text)}
-                                keyboardType='numeric'
-                                style={{ marginVertical: 10, width: 300 }}
-                            />
-                            <Button
-                                mode="contained"
-                                onPress={handleSubmit}
-                                style={{ marginVertical: 10 }}
-                                disabled={!duration}
-                            >
-                                Add Goal
-                            </Button>
-                        </View>
-                    )}
-
-                    {value === 'B' && (
-                        <View style={{ borderBottomColor: 'grey', borderBottomWidth: 2, alignItems: 'center', width: 350 }}>
-                            <Text variant='titleLarge' style={{ paddingVertical: 10 }}>Enter step target in minutes</Text>
-                            <TextInput
-                                label="Enter Count"
-                                value={count}
-                                onChangeText={text => setCount(text)}
-                                keyboardType='numeric'
-                                style={{ marginVertical: 10, width: 300 }}
-                            />
-                            <Button mode="contained" onPress={handleSubmit} style={{ marginVertical: 10 }}>
-                                Add Goal
-                            </Button>
-                        </View>
-                    )}
-
-                    <ScrollView contentContainerStyle={{ padding: 16 }}>
-                        {isLoading ? (
-                            <ActivityIndicator size="small" color="gray" />
-                        ) : cardData.length === 0 ? (
-                            <Text style={styles.noGoalsText}>No Goals set</Text>
-                        ) : (
-                            cardData.map((item, index) => (
-                                <Card key={index} style={styles.card}>
-                                    <Card.Content style={styles.cardContent}>
-                                        <View style={styles.cardTextContainer}>
-                                            <Title>{item.type}</Title>
-                                            <Paragraph>{'Goal: ' + item.value + ' minutes'}</Paragraph>
-                                            {/* <Paragraph>{+ item.percent >= 100 ? 'Completed: 100%' : 'Completed: ' + item.percent + '%'}</Paragraph> */}
-                                        </View>
-                                        <CircularProgress
-                                            value={item.percent >= 100 ? 100 : item.percent}
-                                            maxValue={100}
-                                            initialValue={0}
-                                            radius={40}
-                                            textColor={"#352472"}
-                                            activeStrokeColor={"#352472"}
-                                            inActiveStrokeColor={"#9b59b6"}
-                                            inActiveStrokeOpacity={0.5}
-                                            inActiveStrokeWidth={10}
-                                            activeStrokeWidth={10}
-                                            title={"%"}
-                                            titleFontSize={12}
-                                            titleColor={"#352472"}
-                                            titleStyle={{ fontWeight: "bold" }}
-                                        />
-                                    </Card.Content>
-                                    <Card.Content>
-                                        {item.percent >= 100 && (
-                                            <Button
-                                                icon="share"
-                                                textColor='#352472'
-                                                mode="elevated"
-                                                style={styles.shareButton}
-                                                onPress={() => shareAchievement(item.value)}>
-                                                Share
-                                            </Button>
-                                        )}
-                                    </Card.Content>
-                                </Card>
-                            ))
-                        )}
-                    </ScrollView>
-                </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <ImageBackground source={require('../../../assets/confetti.png')} style={styles.backgroundImage}>
-                            <View style={styles.modalView}>
-                                <ViewShot ref={ref} style={{ alignItems: 'center', padding: 20, backgroundColor: 'white' }}>
-                                    <Image
-                                        style={styles.generatedImage}
-                                        source={require('../../../assets/trophy.png')}
-                                    />
-                                    <Text variant='headlineLarge' style={{ fontWeight: 'bold', color: '#2D4356' }}>ACHIEVED</Text>
-                                    <Text variant='headlineSmall' style={{ fontWeight: 'bold', color: '#1D267D', textAlign: 'center' }}>{"I worked out for " + shareGoal + " minutes"}</Text>
-                                </ViewShot>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <FAB
-                                        icon="share"
-                                        style={styles.fab}
-                                        onPress={shareImage}
-                                        size='large'
-                                    />
-                                    <FAB
-                                        icon="close"
-                                        style={styles.fab}
-                                        onPress={() => setModalVisible(!modalVisible)}
-                                        size='large'
-                                    />
-                                </View>
+                        {value === 'A' && (
+                            <View style={{ borderBottomColor: 'grey', borderBottomWidth: 2, alignItems: 'center', width: 350 }}>
+                                <Text variant='titleLarge' style={{ paddingVertical: 10 }}>Enter target time in minutes</Text>
+                                <TextInput
+                                    label="Enter Duration"
+                                    value={duration}
+                                    onChangeText={text => setDuration(text)}
+                                    keyboardType='numeric'
+                                    style={{ marginVertical: 10, width: 300 }}
+                                />
+                                <Button
+                                    mode="contained"
+                                    onPress={handleSubmit}
+                                    style={{ marginVertical: 10 }}
+                                    disabled={!duration}
+                                >
+                                    Add Goal
+                                </Button>
                             </View>
-                        </ImageBackground>
+                        )}
+
+                        {value === 'B' && (
+                            <View style={{ borderBottomColor: 'grey', borderBottomWidth: 2, alignItems: 'center', width: 350 }}>
+                                <Text variant='titleLarge' style={{ paddingVertical: 10 }}>Enter step target in minutes</Text>
+                                <TextInput
+                                    label="Enter Count"
+                                    value={count}
+                                    onChangeText={text => setCount(text)}
+                                    keyboardType='numeric'
+                                    style={{ marginVertical: 10, width: 300 }}
+                                />
+                                <Button mode="contained" onPress={handleSubmit} style={{ marginVertical: 10 }}>
+                                    Add Goal
+                                </Button>
+                            </View>
+                        )}
+
+                        <ScrollView contentContainerStyle={{ padding: 16 }}>
+                           
+                            {cardData.length === 0 ? (
+                                <Text style={styles.noGoalsText}>No Goals set</Text>
+                            ) : (
+                                cardData.map((item, index) => (
+                                    <Card key={index} style={styles.card}>
+                                        <Card.Content style={styles.cardContent}>
+                                            <View style={styles.cardTextContainer}>
+                                                <Title>{item.type}</Title>
+                                                <Paragraph>{'Goal: ' + item.value + ' minutes'}</Paragraph>
+                                            </View>
+                                            <CircularProgress
+                                                value={item.percent >= 100 ? 100 : item.percent}
+                                                maxValue={100}
+                                                initialValue={0}
+                                                radius={40}
+                                                textColor={"#352472"}
+                                                activeStrokeColor={theme ? "white" : "#352472"}
+                                                inActiveStrokeColor={"#9b59b6"}
+                                                inActiveStrokeOpacity={0.5}
+                                                inActiveStrokeWidth={10}
+                                                activeStrokeWidth={10}
+                                                title={"%"}
+                                                titleFontSize={12}
+                                                titleColor={theme ? "white" : "#352472"}
+                                                titleStyle={{ fontWeight: "bold" }}
+                                            />
+                                        </Card.Content>
+                                        <Card.Content>
+                                            {item.percent >= 100 && (
+                                                <Button
+                                                    icon="share"
+                                                    textColor='#352472'
+                                                    mode="elevated"
+                                                    style={styles.shareButton}
+                                                    onPress={() => shareAchievement(item.value)}>
+                                                    Share
+                                                </Button>
+                                            )}
+                                        </Card.Content>
+                                    </Card>
+                                ))
+                            )}
+                        </ScrollView>
                     </View>
-                </Modal>
-            </SafeAreaView>
-        </>
-    );
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                        }}>
+                        <View style={styles.centeredView}>
+                            <ImageBackground source={require('../../../assets/confetti.png')} style={styles.backgroundImage}>
+                                <View style={styles.modalView}>
+                                    <ViewShot ref={ref} style={{ alignItems: 'center', padding: 20, backgroundColor: 'white' }}>
+                                        <Image
+                                            style={styles.generatedImage}
+                                            source={require('../../../assets/trophy.png')}
+                                        />
+                                        <Text variant='headlineLarge' style={{ fontWeight: 'bold', color: '#2D4356' }}>ACHIEVED</Text>
+                                        <Text variant='headlineSmall' style={{ fontWeight: 'bold', color: '#1D267D', textAlign: 'center' }}>{"I worked out for " + shareGoal + " minutes"}</Text>
+                                    </ViewShot>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <FAB
+                                            icon="share"
+                                            style={styles.fab}
+                                            onPress={shareImage}
+                                            size='large'
+                                        />
+                                        <FAB
+                                            icon="close"
+                                            style={styles.fab}
+                                            onPress={() => setModalVisible(!modalVisible)}
+                                            size='large'
+                                        />
+                                    </View>
+                                </View>
+                            </ImageBackground>
+                        </View>
+                    </Modal>
+                </SafeAreaView>
+            </PaperProvider>
+        );
+    }
 };
 
 export default WorkoutGoal;
+
+const lightThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: 'white',
+        padding: 20,
+    },
+
+});
+
+const darkThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: '#444444',
+        padding: 20,
+    },
+});
+

@@ -1,12 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    // backgroundColor: 'white',
-    padding: 20,
-  },
+  
   safeAreaContainer: {
     flex: 1,
   },
@@ -26,11 +21,11 @@ const styles = StyleSheet.create({
   appHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
     elevation: 4,
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 2,
+    zIndex:1
   },
   shareButton: {
     marginTop: 10,
@@ -50,7 +45,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    // borderRadius: 20,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     width: '100%',
@@ -82,7 +76,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   fab: {
-    // borderRadius: '100%',
     margin: 10
   },
   backgroundImage: {
