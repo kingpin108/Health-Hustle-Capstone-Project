@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StatusBar, PermissionsAndroid, Platform, ActivityIndicator, StyleSheet } from 'react-native';
+import { StatusBar, PermissionsAndroid, Platform, StyleSheet } from 'react-native';
 import { View, Image } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import { useNavigation } from '@react-navigation/native';
-import { Badge, Text, Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
+import { Badge, Text, Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, ActivityIndicator } from 'react-native-paper';
 import styles from './styles';
 import { AuthContext } from '../../contexts/AuthContext';
 import { database } from '../../database/config';

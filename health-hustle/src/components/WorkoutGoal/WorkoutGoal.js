@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, SafeAreaView, ScrollView, ActivityIndicator, Alert, Modal, Image, ImageBackground, StyleSheet } from 'react-native';
-import { Appbar, Text, Button, TextInput, SegmentedButtons, Card, Title, Paragraph, FAB, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
+import { View, SafeAreaView, ScrollView, Alert, Modal, Image, ImageBackground, StyleSheet } from 'react-native';
+import { Appbar, Text, Button, TextInput, SegmentedButtons, Card, Title, Paragraph, FAB, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import styles from './styles';

@@ -82,10 +82,13 @@ const Feedback = () => {
                 const formData = snapshot.val();
                 if (formData && formData.isDarkActive !== undefined) {
                     setTheme(formData.isDarkActive);
+                    setLoading(false)
                 }
             })
             .catch((error) => {
                 console.error('Error fetching isDarkActive from Firebase:', error);
+                setLoading(false)
+
 
             });
     }, [uid]);
@@ -99,6 +102,13 @@ const Feedback = () => {
 
     const filteredFeedback = data.filter(item => item.user === uid);
 
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    } else {
     return (
         <PaperProvider theme={paperTheme} >
             {theme ? <></> : <StatusBar bar-style={'light-content'} />}
@@ -154,6 +164,7 @@ const Feedback = () => {
             </View>
         </PaperProvider>
     );
+                                }
 };
 
 export default Feedback;

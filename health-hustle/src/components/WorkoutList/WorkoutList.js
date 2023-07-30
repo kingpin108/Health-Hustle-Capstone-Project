@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Text, Appbar, FAB } from 'react-native-paper';
+import { View, SafeAreaView, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, Appbar, FAB, ActivityIndicator, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import styles from './styles';
+import { StatusBar } from 'expo-status-bar';
 import axios from "axios";
 import { database } from '../../database/config';
 import { auth } from '../../database/config';
@@ -17,6 +18,7 @@ const WorkoutList = ({ route }) => {
     const [isWorkoutDone, setIsWorkoutDone] = useState({});
     const [workoutDay, setWorkoutDay] = useState(1);
     const [loading, setLoading] = useState(true); // Add loading state
+    const [theme, setTheme] = useState(false);
 
 
     let workoutSet = 'default'
@@ -135,9 +137,36 @@ const WorkoutList = ({ route }) => {
         }
     };
 
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData`);
+
+        userRef
+            .once('value')
+            .then((snapshot) => {
+                const formData = snapshot.val();
+                if (formData && formData.isDarkActive !== undefined) {
+                    setTheme(formData.isDarkActive);
+                    setLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching isDarkActive from Firebase:', error);
+                setLoading(false);
+
+            });
+    }, [uid]);
+
+    const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+
+    const paperTheme =
+        theme
+            ? { ...MD3DarkTheme }
+            : { ...MD3LightTheme };
+
     const ListItem = ({ item }) => (
         <TouchableOpacity
-            style={styles.itemContainer}
+            style={[themeStyles.itemContainer]}
             onPress={() => handleItemPress(item)}
         >
             <View style={styles.listItem}>
@@ -157,66 +186,111 @@ const WorkoutList = ({ route }) => {
         </TouchableOpacity>
     );
 
-    return (
-        <>
-            <Appbar.Header style={styles.appHeaderContainer}>
-                <Appbar.BackAction onPress={handleBack} />
-                <Appbar.Content
-                    title={`Day ${workoutDay}`}
-                    titleStyle={styles.appHeaderTitle}
-                />
-            </Appbar.Header>
 
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    } else {
+        return (
+            <PaperProvider theme={paperTheme}>
+                {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+                <Appbar.Header style={styles.appHeaderContainer}>
+                    <Appbar.BackAction onPress={handleBack} />
+                    <Appbar.Content
+                        title={`Day ${workoutDay}`}
+                        titleStyle={styles.appHeaderTitle}
+                    />
+                </Appbar.Header>
 
-            <SafeAreaView style={styles.container}>
-                {loading ? ( // Render loader if loading state is true
-                    <View style={styles.loaderContainer}>
-                        <ActivityIndicator size="large" color="#0000ff" />
-                    </View>
-                ) :
-                    workoutDay % 4 === 0 ? (
-                        <View style={styles.containerBreak}>
-                            <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
-                            <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
-                            <View style={styles.fabContainer}>
-                                <FAB
-                                    label="Resume workout"
-                                    icon="play"
-                                    style={styles.fab}
-                                    onPress={handlePlayButtonPress}
-                                />
+                <SafeAreaView style={[themeStyles.container]}>
+                    {
+                        workoutDay % 4 === 0 ? (
+                            <View style={styles.containerBreak}>
+                                <Image source={require('../../../assets/iconsBreak.png')} style={styles.imageBreak} />
+                                <Text style={styles.textBreak} variant="displaySmall">Take a moment to appreciate your progress.</Text>
+                                <View style={styles.fabContainer}>
+                                    <FAB
+                                        label="Resume workout"
+                                        icon="play"
+                                        style={styles.fab}
+                                        onPress={handlePlayButtonPress}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                    ) : (
-                        <FlatList
-                            data={workoutData}
-                            keyExtractor={(item) => item.id}
-                            ListHeaderComponent={
-                                <>
-                                    <Text style={styles.titleTime} variant="titleMedium">
-                                        Estimated time: 45 mins
-                                    </Text>
-                                    <Text style={styles.titleTime} variant="titleMedium">
-                                        Total Exercises: {workoutData.length}
-                                    </Text>
-                                    <Text style={styles.titleInstruction} variant="titleLarge">
-                                        Tip
-                                    </Text>
-                                    <Text style={styles.textInstruction} variant="titleSmall">
-                                        Proper nutrition and hydration are crucial for optimal performance and recovery. Fuel your body with nutritious foods, including a balance of proteins, carbohydrates, and healthy fats. Drink plenty of water throughout the day to stay hydrated before, during, and after your workouts.
-                                    </Text>
-                                    <Text style={styles.titleInstruction} variant="headlineSmall">
-                                        Exercises
-                                    </Text>
-                                </>
-                            }
-                            renderItem={ListItem}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    )}
-            </SafeAreaView>
-        </>
-    );
+                        ) : (
+                            <FlatList
+                                data={workoutData}
+                                keyExtractor={(item) => item.id}
+                                ListHeaderComponent={
+                                    <>
+                                        <Text style={styles.titleTime} variant="titleMedium">
+                                            Estimated time: 45 mins
+                                        </Text>
+                                        <Text style={styles.titleTime} variant="titleMedium">
+                                            Total Exercises: {workoutData.length}
+                                        </Text>
+                                        <Text style={styles.titleInstruction} variant="titleLarge">
+                                            Tip
+                                        </Text>
+                                        <Text style={styles.textInstruction} variant="titleSmall">
+                                            Proper nutrition and hydration are crucial for optimal performance and recovery. Fuel your body with nutritious foods, including a balance of proteins, carbohydrates, and healthy fats. Drink plenty of water throughout the day to stay hydrated before, during, and after your workouts.
+                                        </Text>
+                                        <Text style={styles.titleInstruction} variant="headlineSmall">
+                                            Exercises
+                                        </Text>
+                                    </>
+                                }
+                                renderItem={ListItem}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        )}
+                </SafeAreaView>
+            </PaperProvider>
+        );
+    }
 };
 
 export default WorkoutList;
+const lightThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+
+    },
+    itemContainer: {
+        elevation: 4,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 2,
+        marginHorizontal: 20,
+        marginVertical: 5,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        shadowColor: 'black'
+    },
+
+
+});
+
+const darkThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#444444',
+
+    },
+    itemContainer: {
+        elevation: 4,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 2,
+        marginHorizontal: 20,
+        marginVertical: 5,
+        backgroundColor: '#262626',
+        borderRadius: 10,
+        shadowColor: 'white'
+    },
+
+});

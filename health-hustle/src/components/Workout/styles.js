@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
   },
   appHeaderContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
     elevation: 4, 
     shadowOpacity: 0.3, 
     shadowOffset: { width: 0, height: 2 }, 

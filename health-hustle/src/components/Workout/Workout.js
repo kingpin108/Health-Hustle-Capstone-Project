@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, ImageBackground, View, Dimensions, SafeAreaView, Image, ScrollView, Touchable, ActivityIndicator, Alert } from 'react-native';
-import { Button, Text, IconButton, Appbar, useTheme, FAB } from 'react-native-paper';
+import { StyleSheet, ImageBackground, View, ScrollView, Alert } from 'react-native';
+import { Button, Text, Appbar, useTheme, ActivityIndicator, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -17,11 +17,10 @@ const Workout = () => {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const theme = useTheme();
     const [completedExercises, setCompletedExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-
+    const [theme, setTheme] = useState(false);
 
     const handleOpenWorkoutList = () => {
         navigation.navigate('WorkoutList', { completedExercises, workoutDay });
@@ -97,88 +96,115 @@ const Workout = () => {
         checkInternetConnection();
     }, []);
 
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData`);
 
-    return (
-        <>
-            <StatusBar bar-style='dark-content' />
-            <Appbar.Header style={styles.appHeaderContainer}>
-                <Appbar.Content
-                    title="Workout"
-                    titleStyle={styles.appHeaderTitle}
-                />
-                <Appbar.Action icon="home" onPress={handleHomePress} />
-            </Appbar.Header>
-            <></>
+        userRef
+            .once('value')
+            .then((snapshot) => {
+                const formData = snapshot.val();
+                if (formData && formData.isDarkActive !== undefined) {
+                    setTheme(formData.isDarkActive);
+                    setLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching isDarkActive from Firebase:', error);
+                setLoading(false);
 
-            {loading ? (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : error ? (
-                <View style={styles.loaderContainer}>
-                    <Alert
-                        title="Error"
-                        message="Failed to fetch workout data. Please check your internet connection and try again."
-                        buttonTitle="OK"
-                        onPress={() => setError(false)}
+            });
+    }, [uid]);
+
+    const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+
+    const paperTheme =
+        theme
+            ? { ...MD3DarkTheme }
+            : { ...MD3LightTheme };
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    } else {
+        return (
+
+            <PaperProvider theme={paperTheme}>
+                {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+                <Appbar.Header style={styles.appHeaderContainer}>
+                    <Appbar.Content
+                        title="Workout"
+                        titleStyle={styles.appHeaderTitle}
                     />
-                </View>
-            ) : (
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.container}>
-                        <View style={styles.imageContainer}>
-                            <ImageBackground
-                                source={require('../../../assets/workout.png')}
-                                style={styles.backgroundImage}
-                            >
-                                <View style={styles.content}>
-                                    <Text style={styles.text}>Weekly Workout Plan</Text>
-                                    <Button
-                                        mode="contained"
-                                        style={styles.button}
-                                        labelStyle={styles.buttonLabel}
-                                        onPress={handleOpenWorkoutList}
-                                    >
-                                        {`Day ${route.params?.workoutDay || workoutDay}`}
-                                    </Button>
-                                </View>
-                            </ImageBackground>
+                    <Appbar.Action icon="home" onPress={handleHomePress} />
+                </Appbar.Header>
+                <></>
+
+                {loading ? (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : error ? (
+                    <View style={styles.loaderContainer}>
+                        <Alert
+                            title="Error"
+                            message="Failed to fetch workout data. Please check your internet connection and try again."
+                            buttonTitle="OK"
+                            onPress={() => setError(false)}
+                        />
+                    </View>
+                ) : (
+                    <ScrollView style={[themeStyles.container]} showsVerticalScrollIndicator={false}>
+                        <View style={styles.container}>
+                            <View style={styles.imageContainer}>
+                                <ImageBackground
+                                    source={require('../../../assets/workout.png')}
+                                    style={styles.backgroundImage}
+                                >
+                                    <View style={styles.content}>
+                                        <Text style={styles.text}>Weekly Workout Plan</Text>
+                                        <Button
+                                            mode="contained"
+                                            style={styles.button}
+                                            labelStyle={styles.buttonLabel}
+                                            onPress={handleOpenWorkoutList}
+                                        >
+                                            {`Day ${route.params?.workoutDay || workoutDay}`}
+                                        </Button>
+                                    </View>
+                                </ImageBackground>
+                            </View>
+
+                            <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#EE7CDC", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('DietPlan')}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Diet Plans</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#150359", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('WorkoutGoal')}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Workout Goals</Text>
+                            </TouchableOpacity>
+
                         </View>
-
-                        <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#EE7CDC", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('DietPlan')}>
-                            <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Diet Plans</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', backgroundColor: "#150359", paddingBottom: '5%', width: "90%", borderRadius: 10 }} onPress={() => navigation.navigate('WorkoutGoal')}>
-                            <Text style={{ textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: 17, marginTop: '5%' }}>Workout Goals</Text>
-                        </TouchableOpacity>
-
-                        {/* <Text style={styles.header}>Body Focus</Text>
-                    <View style={styles.imageRow}>
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={handleOpenWorkoutList}
-                        />
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={handleOpenWorkoutList}
-                        />
-                    </View>
-                    <View style={styles.imageRow}>
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={handleOpenWorkoutList}
-                        />
-                        <BodyFocusCardView
-                            imageSource={require('../../../assets/workout.png')}
-                            onPress={handleOpenWorkoutList}
-                        />
-                    </View> */}
-                    </View>
-                </ScrollView>
-            )}
-        </>
-    );
+                    </ScrollView>
+                )}
+            </PaperProvider>
+        );
+    }
 };
 
 export default Workout;
+
+const lightThemeStyles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+    },
+});
+
+const darkThemeStyles = StyleSheet.create({
+    container: {
+        
+        backgroundColor: '#444444',
+    },
+});

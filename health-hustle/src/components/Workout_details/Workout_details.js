@@ -1,5 +1,5 @@
-import { View, ScrollView, Dimensions, Image, ActivityIndicator, Alert, StyleSheet } from 'react-native';
-import { Card, Chip, Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text } from 'react-native-paper';
+import { View, ScrollView, Dimensions, Image, Alert, StyleSheet } from 'react-native';
+import { Card, Chip, Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';

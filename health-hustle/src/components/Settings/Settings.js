@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
-    Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Button, Appbar, Drawer, Switch
+    Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Button, Appbar, Drawer, Switch, ActivityIndicator
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
@@ -24,6 +24,7 @@ const Settings = () => {
     const [activeItem, setActiveItem] = React.useState('home');
     const [theme, setTheme] = useState(false);
     const { uid } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(true);
 
 
     const handleItemPress = (item) => {
@@ -52,10 +53,14 @@ const Settings = () => {
                 const formData = snapshot.val();
                 if (formData && formData.isDarkActive !== undefined) {
                     setTheme(formData.isDarkActive);
+                    setIsLoading(false);
+
                 }
             })
             .catch((error) => {
                 console.error('Error fetching isDarkActive from Firebase:', error);
+                setIsLoading(false);
+
             });
     }, [uid]);
 
@@ -97,60 +102,67 @@ const Settings = () => {
         theme
             ? { ...MD3DarkTheme }
             : { ...MD3LightTheme };
-
-    return (
-        <PaperProvider theme={paperTheme}>
-            {theme ? <></>: <StatusBar bar-style={'light-content'} />}
-            <Appbar.Header style={styles.appHeaderContainer}>
-                <Appbar.Content
-                    title="Settings"
-                    titleStyle={styles.appHeaderTitle}
-                />
-                <Appbar.Action icon="home" onPress={handleHomePress} />
-            </Appbar.Header>
-            <>
-                <View style={[themeStyles.container]}>
-                    <Drawer.Section >
-                        <Drawer.Item
-                            label="Profile"
-                            icon="account"
-                            active={activeItem === 'profile'}
-                            onPress={() => handleItemPress('WorkoutProfile')}
-                        />
-                    </Drawer.Section>
-                    <Drawer.Section>
-                        <Drawer.Item
-                            label="Provide Feedback"
-                            icon="message-reply-text-outline"
-                            active={activeItem === 'feedback'}
-                            onPress={() => handleItemPress('Feedback')}
-                        />
-                    </Drawer.Section>
-                    <Drawer.Section>
-                        <Drawer.Item
-                            label="Notifications"
-                            icon="bell"
-                            active={activeItem === 'settings'}
-                            onPress={() => handleItemPress('HealthTipNotification')}
-                        />
-                    </Drawer.Section>
-                    <Drawer.Section>
-                        <Drawer.Item
-                            label="Change Theme"
-                            icon={({ color, size }) => <MaterialCommunityIcons name="theme-light-dark" size={size} color={color} />}
-                            active={activeItem === 'theme'}
-                            right={() => (
-                                <Switch value={theme} onValueChange={handleThemePress} />
-                            )}
-                        />
-                    </Drawer.Section>
-                    <Button icon="logout" mode="contained" onPress={handleLogout} style={{ margin: 16 }}>
-                        Logout
-                    </Button>
-                </View>
-            </>
-        </PaperProvider>
-    );
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    } else {
+        return (
+            <PaperProvider theme={paperTheme}>
+                {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+                <Appbar.Header style={styles.appHeaderContainer}>
+                    <Appbar.Content
+                        title="Settings"
+                        titleStyle={styles.appHeaderTitle}
+                    />
+                    <Appbar.Action icon="home" onPress={handleHomePress} />
+                </Appbar.Header>
+                <>
+                    <View style={[themeStyles.container]}>
+                        <Drawer.Section >
+                            <Drawer.Item
+                                label="Profile"
+                                icon="account"
+                                active={activeItem === 'profile'}
+                                onPress={() => handleItemPress('WorkoutProfile')}
+                            />
+                        </Drawer.Section>
+                        <Drawer.Section>
+                            <Drawer.Item
+                                label="Provide Feedback"
+                                icon="message-reply-text-outline"
+                                active={activeItem === 'feedback'}
+                                onPress={() => handleItemPress('Feedback')}
+                            />
+                        </Drawer.Section>
+                        <Drawer.Section>
+                            <Drawer.Item
+                                label="Notifications"
+                                icon="bell"
+                                active={activeItem === 'settings'}
+                                onPress={() => handleItemPress('HealthTipNotification')}
+                            />
+                        </Drawer.Section>
+                        <Drawer.Section>
+                            <Drawer.Item
+                                label="Change Theme"
+                                icon={({ color, size }) => <MaterialCommunityIcons name="theme-light-dark" size={size} color={color} />}
+                                active={activeItem === 'theme'}
+                                right={() => (
+                                    <Switch value={theme} onValueChange={handleThemePress} />
+                                )}
+                            />
+                        </Drawer.Section>
+                        <Button icon="logout" mode="contained" onPress={handleLogout} style={{ margin: 16 }}>
+                            Logout
+                        </Button>
+                    </View>
+                </>
+            </PaperProvider>
+        );
+    }
 };
 
 export default Settings;

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, View, Platform, Alert, ActivityIndicator } from 'react-native';
-import { Provider as PaperProvider, Button, Appbar, Drawer, Switch, List, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
+import { StyleSheet, View, Platform, Alert } from 'react-native';
+import { Provider as PaperProvider, Button, Appbar, Drawer, Switch, List, MD3DarkTheme, MD3LightTheme , ActivityIndicator} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -33,8 +33,6 @@ export default function HealthTipNotification() {
     const [timeHydration, setTimeHydration] = useState('');
     const { uid } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(true);
-
-
 
     const handleTimeInputChange = (text) => {
         setTimeValue(text);
@@ -154,22 +152,22 @@ export default function HealthTipNotification() {
 
     useEffect(() => {
         const userRef = database.ref(`users/${uid}/formData`);
-    
-        userRef
-          .once('value')
-          .then((snapshot) => {
-            const formData = snapshot.val();
-            if (formData && formData.isDarkActive !== undefined) {
-              setTheme(formData.isDarkActive); 
-              setIsLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.error('Error fetching isDarkActive from Firebase:', error);
-            setIsLoading(false);
 
-          });
-      }, [uid]);
+        userRef
+            .once('value')
+            .then((snapshot) => {
+                const formData = snapshot.val();
+                if (formData && formData.isDarkActive !== undefined) {
+                    setTheme(formData.isDarkActive);
+                    setIsLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching isDarkActive from Firebase:', error);
+                setIsLoading(false);
+
+            });
+    }, [uid]);
 
     const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
 
@@ -179,81 +177,82 @@ export default function HealthTipNotification() {
             ? { ...MD3DarkTheme }
             : { ...MD3LightTheme };
 
-    
-        if (isLoading) {
-            return (
-                <View style= {{flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large"/>
-                </View>
-            );
-        } else {
-            return (
 
-        <PaperProvider theme={paperTheme}>
-            {theme ? <></> : <StatusBar bar-style={'light-content'} />}            
-            <Appbar.Header style={styles.appHeaderContainer}>
-                <Appbar.BackAction onPress={handleBack} />
-                <Appbar.Content
-                    title="Notification"
-                    titleStyle={styles.appHeaderTitle}
-                />
-            </Appbar.Header>
-            <>
-                <View style={[themeStyles.container]}>
-                    <Drawer.Section>
-                        <List.Item
-                            title="Daily Health Tips"
-                            left={(props) => <MaterialCommunityIcons name="tooltip-plus" size={24} {...props} />}
-                            right={() => (
-                                <Switch
-                                    value={reminder}
-                                    onValueChange={handleReminderPress}
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    } else {
+        return (
+
+            <PaperProvider theme={paperTheme}>
+                {theme ? <></> : <StatusBar bar-style={'light-content'} />}
+                <Appbar.Header style={styles.appHeaderContainer}>
+                    <Appbar.BackAction onPress={handleBack} />
+                    <Appbar.Content
+                        title="Notification"
+                        titleStyle={styles.appHeaderTitle}
+                    />
+                </Appbar.Header>
+                <>
+                    <View style={[themeStyles.container]}>
+                        <Drawer.Section>
+                            <List.Item
+                                title="Daily Health Tips"
+                                left={(props) => <MaterialCommunityIcons name="tooltip-plus" size={24} {...props} />}
+                                right={() => (
+                                    <Switch
+                                        value={reminder}
+                                        onValueChange={handleReminderPress}
+                                    />
+                                )}
+                            />
+                            {reminder && (
+                                <TextInput
+                                    label="Enter time"
+                                    placeholder="Enter time (mins)"
+                                    value={timeValue}
+                                    onChangeText={handleTimeInputChange}
+                                    style={styles.textInput}
+                                    keyboardType="numeric"
                                 />
                             )}
-                        />
-                        {reminder && (
-                            <TextInput
-                                label="Enter time"
-                                placeholder="Enter time (mins)"
-                                value={timeValue}
-                                onChangeText={handleTimeInputChange}
-                                style={styles.textInput}
-                                keyboardType="numeric"
+                        </Drawer.Section>
+                        <Drawer.Section>
+                            <List.Item
+                                title="Hydration Check"
+                                left={(props) => <MaterialCommunityIcons name="cup" size={24} {...props} />}
+                                right={() => (
+                                    <Switch
+                                        value={hydration}
+                                        onValueChange={handleHydrationPress}
+                                    />
+                                )}
                             />
-                        )}
-                    </Drawer.Section>
-                    <Drawer.Section>
-                        <List.Item
-                            title="Hydration Check"
-                            left={(props) => <MaterialCommunityIcons name="cup" size={24} {...props} />}
-                            right={() => (
-                                <Switch
-                                    value={hydration}
-                                    onValueChange={handleHydrationPress}
+                            {hydration && (
+                                <TextInput
+                                    label="Enter time"
+                                    placeholder="Enter time (mins)"
+                                    value={timeHydration}
+                                    onChangeText={handleHydrationInputChange}
+                                    style={styles.textInput}
+                                    keyboardType="numeric"
                                 />
                             )}
-                        />
-                        {hydration && (
-                            <TextInput
-                                label="Enter time"
-                                placeholder="Enter time (mins)"
-                                value={timeHydration}
-                                onChangeText={handleHydrationInputChange}
-                                style={styles.textInput}
-                                keyboardType="numeric"
-                            />
-                        )}
-                    </Drawer.Section>
-                    <Button icon={({ color, size }) => <MaterialCommunityIcons name="content-save" size={size} color={color} />}
-                        mode="contained"
-                        onPress={handleSave}
-                        style={{ margin: 16 }}>
-                        Save
-                    </Button>
-                </View>
-            </>
+                        </Drawer.Section>
+                        <Button icon={({ color, size }) => <MaterialCommunityIcons name="content-save" size={size} color={color} />}
+                            mode="contained"
+                            onPress={handleSave}
+                            style={{ margin: 16 }}>
+                            Save
+                        </Button>
+                    </View>
+                </>
             </PaperProvider>
-    )};
+        )
+    };
 
 };
 

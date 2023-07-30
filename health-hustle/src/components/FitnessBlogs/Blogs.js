@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
-import { Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text } from 'react-native-paper';
+import { View, StyleSheet, Image, ScrollView } from 'react-native';
+import { Appbar, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme, Text, ActivityIndicator } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { database } from '../../database/config';
 import { AuthContext } from "../../contexts/AuthContext";
