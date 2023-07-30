@@ -38,7 +38,6 @@ const Settings = () => {
             await logout();
             console.log('User logged out successfully.');
             navigation.navigate('Login');
-
         } catch (error) {
             console.log('Error logging out:', error);
         }
