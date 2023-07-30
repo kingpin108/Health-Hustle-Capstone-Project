@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, ScrollView } from 'react-native';
-import { Appbar, TextInput, HelperText, Button, List, ActivityIndicator } from 'react-native-paper';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { Appbar, TextInput, HelperText, Button, List, ActivityIndicator, Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
@@ -18,6 +18,8 @@ const Feedback = () => {
     const [feedback, setFeedback] = useState('');
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [theme, setTheme] = useState(false);
+
     const MAX_WORD_COUNT = 100;
 
     useEffect(() => {
@@ -69,11 +71,18 @@ const Feedback = () => {
         }
     };
 
+    const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
+
+    const paperTheme =
+        theme
+            ? { ...MD3DarkTheme }
+            : { ...MD3LightTheme };
+
     const filteredFeedback = data.filter(item => item.user === uid);
 
     return (
         <>
-            <StatusBar barStyle="dark-content" />
+            {theme ? <></> : <StatusBar bar-style={'light-content'} />}
             <Appbar.Header style={styles.appHeaderContainer}>
                 <Appbar.BackAction onPress={handleBack} />
                 <Appbar.Content
@@ -81,7 +90,7 @@ const Feedback = () => {
                     titleStyle={styles.appHeaderTitle}
                 />
             </Appbar.Header>
-            <View style={styles.container}>
+            <View style={[themeStyles.container]}>
                 <TextInput
                     mode="outlined"
                     label="Provide Feedback"
@@ -129,3 +138,21 @@ const Feedback = () => {
 };
 
 export default Feedback;
+
+const lightThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        flexDirection: 'column',
+        padding: 10
+    },
+});
+
+const darkThemeStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#444444',
+        flexDirection: 'column',
+        padding: 10
+    },
+});

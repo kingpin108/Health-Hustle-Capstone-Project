@@ -222,7 +222,7 @@ const DietPlan = () => {
           <Appbar.Content title="Diet Plans" titleStyle={styles.appHeaderTitle} />
         </Appbar.Header>
         <SafeAreaView style={[themeStyles.container]}>
-          <FlatList
+          <FlatList 
             data={filteredWorkoutData}
             keyExtractor={(item) => item.recipe.mealName}
             ListHeaderComponent={
@@ -230,7 +230,7 @@ const DietPlan = () => {
                 <Button
                   icon="filter"
                   mode="contained"
-                  style={{ margin: '5%', backgroundColor: '#EE7CDC' }}
+                  style={{ margin: '5%'}}
                   onPress={handleModalToggle}
                 >
                   Filter
@@ -253,25 +253,21 @@ const DietPlan = () => {
                     label="Vegetarian"
                     status={vegChecked ? 'checked' : 'unchecked'}
                     onPress={() => setVegChecked(!vegChecked)}
-                    color="#EE7CDC"
                   />
                   <Checkbox.Item
                     label="Non-Vegetarian"
                     status={nonVegChecked ? 'checked' : 'unchecked'}
                     onPress={() => setNonVegChecked(!nonVegChecked)}
-                    color="#EE7CDC"
                   />
                   <Checkbox.Item
                     label="Gluten-Free"
                     status={glutenFreeChecked ? 'checked' : 'unchecked'}
                     onPress={() => setGlutenFreeChecked(!glutenFreeChecked)}
-                    color="#EE7CDC"
                   />
                   <Checkbox.Item
                     label="Lactose-Free"
                     status={lactoseFreeChecked ? 'checked' : 'unchecked'}
                     onPress={() => setLactoseFreeChecked(!lactoseFreeChecked)}
-                    color="#EE7CDC"
                   />
                 </View>
               </Dialog.Content>
@@ -279,7 +275,6 @@ const DietPlan = () => {
                 <Button
                   mode="contained"
                   onPress={handleFilterApply}
-                  style={{ backgroundColor: "#EE7CDC" }}
                 >
                   Apply Filters
                 </Button>

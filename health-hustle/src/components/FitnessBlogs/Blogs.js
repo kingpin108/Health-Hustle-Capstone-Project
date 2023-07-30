@@ -13,9 +13,6 @@ const Blogs = () => {
   const [theme, setTheme] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { uid } = useContext(AuthContext);
-
-
-
   const { title, image, blog } = route.params || {};
 
   const filteredBlogs = blogs.filter((item) => item.title === title);
