@@ -30,7 +30,6 @@ const Workout_details = ({ route }) => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [goalsData, setGoalsData] = useState(null);
   const [theme, setTheme] = useState(false);
-
   const { uid } = useContext(AuthContext);
 
   useEffect(() => {
@@ -56,7 +55,11 @@ const Workout_details = ({ route }) => {
   }, [jsonData]);
 
   const handleBack = () => {
-    navigation.goBack();
+    if(params.sessionDone == 1){
+      navigation.navigate('Workout', { workoutDay: params.workoutDay+1 });
+    } else {
+      navigation.goBack();
+    }
   };
 
   const getVideoId = (url) => {
@@ -114,7 +117,6 @@ const Workout_details = ({ route }) => {
           const updatedPercent = (((currentDuration - value.breakpoint) / value.value) * 100).toFixed(0);
           goalRef.update({ percent: updatedPercent });
           console.log(`Goal "${key}" percentage updated to ${updatedPercent}`);
-          //For Developers
           const newPercent = ((currentDuration / value.goal) * 100).toFixed(0);
           console.log("(Developers)New Percent %: ", newPercent)
           console.log(value.isActive)
@@ -217,14 +219,14 @@ const Workout_details = ({ route }) => {
         />
       </Appbar.Header>
 
-      <View style ={[themeStyles.container]}>
-        <Card style={{ marginTop: 10 }}>
-          {jsonData === null || loading ? (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <ActivityIndicator size="large" />
-            </View>
-          ) : (
-            <View>
+      <View style={[themeStyles.container]}>
+        {jsonData === null || loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <View style={{ flex: 1, flexDirection: 'column' }}>
+            <View style={{ flex: 40 }}>
               <Carousel
                 data={carouselData}
                 renderItem={renderItem}
@@ -240,55 +242,54 @@ const Workout_details = ({ route }) => {
                 inactiveDotOpacity={0.4}
                 inactiveDotScale={0.6}
               />
-
-              <View style={{ alignItems: 'center' }}>
+              <View style={{ alignItems: 'center', marginVertical: 5 }}>
                 <Text style={{ fontWeight: 'bold' }}>{jsonData.exerciseName}</Text>
               </View>
-
-              <ScrollView style={{ height: '100%' }} showsVerticalScrollIndicator={false}>
-                <Card.Content>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: '5%' }}>
-                    <View>
-                      <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Level</Text>
-                      <Text variant="bodyMedium">{jsonData.level}</Text>
-                    </View>
-                    <View>
-                      <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Time</Text>
-                      <Text variant="titleLarge">{jsonData.estimatedTime} Min</Text>
-                    </View>
+            </View>
+            <View style={{ flex: 60 }}> 
+              <ScrollView style={{ height: '100%', paddingHorizontal:10 }} showsVerticalScrollIndicator={false}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: '5%' }}>
+                  <View>
+                    <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Level</Text>
+                    <Text variant="bodyMedium">{jsonData.level}</Text>
                   </View>
-                  <Text variant="bodyMedium">{jsonData.description}</Text>
+                  <View>
+                    <Text variant="titleLarge" style={{ fontWeight: 'bold', margin: '6%' }}>Time</Text>
+                    <Text variant="titleLarge">{jsonData.estimatedTime} Min</Text>
+                  </View>
+                </View>
+                <Text variant="bodyMedium">{jsonData.description}</Text>
 
-                  <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Muscles Affected</Text>
+                <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Muscles Affected</Text>
 
-                  {jsonData.musclesAffected.map((muscle, index) => (
-                    <Chip
-                      key={index}
-                      style={{ marginRight: '60%', marginTop: '4%', marginLeft: '4%' }}
-                      icon="check"
-                      mode="outlined"
-                      onPress={() => console.log('Pressed')}
-                    >
-                      {muscle}
-                    </Chip>
-                  ))}
+                {jsonData.musclesAffected.map((muscle, index) => (
+                  <Chip
+                    key={index}
+                    style={{ marginRight: '60%', marginTop: '4%', marginLeft: '4%' }}
+                    icon="check"
+                    mode="outlined"
+                    onPress={() => console.log('Pressed')}
+                  >
+                    {muscle}
+                  </Chip>
+                ))}
 
-                  <Text style={{ fontWeight: 'bold', margin: '4%' }}>Equipment needed</Text>
+                <Text style={{ fontWeight: 'bold', margin: '4%' }}>Equipment needed</Text>
 
-                  {jsonData.equipmentNeeded.map((equipment, index) => (
-                    <Chip
-                      key={index}
-                      style={{ marginRight: "60%", marginLeft: '4%', marginBottom: '4%', width: "40%" }}
-                      onPress={() => console.log('Pressed')}
-                    >
-                      <Ionicons name="barbell" size={24} color="black" />{equipment}
-                    </Chip>
-                  ))}
-                </Card.Content>
+                {jsonData.equipmentNeeded.map((equipment, index) => (
+                  <Chip
+                    key={index}
+                    style={{ marginRight: "60%", marginLeft: '4%', marginBottom: '4%', width: "40%" }}
+                    onPress={() => console.log('Pressed')}
+                  >
+                    <Ionicons name="barbell" size={24} color="black" />{equipment}
+                  </Chip>
+                ))}
+
               </ScrollView>
             </View>
-          )}
-        </Card>
+          </View>
+        )}
       </View>
 
     </PaperProvider>
@@ -325,6 +326,6 @@ const darkThemeStyles = StyleSheet.create({
     margin: 10,
     marginHorizontal: 6,
   },
-  
+
 });
 

@@ -29,7 +29,9 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     marginTop: 10,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    flex: 1,
+    marginHorizontal: 2
   },
   centeredView: {
     flex: 1,

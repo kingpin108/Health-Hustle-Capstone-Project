@@ -13,17 +13,13 @@ import { AuthContext } from '../../contexts/AuthContext';
 const WorkoutList = ({ route }) => {
     const navigation = useNavigation();
     const [workoutData, setWorkoutData] = useState([]);
-    const { completedExercises } = route.params;
-    const [completedExercisesList, setCompletedExercisesList] = useState(completedExercises || []);
     const [isWorkoutDone, setIsWorkoutDone] = useState({});
     const [workoutDay, setWorkoutDay] = useState(1);
     const [loading, setLoading] = useState(true); // Add loading state
     const [theme, setTheme] = useState(false);
 
-
     let workoutSet = 'default'
     const { uid } = useContext(AuthContext);
-    console.log("Uid", uid)
 
     const fetchFormData = (uid) => {
         try {
@@ -46,12 +42,19 @@ const WorkoutList = ({ route }) => {
     fetchFormData(uid)
 
     const handleItemPress = (item) => {
-        navigation.navigate('Workout_details', { item });
         setIsWorkoutDone(prevState => ({
             ...prevState,
             [item.id]: true
         }));
+        navigation.navigate('Workout_details', { item, sessionDone, workoutDay });
     };
+
+    const getWorkoutsYetToBeDone = () => {
+        const workoutsYetToBeDone = workoutData.filter(item => !isWorkoutDone[item.id]);
+        return workoutsYetToBeDone.length;
+    };
+
+    const sessionDone = getWorkoutsYetToBeDone();
 
     useEffect(() => {
         const fetchData = async () => {

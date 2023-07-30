@@ -159,8 +159,17 @@ const WorkoutGoal = () => {
             });
             fetchGoals();
         }
-        // setIsLoading(false);
+        setIsLoading(false);
+    };
 
+    const deleteGoal = async (goalKey) => {
+        try {
+            const goalsRef = database.ref(`users/${uid}/goals/${goalKey}`);
+            await goalsRef.remove();
+            fetchGoals();
+        } catch (error) {
+            console.error('Error deleting goal:', error);
+        }
     };
 
     const updateWorkoutDuration = async (goalKey, newPercent) => {
@@ -188,7 +197,7 @@ const WorkoutGoal = () => {
                 }
             } catch (error) {
                 console.error('Error fetching goals:', error);
-            } 
+            }
             // finally {
             //     setIsLoading(false);
             // }
@@ -358,7 +367,7 @@ const WorkoutGoal = () => {
                         )}
 
                         <ScrollView contentContainerStyle={{ padding: 16 }}>
-                           
+
                             {cardData.length === 0 ? (
                                 <Text style={styles.noGoalsText}>No Goals set</Text>
                             ) : (
@@ -387,16 +396,33 @@ const WorkoutGoal = () => {
                                             />
                                         </Card.Content>
                                         <Card.Content>
-                                            {item.percent >= 100 && (
-                                                <Button
-                                                    icon="share"
-                                                    textColor='#352472'
-                                                    mode="elevated"
-                                                    style={styles.shareButton}
-                                                    onPress={() => shareAchievement(item.value)}>
-                                                    Share
-                                                </Button>
-                                            )}
+                                            {item.percent >= 100 ? (
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Button
+                                                        icon="delete"
+                                                        textColor='#ff6254'
+                                                        mode="elevated"
+                                                        style={styles.shareButton}
+                                                        onPress={() => deleteGoal(item.key)}>
+                                                        Delete
+                                                    </Button>
+                                                    <Button
+                                                        icon="share"
+                                                        textColor='#352472'
+                                                        mode="elevated"
+                                                        style={{ ...styles.shareButton, alignSelf: 'flex-end' }}
+                                                        onPress={() => shareAchievement(item.value)}>
+                                                        Share
+                                                    </Button>
+                                                </View>
+                                            ) : (<Button
+                                                icon="delete"
+                                                textColor='#ff6254'
+                                                mode="elevated"
+                                                style={styles.shareButton}
+                                                onPress={() => deleteGoal(item.key)}>
+                                                Delete
+                                            </Button>)}
                                         </Card.Content>
                                     </Card>
                                 ))
@@ -418,7 +444,7 @@ const WorkoutGoal = () => {
                                             style={styles.generatedImage}
                                             source={require('../../../assets/trophy.png')}
                                         />
-                                        <Text variant='headlineLarge' style={{ fontWeight: 'bold', color: '#2D4356' }}>ACHIEVED</Text>
+                                        <Text variant='headlineMedium' style={{ fontWeight: 'bold', color: '#2D4356' }}>ACHIEVED</Text>
                                         <Text variant='headlineSmall' style={{ fontWeight: 'bold', color: '#1D267D', textAlign: 'center' }}>{"I worked out for " + shareGoal + " minutes"}</Text>
                                     </ViewShot>
                                     <View style={{ flexDirection: 'row' }}>

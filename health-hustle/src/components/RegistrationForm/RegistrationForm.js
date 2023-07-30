@@ -223,7 +223,7 @@ const RegistrationForm = () => {
     const n_height = parseFloat(height)
     const n_age = parseFloat(age)
     const workoutDuration = 0
-    const workoutDays = 0
+    const workoutDays = 1
     const totalSteps = 0
     const handleSubmit = () => {
         handleWorkoutList(selectedBodyGoal, selectedFocusArea, workoutList, setWorkoutList);
