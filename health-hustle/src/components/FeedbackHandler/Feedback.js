@@ -6,6 +6,8 @@ import styles from './styles';
 import { StatusBar } from 'expo-status-bar';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
+import { database } from '../../database/config';
+
 
 //[#6] Users can provide feedback about any issues they come across while using the application.
 const Feedback = () => {
@@ -71,6 +73,23 @@ const Feedback = () => {
         }
     };
 
+    useEffect(() => {
+        const userRef = database.ref(`users/${uid}/formData`);
+
+        userRef
+            .once('value')
+            .then((snapshot) => {
+                const formData = snapshot.val();
+                if (formData && formData.isDarkActive !== undefined) {
+                    setTheme(formData.isDarkActive);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching isDarkActive from Firebase:', error);
+
+            });
+    }, [uid]);
+
     const themeStyles = theme ? darkThemeStyles : lightThemeStyles;
 
     const paperTheme =
@@ -81,7 +100,7 @@ const Feedback = () => {
     const filteredFeedback = data.filter(item => item.user === uid);
 
     return (
-        <>
+        <PaperProvider theme={paperTheme} >
             {theme ? <></> : <StatusBar bar-style={'light-content'} />}
             <Appbar.Header style={styles.appHeaderContainer}>
                 <Appbar.BackAction onPress={handleBack} />
@@ -125,7 +144,7 @@ const Feedback = () => {
                                         title={item.feedback}
                                         description={item.response ? `Response: ${item.response}` : 'Waiting for response'}
                                         left={() => <List.Icon icon="message" />}
-                                        style={styles.feedbackItem}
+                                        style={[themeStyles.feedbackItem]}
                                     />
                                 ))}
                             </ScrollView>
@@ -133,7 +152,7 @@ const Feedback = () => {
                     </View>
                 )}
             </View>
-        </>
+        </PaperProvider>
     );
 };
 
@@ -146,6 +165,12 @@ const lightThemeStyles = StyleSheet.create({
         flexDirection: 'column',
         padding: 10
     },
+    feedbackItem: {
+        backgroundColor: '#f3e3ff',
+        marginBottom: 10,
+        padding: 5,
+        borderRadius: 10,
+    }
 });
 
 const darkThemeStyles = StyleSheet.create({
@@ -155,4 +180,11 @@ const darkThemeStyles = StyleSheet.create({
         flexDirection: 'column',
         padding: 10
     },
+    feedbackItem: {
+        marginBottom: 10,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'white'
+    }
 });
