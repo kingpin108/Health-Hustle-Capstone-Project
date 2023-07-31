@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { database } from '../../database/config';
 
 
-
+//[#8] Users can update app preferences like disable reminders and change theme mode.
 const url = "https://info6127-1119668-default-rtdb.firebaseio.com/Health_husle/dummy/-NMemxkO7aLtUBPtdCmV.json";
 
 const Settings = () => {
