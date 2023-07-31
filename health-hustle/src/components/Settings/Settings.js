@@ -54,7 +54,6 @@ const Settings = () => {
                 if (formData && formData.isDarkActive !== undefined) {
                     setTheme(formData.isDarkActive);
                     setIsLoading(false);
-
                 }
             })
             .catch((error) => {

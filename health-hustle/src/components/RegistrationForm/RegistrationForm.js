@@ -18,19 +18,30 @@ const RegistrationForm = () => {
     };
 
     const [imageWidth, setImageWidth] = useState(0);
-    const [imageHeight, setImageHeight] = useState(0);
 
     useEffect(() => {
         const screenWidth = Dimensions.get('window').width;
-        const screenHeight = Dimensions.get('window').height;
+        // const screenHeight = Dimensions.get('window').height;
 
         const imageRatio = 0.6;
         const calculatedWidth = screenWidth * imageRatio;
         const calculatedHeight = calculatedWidth;
 
         setImageWidth(calculatedWidth);
-        setImageHeight(calculatedHeight);
+        // setImageHeight(calculatedHeight);
     }, []);
+
+    const [isTextInputFocused, setTextInputFocused] = useState(false);
+
+    const handleTextInputFocus = () => {
+        setTextInputFocused(true);
+    };
+
+    const handleTextInputBlur = () => {
+        setTextInputFocused(false);
+    };
+
+    const imageHeight = isTextInputFocused ? 0 : 200;
 
     const [showSnackbar, setShowSnackbar] = useState(false);
 
@@ -118,6 +129,7 @@ const RegistrationForm = () => {
         else {
             setStep((prevStep) => prevStep + 1);
         }
+        Keyboard.dismiss();
     };
 
     const handleSnackbarDismiss = () => {
@@ -125,6 +137,7 @@ const RegistrationForm = () => {
     };
 
     const handlePrev = () => {
+        Keyboard.dismiss();
         setStep((prevStep) => prevStep - 1);
     };
 
@@ -485,7 +498,7 @@ const RegistrationForm = () => {
                         <View>
                             <Image
                                 source={require('../../../assets/human_body.png')}
-                                style={{...styles.focusAreaImage, width: imageWidth, height: imageHeight}}
+                                style={{ ...styles.focusAreaImage, width: imageWidth, height: imageHeight }}
                             />
                             {focusArea.map((checkbox, index) => (
                                 <TouchableRipple
@@ -523,6 +536,8 @@ const RegistrationForm = () => {
                                 onChangeText={handleWeightChange}
                                 returnKeyType="done"
                                 onSubmitEditing={dismissKeyboard}
+                                onFocus={handleTextInputFocus}
+                                onBlur={handleTextInputBlur}
                             />
                         </View>
                         <Text>{`${isNaN(weight) || weight === '' ? '0.0' : weight} ${isKg ? 'kg' : 'lbs'}`}</Text>
@@ -553,6 +568,8 @@ const RegistrationForm = () => {
                                 onChangeText={(height) => setHeight(height)}
                                 returnKeyType="done"
                                 onSubmitEditing={dismissKeyboard}
+                                onFocus={handleTextInputFocus}
+                                onBlur={handleTextInputBlur}
                             />
                         </View>
                     </View >
@@ -576,6 +593,8 @@ const RegistrationForm = () => {
                                 onChangeText={(age) => setAge(age)}
                                 returnKeyType="done"
                                 onSubmitEditing={dismissKeyboard}
+                                onFocus={handleTextInputFocus}
+                                onBlur={handleTextInputBlur}
                             />
                         </View>
                     </View>
@@ -593,13 +612,13 @@ const RegistrationForm = () => {
 
 
                             <RadioButton.Group onValueChange={newValue => setEquipment(newValue)} value={equipment}>
-                                <View style={{marginBottom:10}}>
+                                <View style={{ marginBottom: 10 }}>
                                     <RadioButton.Item label="With equipment" value="true" style={styles.radio} />
                                 </View>
-                                <View style={{marginBottom:10}}>
+                                <View style={{ marginBottom: 10 }}>
                                     <RadioButton.Item label="Without Equipment" value="false" style={styles.radio} />
                                 </View>
-                                <View style={{marginBottom:10}}>
+                                <View style={{ marginBottom: 10 }}>
                                     <RadioButton.Item label="Both" value="neutral" style={styles.radio} />
                                 </View>
                             </RadioButton.Group>
@@ -625,7 +644,7 @@ const RegistrationForm = () => {
 
                     <View style={styles.buttonContainer}>
                         {step > 1 && (
-                            <Button mode="outlined" onPress={handlePrev} style={{...styles.button, backgroundColor:'white'}}>
+                            <Button mode="outlined" onPress={handlePrev} style={{ ...styles.button, backgroundColor: 'white' }}>
                                 Previous
                             </Button>
                         )}

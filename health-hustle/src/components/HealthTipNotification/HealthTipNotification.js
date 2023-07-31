@@ -14,7 +14,6 @@ import { TextInput } from 'react-native-gesture-handler';
 //[#4] Users get daily health tip notifications
 //[#12]Notify users about the hydration check.
 
-
 export default function HealthTipNotification() {
     const navigation = useNavigation();
 
@@ -22,9 +21,6 @@ export default function HealthTipNotification() {
         navigation.goBack();
     };
 
-    const [activeItem, setActiveItem] = React.useState('home');
-    const [healthTips, setHealthTips] = useState([]);
-    const [selectedTip, setSelectedTip] = useState('');
     const [reminder, setReminder] = useState(false);
     const [hydration, setHydration] = useState(false);
     const [schedule, setSchedule] = useState([]);
@@ -44,19 +40,6 @@ export default function HealthTipNotification() {
 
     const handleReminderPress = async () => {
         setReminder(!reminder)
-        // if (!reminder) {
-        //     const scheduled = await scheduleReminder();
-        //     if (scheduled) {
-        //         setReminder(true);
-        //         setSchedule(await getSchedule());
-        //     }
-        // } else {
-        //     const cancelled = await cancelReminder();
-        //     if (cancelled) {
-        //         setReminder(false);
-        //         setSchedule(await getSchedule());
-        //     }
-        // }
     }
 
     const handleHydrationPress = async () => {
@@ -123,32 +106,6 @@ export default function HealthTipNotification() {
         const parsedTime = parseInt(time);
         return isNaN(parsedTime) ? '' : parsedTime.toString();
     };
-
-    // const fetchHealthTips = async () => {
-    //     try {
-    //       const healthTipsRef = database.ref('HealthTips');
-    //       const snapshot = await healthTipsRef.once('value');
-    //       const healthTipsData = snapshot.val();
-    //       const healthTipsArray = Object.values(healthTipsData);
-    //     //   console.log("Health Array: ", healthTipsArray);
-    //       setHealthTips(healthTipsArray);
-
-    //       if (healthTipsArray.length > 0) {
-    //         const randomIndex = Math.floor(Math.random() * healthTipsArray.length);
-    //         const tip = healthTipsArray[randomIndex];
-    //         console.log("Tip: ", tip);
-    //         setSelectedTip(tip);
-    //       }
-    //     } catch (error) {
-    //       console.log('Error fetching health tips:', error);
-    //     }
-    //   };
-
-    //   useEffect(() => {
-    //     fetchHealthTips();
-    //   }, []);
-
-    //Load scheduled reminders
 
     useEffect(() => {
         const userRef = database.ref(`users/${uid}/formData`);
@@ -257,44 +214,41 @@ export default function HealthTipNotification() {
 
 };
 
+const tipArray = [
+    "Stay hydrated by drinking enough water throughout the day.",
+    "Eat a balanced diet with plenty of fruits and vegetables.",
+    "Get regular exercise to keep your body and mind healthy.",
+    "Practice good hygiene by washing your hands frequently.",
+    "Take breaks and stretch if you spend long hours sitting or working at a desk.",
+    "Get enough sleep to support your overall well-being.",
+    "Limit processed foods and choose whole, unprocessed foods whenever possible.",
+    "Practice portion control to maintain a healthy weight.",
+    "Reduce your intake of sugary drinks and opt for water or herbal tea instead.",
+    "Manage stress through relaxation techniques like deep breathing or meditation.",
+    "Protect your skin from the sun by wearing sunscreen and protective clothing.",
+    "Engage in activities that promote mental well-being, such as reading or hobbies.",
+    "Avoid smoking and limit alcohol consumption for better overall health.",
+    "Incorporate strength training exercises to maintain muscle mass and bone health.",
+    "Practice good posture to prevent back and neck pain.",
+    "Schedule regular check-ups and screenings to catch any potential health issues early.",
+    "Limit screen time and take regular breaks to protect your eyes.",
+    "Practice mindfulness and engage in activities that bring you joy.",
+    "Maintain a positive social support network for emotional well-being.",
+    "Limit processed and fried foods, and opt for healthier cooking methods like baking or grilling.",
+    "Incorporate aerobic exercises like brisk walking or cycling into your routine.",
+    "Practice deep breathing exercises to reduce stress and promote relaxation.",
+    "Avoid excessive consumption of caffeine and opt for herbal teas or decaf options.",
+    "Include fiber-rich foods like whole grains, legumes, and vegetables in your diet.",
+    "Limit salt intake to maintain healthy blood pressure levels.",
+    "Practice mindfulness during meals, focusing on enjoying and savoring each bite.",
+    "Engage in activities that stimulate your brain, such as puzzles or learning new skills.",
+    "Take regular breaks from screens and engage in outdoor activities for fresh air and sunlight.",
+    "Surround yourself with positive influences and cultivate a supportive environment."
+]
+
+let lastTipIndex = -1;
+
 async function scheduleReminder(notificationTime) {
-
-    const tipArray = [
-        "Stay hydrated by drinking enough water throughout the day.",
-        "Eat a balanced diet with plenty of fruits and vegetables.",
-        "Get regular exercise to keep your body and mind healthy.",
-        "Practice good hygiene by washing your hands frequently.",
-        "Take breaks and stretch if you spend long hours sitting or working at a desk.",
-        "Get enough sleep to support your overall well-being.",
-        "Limit processed foods and choose whole, unprocessed foods whenever possible.",
-        "Practice portion control to maintain a healthy weight.",
-        "Reduce your intake of sugary drinks and opt for water or herbal tea instead.",
-        "Manage stress through relaxation techniques like deep breathing or meditation.",
-        "Protect your skin from the sun by wearing sunscreen and protective clothing.",
-        "Engage in activities that promote mental well-being, such as reading or hobbies.",
-        "Avoid smoking and limit alcohol consumption for better overall health.",
-        "Incorporate strength training exercises to maintain muscle mass and bone health.",
-        "Practice good posture to prevent back and neck pain.",
-        "Schedule regular check-ups and screenings to catch any potential health issues early.",
-        "Limit screen time and take regular breaks to protect your eyes.",
-        "Practice mindfulness and engage in activities that bring you joy.",
-        "Maintain a positive social support network for emotional well-being.",
-        "Limit processed and fried foods, and opt for healthier cooking methods like baking or grilling.",
-        "Incorporate aerobic exercises like brisk walking or cycling into your routine.",
-        "Practice deep breathing exercises to reduce stress and promote relaxation.",
-        "Avoid excessive consumption of caffeine and opt for herbal teas or decaf options.",
-        "Include fiber-rich foods like whole grains, legumes, and vegetables in your diet.",
-        "Limit salt intake to maintain healthy blood pressure levels.",
-        "Practice mindfulness during meals, focusing on enjoying and savoring each bite.",
-        "Engage in activities that stimulate your brain, such as puzzles or learning new skills.",
-        "Take regular breaks from screens and engage in outdoor activities for fresh air and sunlight.",
-        "Surround yourself with positive influences and cultivate a supportive environment."
-    ]
-    console.log('Schedule for', Platform.OS);
-    const randomTipIndex = Math.floor(Math.random() * tipArray.length);
-    console.log("randomTipIndex:", randomTipIndex)
-    const randomHealthTip = tipArray[randomTipIndex];
-
     try {
         const permissions = await Notifications.getPermissionsAsync();
         console.log('Permissions:', permissions);
@@ -312,7 +266,16 @@ async function scheduleReminder(notificationTime) {
             }
         }
 
-        const id = await Notifications.scheduleNotificationAsync({
+        let randomTipIndex = lastTipIndex;
+        while (randomTipIndex === lastTipIndex) {
+            randomTipIndex = Math.floor(Math.random() * tipArray.length);
+        }
+        lastTipIndex = randomTipIndex;
+
+        const randomHealthTip = tipArray[randomTipIndex];
+        const healthTipIcon = require('../../../assets/healthIcon.png');
+
+        await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Daily Health Tip',
                 body: randomHealthTip,
@@ -321,9 +284,10 @@ async function scheduleReminder(notificationTime) {
                 color: 'green',
                 priority: Notifications.AndroidNotificationPriority.HIGH,
                 badge: 1,
+                icon: healthTipIcon,
                 data: {
-                    userId: 205,
-                    userName: 'Ruhi',
+                    userId: new Date().getTime(),
+                    userName: 'User',
                     type: 'reminder'
                 }
             },
@@ -397,6 +361,8 @@ async function scheduleHydrationReminder(notificationTime) {
             }
         }
 
+        const healthTipIcon = require('../../../assets/bottle.png');
+
         const id = await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Hydration Check',
@@ -406,11 +372,12 @@ async function scheduleHydrationReminder(notificationTime) {
                 color: 'blue',
                 priority: Notifications.AndroidNotificationPriority.HIGH,
                 badge: 1,
+                icon: healthTipIcon,
                 data: {
-                    userId: 205,
-                    userName: 'Ruhi',
-                    type: 'hydration'
-                },
+                    userId: new Date().getTime(),
+                    userName: 'User',
+                    type: 'reminder'
+                }
             },
             trigger: {
                 seconds: notificationTime * 60,
@@ -462,4 +429,3 @@ const darkThemeStyles = StyleSheet.create({
         backgroundColor: '#444444',
     },
 });
-
