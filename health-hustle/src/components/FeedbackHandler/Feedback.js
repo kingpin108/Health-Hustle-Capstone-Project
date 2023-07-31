@@ -21,6 +21,8 @@ const Feedback = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [theme, setTheme] = useState(false);
+    const [loadingFeedback, setLoadingFeedback] = useState(false);
+
 
     const MAX_WORD_COUNT = 100;
 
@@ -63,13 +65,17 @@ const Feedback = () => {
 
     const fetchDataFromSheets = async () => {
         try {
-            setLoading(true)
+            // setLoading(true)
+            setLoadingFeedback(true);
+
             const response = await axios.get('https://script.google.com/macros/s/AKfycbxJrbhKIEC2KL1Nc-8hokZMJ_DpRuBK5y3tyDUva0PxeWGoU2JFM5fqN71bFHDf2vSb/exec');
             setData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
-            setLoading(false)
+            // setLoading(false)
+            setLoadingFeedback(false);
+
         }
     };
 
@@ -139,7 +145,7 @@ const Feedback = () => {
                 <Button icon="reload" mode="contained" contentStyle={{ flexDirection: 'row-reverse' }} onPress={fetchDataFromSheets} style={{ marginTop: 5 }}>
                     Refresh List
                 </Button>
-                {loading ? (
+                {loadingFeedback ? (
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator size="large" />
                     </View>
