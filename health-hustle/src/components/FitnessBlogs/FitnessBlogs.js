@@ -8,7 +8,7 @@ import { database } from '../../database/config';
 import { AuthContext } from "../../contexts/AuthContext";
 import { StatusBar } from 'expo-status-bar';
 
-
+//[#2]Users can read blogs on health and wellbeing to learn more.
 const ListItem = ({ item }) => {
   const [showRecipeModal, setShowRecipeModal] = useState(false);
 
